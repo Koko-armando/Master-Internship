@@ -1,0 +1,33 @@
+{
+  "generator-jhipster": {
+    "baseName": "jhipster",
+    "packageName": "io.variability.jhipster",
+    "packageFolder": "io/variability/jhipster",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "hibernateCache": "ehcache",
+    "clusteredHttpSession": "no",
+    "websocket": "spring-websocket",
+    "databaseType": "sql",
+    "devDatabaseType": "DiskBased",
+    "prodDatabaseType": "mariadb",
+    "searchEngine": "elasticsearch",
+    "buildTool": "maven",
+    "jwtSecretKey": "d8837e4a671d25456432b55b1e4a99fe0356ed07",
+    "applicationType": "monolith",
+    "testFrameworks": [
+      "protractor",
+      "cucumber",
+      "gatling"
+    ],
+    "jhiPrefix": "jhi",
+    "jhipsterVersion": "3.6.1",
+    "useSass": true,
+    "enableTranslation": false,
+    "languages": [
+      null,
+      null
+    ],
+    "enableSocialSignIn": true
+  }
+}

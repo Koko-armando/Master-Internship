@@ -1,0 +1,29 @@
+{
+  "generator-jhipster": {
+    "baseName": "jhipster",
+    "packageName": "io.variability.jhipster",
+    "packageFolder": "io/variability/jhipster",
+    "serverPort": "8080",
+    "authenticationType": "uaa",
+    "hibernateCache": "no",
+    "databaseType": "sql",
+    "devDatabaseType": "DiskBased",
+    "prodDatabaseType": "mariadb",
+    "searchEngine": "elasticsearch",
+    "buildTool": "maven",
+    "applicationType": "uaa",
+    "testFrameworks": [
+      "gatling",
+      "cucumber"
+    ],
+    "jhiPrefix": "jhi",
+    "jhipsterVersion": "3.6.1",
+    "enableTranslation": false,
+    "languages": [
+      null,
+      null
+    ],
+    "skipClient": true,
+    "uaaBaseName": "uaa"
+  }
+}

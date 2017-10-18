@@ -1,0 +1,31 @@
+{
+  "generator-jhipster": {
+    "baseName": "jhipster",
+    "packageName": "io.variability.jhipster",
+    "packageFolder": "io/variability/jhipster",
+    "serverPort": "8080",
+    "authenticationType": "uaa",
+    "hibernateCache": "hazelcast",
+    "databaseType": "sql",
+    "devDatabaseType": "InMemory",
+    "prodDatabaseType": "postgresql",
+    "searchEngine": "no",
+    "buildTool": "maven",
+    "applicationType": "microservice",
+    "testFrameworks": [
+      "cucumber",
+      "gatling"
+    ],
+    "jhiPrefix": "jhi",
+    "jhipsterVersion": "3.6.1",
+    "enableTranslation": true,
+    "nativeLanguage": "en",
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "skipClient": true,
+    "skipUserManagement": true,
+    "uaaBaseName": "uaa"
+  }
+}
