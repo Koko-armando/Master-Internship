@@ -31,7 +31,7 @@ public class RAnalysis {
 		
 		re.end();
 		System.out.println("end");
-                koko
+                
 
 	}
 	
