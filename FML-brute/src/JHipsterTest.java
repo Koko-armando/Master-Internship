@@ -53,7 +53,7 @@ public class JHipsterTest extends FMLTest{
 	 * @throws Exception If the syntax of the modeling is wrong.
 	 */
 	private FeatureModelVariable getFMJHipster() throws Exception {
-		return FM ("jhipster", "FM ( jhipster :  Base ; Base : "
+		/*return FM ("jhipster", "FM ( jhipster :  Base ; Base : "
 				+ "[InternationalizationSupport] [Database] [Authentication] Generator [Libsass] [SpringWebSockets] [SocialLogin] [ClusteredSession] TestingFrameworks [BackEnd] ; "
 				+ "Authentication : (HTTPSession | Uaa | OAuth2 | JWT) ; "
 				//TODO
@@ -96,6 +96,57 @@ public class JHipsterTest extends FMLTest{
 //				+ "Libsass -> (Application | Client) ; "
 				+ "Libsass -> (Application) ; "
 				+ " )");
+		
+		*/
+		
+		
+		
+		return FM ("jhipster", "FM ( Generator : [Server] [Client]  Application   ;" + 
+		"Application : [ModuleTobeInstall]  ApplicationType  TestFramework  ;" + 
+		"TestFramework : [protractor][cucumber][gatling] ;"+
+		"ApplicationType : (monolith|microservice|gateway|uaaApp) ;" + 
+		"Client : ClientFrameWork  [LibSass] ModuleNameClient  ;" + 
+		"ClientFrameWork : (AngularX|Angular1) ;" + 
+		"Server : PackageName  ServerPort  [OptionalItem]  Serveri18n  [ServerSideOption]  uaaBaseName  ;" + 
+		"ServerSideOption : AuthenticationType  [HibernateCache]  [DataBaseType]  [ProDataBaseType]  [DevDataBaseType]  Backend  [ServiceDiscoveryType]  ;" + 
+		"ServiceDiscoveryType : (consul|eureka|false) ;"+
+		"BuildTool : (maven|gradle) ;" + 
+		"DevDataBaseType : (nodevdbtype|mysqldev|h2disk|cassandradev|postgresqldev|oracledev|mariadbdev|h2memory|mssqldev|mongodbdev) ;" + 
+		"ProDataBaseType : (mssqlprod|noproddbtype|mongodbprod|mariadbprod|mysqlprod|postgresqlprod|cassandraprod|oracleprod) ;" + 
+		"DataBaseType : (sql|cassandra|nodbtype|mongodb) ;"+
+		"HibernateCache : (ehcache|infinispan|hazelcast|nohbcache) ;" + 
+		"AuthenticationType : (session|oauth2|jwt|uaaserver) ;" + 
+		"OptionalItem : (enablesocialsignin|elasticsearch|springwebsocket|hazelcastcluster) kafka enableswagegercodegen  ;" +  
+		"! DataBaseType -> (sql or cassandra or mongodb);" + 
+		"sql -> ProdDataBaseType;" + 
+		"(sql and (! gateway)) -> HibernateCache;" + 
+		"(microservice | uaaserver | gateway) -> DataBaseType;" + 
+		"(monolith -> (!ServiceDiscoveryType | eureka)) ; ((((monolith & !eureka) -> jwt) | session) | oauth2) ; (Server -> uaaApp) ; " + 
+		"(mongodb -> ((mongodbdev & mongodbprod) & nohbcache)) ; " + 
+		"((oauth2 & ! DataBaseType) -> (sql | mongodb)) ;" + 
+		"((sql & postgresqlprod) -> ((h2disk | h2memory) | postgresqldev)) ;" + 
+		"(((gateway | microservice) -> jwt) | uaaserver) ; " + 
+		"(((!cassandra & monolith) & (session | jwt)) -> enablesocialsignin) ;" + 
+		"((sql & mysqlprod) -> ((h2disk | h2memory) | mysqldev)) ;" + 
+		"(((microservice | gateway) | uaaApp) -> OptionalItem) ; (sql -> elasticsearch) ;" + 
+		"((monolith | gateway) -> springwebsocket) ; (cassandra -> ((cassandraprod & cassandradev) & nohbcache)) ;" + 
+		"(sql -> ((((mysqlprod | mariadbprod) | postgresqlprod) | oracleprod) | mssqlprod)) ;" + 
+		"((sql & mariadbprod) -> ((h2disk | h2memory) | mariadbdev)) ; " + 
+		"(((monolith | gateway) & (nohbcache | hazelcast)) -> hazelcastcluster) ; " + 
+		"((Server) -> cucumber | gatling) ;" + 
+		"Client-> protractor;" + 
+		"((sql & mssqlprod) -> ((h2disk | h2memory) | mssqldev)) ; ((eureka & !uaaApp) -> jwt) ;" + 
+		"((sql & oracleprod) -> ((h2disk | h2memory) | oracledev)) ;" + 
+		"(Client) -> (protractor) ; " + 
+		"(gateway -> hazelcast) ; (nodbtype -> ((sql | mongodb) | cassandra)) ; " + 
+		"((gateway | microservice) & uaaserver) -> uaaBaseName;)" + 
+		")");
+		
+		
+		
+		
+		
+		
 	}
 	
 	
@@ -114,33 +165,50 @@ public class JHipsterTest extends FMLTest{
 		final String BASENAME = "jhipster";
 		final String PACKAGENAME = "io.variability.jhipster";
 		final String SERVERPORT = "8080";
-		final String JHIPSTERVERSION = "3.6.1";
-		final String JHIPREFIX = "jhi";
-		final String SESSIONKEY = "13e6029734fb9984533b9bb5c511bca6d624c6ed";
-		final String JWTKEY = "d8837e4a671d25456432b55b1e4a99fe0356ed07";
+		final String JHIPSTERVERSION = "4.8.2";
+		//final String JHIPREFIX = "jhi";
+		//final String SESSIONKEY = "13e6029734fb9984533b9bb5c511bca6d624c6ed";
+		//final String JWTKEY = "d8837e4a671d25456432b55b1e4a99fe0356ed07";
 		final String UAABASENAME = "uaa";
 		
 		JhipsterConfiguration jhipsterConf = new JhipsterConfiguration();
 		
 		// Find application type
-		switch (get("Generator", strConfs, fmvJhipster)){
+		/*switch (get("Generator", strConfs, fmvJhipster)){
 			case "Server": 	jhipsterConf.applicationType = get("Server", strConfs, fmvJhipster);
 							break;
 			case "Application": jhipsterConf.applicationType = get("Application", strConfs, fmvJhipster);
 								break;
 			case "Client": 	jhipsterConf.applicationType="clientApp";
 							break;
-		}
+		}*/
+		jhipsterConf.applicationType = get("ApplicationType", strConfs, fmvJhipster);
 		
-		if(!jhipsterConf.applicationType.equals("clientApp")){
 			// Common attributes
 			jhipsterConf.jhipsterVersion = JHIPSTERVERSION;
 			jhipsterConf.baseName = BASENAME;
 			jhipsterConf.packageName = PACKAGENAME;
 			jhipsterConf.packageFolder = PACKAGENAME.replace(".", "/");
 			jhipsterConf.serverPort = SERVERPORT;
-			jhipsterConf.authenticationType = get("Authentication", strConfs, fmvJhipster);
-			jhipsterConf.hibernateCache = falseByNo(get("Hibernate2ndLvlCache", strConfs, fmvJhipster));
+			
+				
+			
+			if(jhipsterConf.applicationType.equals("monolith")){
+				jhipsterConf.servicediscoveryType=get("ServiceDiscoveryType", strConfs, fmvJhipster);
+				jhipsterConf.authenticationType = get("AuthenticationType", strConfs, fmvJhipster);
+				jhipsterConf.databaseType = get("DataBaseType", strConfs, fmvJhipster);
+				jhipsterConf.devDatabaseType = get("DevDataBaseType", strConfs, fmvJhipster);
+				jhipsterConf.hibernateCache = get("HibernateCache", strConfs, fmvJhipster);
+				jhipsterConf.buildTool = get("BuildTool", strConfs, fmvJhipster);
+				jhipsterConf.optionalItems = gets("OptionalItems", strConfs, fmvJhipster);
+				jhipsterConf.testFrameworks = gets("TestFramework", strConfs, fmvJhipster);
+			
+			}
+			
+			
+			
+			
+		/*	
 			// Common to ServerApp and Monolith application
 			if(jhipsterConf.applicationType.equals("serverApp") || jhipsterConf.applicationType.equals("monolith") || jhipsterConf.applicationType.equals("gateway")){
 				if(isIncluded("ClusteredSession", strConfs).equals("true")) jhipsterConf.clusteredHttpSession = "hazelcast";
