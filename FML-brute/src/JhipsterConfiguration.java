@@ -19,26 +19,26 @@ public class JhipsterConfiguration {
 	String prodDatabaseType;
 	String searchEngine;
 	String buildTool;
-//	String jwtSecretKey;
+	String jwtSecretKey;
 	protected String applicationType; // gateway | microservice | monolith | uaa; protected so that it is omitted when Client/Server standalones, see JHipsterTest.java
 	String[] testFrameworks;
-//	String[] optionalItems;
-//	String jhiPrefix;
+	String jhiPrefix;
 	String jhipsterVersion;
 	String clientframework;
 	String servicediscoveryType;
-	Boolean othergenerator=false;
-	Boolean useSass = null;
+	Boolean installModules=false;
+	Boolean useLibSass = null;
 	String messageBroker;
 	boolean enableTranslation; 
 	String nativeLanguage;
 	String[] languages = new String[2];
-	
+	String[] othersgenerator;
 	Boolean skipClient;
-	//Boolean skipUserManagement;
-	Boolean enableSocialSignIn;
-	Boolean enableSwaggerCodegen;
-//	String rememberMeKey;
+	Boolean skipServer;
+	Boolean skipUserManagement;
+	String enableSocialSignIn;
+	String enableSwaggerCodegen;
+    String rememberMeKey;
 	String uaaBaseName;
 		
 		
@@ -52,17 +52,22 @@ public class JhipsterConfiguration {
 		String r = baseName + 
 				" " + packageName + 
 				" " +"packageFolder" + 
-				" " + authenticationType + 
 				" " + applicationType+ 
-				" " + hibernateCache +
+   				" " + servicediscoveryType+ 
+				" " + authenticationType + 
 				" " + databaseType + 
-				" " + devDatabaseType + 
 				" " + prodDatabaseType +
-				" " + searchEngine + 
-				" " + messageBroker+
-				" " + websocket+
-				" " + clusteredHttpSession+
-				" " + buildTool ;		
+				" " + devDatabaseType + 
+				" " + hibernateCache +
+				" " + buildTool +
+				" " + searchEngine +
+				" " + clusteredHttpSession +
+				" " + websocket +
+				" " + messageBroker +
+				" " + enableSocialSignIn +
+				" " + enableSwaggerCodegen +
+				" " + clientframework ;
+
 				
 		String strTestFrameworks = "[";
 		if(testFrameworks!=null){
@@ -75,16 +80,7 @@ public class JhipsterConfiguration {
 		}
 		
 		
-	/*	String strOptionalItems="[";
-		if(optionalItems!=null){
-			for (int i = 0; i < optionalItems.length; i++) {
-				strOptionalItems += optionalItems[i];
-				if (i < (optionalItems.length - 1))
-					strOptionalItems += ",";
-			}
-			strOptionalItems += "]";
-			}
-		*/
+	
 		return r + " " + strTestFrameworks;//+""+strOptionalItems;
 	}
 	
@@ -128,30 +124,7 @@ public class JhipsterConfiguration {
 			}
 		}
 		
-	/*	
-		if (optionalItems == null && jo.optionalItems != null)
-			 return false;
-		if (optionalItems != null && jo.optionalItems == null)
-			 return false;
 
-		if (optionalItems == null && jo.optionalItems == null) {
-			
-		} // != null && != null
-		else { 
-			if (optionalItems.length != jo.optionalItems.length)
-				return false;
-			
-			for (String t1 : optionalItems) {
-				boolean found = false; 
-				for (String t2 : jo.optionalItems) {
-					if (t1.equals(t2))
-						found = true;
-				}
-				if (!found)
-					return false;
-				// otherwiste continue
-			}
-		}*/
 			
 		return jo.baseName.equals(baseName)
 				&& jo.packageName.equals(packageName)
@@ -169,8 +142,7 @@ public class JhipsterConfiguration {
 				&& jo.messageBroker.equals(messageBroker)
 				&& jo.searchEngine.equals(searchEngine)
 				&& jo.websocket.equals(websocket)
-				
-				
+				&& jo.clientframework.equals(clientframework)
 				// TODO
 				;
 	}
