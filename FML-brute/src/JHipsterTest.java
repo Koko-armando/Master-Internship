@@ -56,46 +56,47 @@ public class JHipsterTest extends FMLTest{
 				
 		return FM ("jhipster", "FM ( Generator : [Server] [Client]  Application   ;" + 
 		"Application : [ModuleTobeInstall]  ApplicationType  TestFramework  ;" + 
-		"TestFramework : [protractor][cucumber][gatling] ;"+
-		"ApplicationType : (monolith|microservice|gateway|uaa) ;" + 
+		"TestFramework : [Protractor][Cucumber][Gatling] ;"+
+		"ApplicationType : (Monolithic|MicroserviceApplication|MicroserviceGateway|UaaServer) ;" + 
 		"Client : ClientFrameWork  [LibSass] ModuleNameClient  ;" + 
-		"ClientFrameWork : (angularX|angular1) ;" + 
-		"Server : PackageName  ServerPort    Serveri18n  [ServerSideOption]  uaaBaseName [enableSocialSignIn]"
-		+ "[searchEngine][websocket][clusteredHttpSession] [messageBroker] [enableSwaggerCodegen]  ;" + 
+		"ClientFrameWork : (AngularJS|Angular4) ;" + 
+		"Server : PackageName  ServerPort    Serveri18n  [ServerSideOption]  uaaBaseName [SocialLogIn]"
+		+ "[SearchEngine][WebSocket][ClusteredHttpSession] [MessageBroker] [SwaggerCodegen]  ;" + 
 		"ServerSideOption : AuthenticationType  [HibernateCache]  [DataBaseType]  [ProDataBaseType]  [DevDataBaseType]  BuildTool  [ServiceDiscoveryType]  ;" + 
-		"ServiceDiscoveryType : (consul|eureka|false) ;"+
-		"BuildTool : (maven|gradle) ;" + 
-		"DevDataBaseType : (no|mysql|h2Disk|cassandra|postgresql|oracle|mariadb|h2Memory|mssql|mongodb) ;" + 
-		"ProDataBaseType : (mssql|no|mongodb|mariadb|mysql|postgresql|cassandra|oracle) ;" + 
-		"DataBaseType : (sql|cassandra|no|mongodb) ;"+
-		"HibernateCache : (ehcache|infinispan|hazelcast|no) ;" + 
-		"AuthenticationType : (session|oauth2|jwt|uaa) ;" + 
-		"! DataBaseType -> (sql or cassandra or mongodb);" + 
-		"sql -> ProdDataBaseType;" + 
-		"(sql and (! gateway)) -> HibernateCache;" + 
-		"(microservice | uaaserver | gateway) -> DataBaseType;" + 
-		"(monolith -> (!ServiceDiscoveryType | eureka)) ; "+
-		"((((monolith & !eureka) -> jwt) | session) | oauth2) ; "+ 
-		"(Server -> uaaApp) ; " + 
-		"(mongodb -> ((mongodb & mongodb) & nohbcache)) ; " + 
-		"((oauth2 & ! DataBaseType) -> (sql | mongodb)) ;" + 
-		"((sql & postgresql) -> ((h2Disk | h2Memory) | postgresql)) ;" + 
-		"(((gateway | microservice) -> jwt) | uaaserver) ; " + 
-		"(((!cassandra & monolith) & (session | jwt)) -> enableSocialSignIn:true) ;" + 
-		"((sql & mysql) -> ((h2Disk | h2Memory) | mysql)) ;" + 
-		"(sql -> searchEngine:elasticsearch) ;" + 
-		"((monolith | gateway) -> websocket:spring-websocket) ;"+
-		" (cassandra -> ((cassandra & cassandra) & nohbcache)) ;" + 
-		"(sql -> ((((mysql | mariadb) | postgresql) | oracle) | mssql) ;" + 
-		"((sql & mariadb) -> ((h2Disk | h2Memory) | mariadb)) ; " + 
-		"(((monolith | gateway) & (nohbcache | hazelcast)) -> clusteredHttpSession:hazelcast) ; " + 
-		"((Server) -> cucumber | gatling) ;" + 
-		"Client-> protractor;" + 
-		"((sql & mssql) -> ((h2Disk | h2Memory) | mssql)) ; ((eureka & !uaaApp) -> jwt) ;" + 
-		"((sql & oracle) -> ((h2disk | h2memory) | oracledev)) ;" + 
-		"(Client) -> (protractor) ; " + 
-		"(gateway -> hazelcast) ; (nodbtype -> ((sql | mongodb) | cassandra)) ; " + 
-		"((gateway | microservice) & uaaserver) -> uaaBaseName;)" + 
+		"ServiceDiscoveryType : (Consul|Eureka|false) ;"+
+		"BuildTool : (Maven|Gradle) ;" + 
+		"DevDataBaseType : (no|MsSql|H2DiskBased|PostgreSQLDev|Oracle12c|MariaDBDev|H2InMemory|MySql) ;" + 
+		"ProDataBaseType : (MsSQL|no|MariaDB|MySQL|PostgreSQL|Oracle) ;" + 
+		"DataBaseType : (SQL|Cassandra|no|MongoDB) ;"+
+		"HibernateCache : (EhCache|Infinispan|HazelCast|nohbcache) ;" + 
+		"AuthenticationType : (HTTPSession|OAuth2|JWT|Uaa) ;" + 
+		"! DataBaseType -> (SQL or Cassandra or MongoDB);" + 
+		"SQL -> MySQL|MsSQL|MariaDB|PostgreSQL|Oracle;" + 
+		"(SQL and (! MicroserviceGateway)) -> HibernateCache;" + 
+		"(MicroserviceApplication | Uaaserver | MicroserviceGateway) -> DataBaseType;" + 
+		"(Monolithic -> (!ServiceDiscoveryType | Eureka)) ; "+
+		"((((Monolithic & !Eureka) -> JWT) | HTTPSession) | OAuth2) ; "+ 
+		"(Server -> UaaServer) ; " + 
+		//"(MongoDB -> ((mongodb & mongodb) & nohbcache)) ; " + 
+		"((oauth2 & ! DataBaseType) -> (SQL | MongoDB)) ;" + 
+		"((SQL & PostgreSQL) -> ((H2DiskBased | H2InMemory) | PostgreSQLDev)) ;" + 
+		"(((MicroserviceGateway | MicroserviceApplication)) -> JWT | Uaa) ; " + 
+		"(((!Cassandra & Monolithic) & (HTTPSession | JWT)) -> SocialLogIn) ;" + 
+		"((SQL & MySQL) -> ((H2DiskBased | H2InMemory) | MySql)) ;" + 
+		//"(SQL -> SearchEngine|) ;" + 
+		"((Monolithic | MicroserviceGateway) -> WebSocket) ;"+
+	//	" (cassandra -> ((cassandra & cassandr)a & nohbcache)) ;" + 
+	//	"(sql -> ((((mysql | mariadb) | postgresql) | oracle) | mssql) ;" + 
+		"((SQL & MariaDB) -> ((H2DiskBased | H2InMemory) | MariaDBDev)) ; " + 
+		"(((Monolithic | MicroserviceGateway) & (nohbcache | HazelCast)) -> ClusteredHttpSession) ; " + 
+		"((MicroserviceGateway|Monolithic) -> Cucumber | Gatling|Protractor) ;" + 
+		"( MicroserviceApplication|UaaServer )-> Cucumber | Gatling;" + 
+		"((SQL & MsSQL) -> ((H2DiskBased | H2InMemory) | MsSql)) ;"+
+		" ((Eureka & !UaaServer) -> JWT) ;" + 
+		"((SQL & Oracle) -> ((H2DiskBased | H2InMemory) | Oracle12c)) ;" + 
+		"(MicroserviceGateway -> HazelCast) ; "+
+		//"(nodbtype -> ((SQL | MongoDB) | Cassandra)) ; " + 
+		"((MicroserviceGateway | MicroserviceApplication) & Uaa) -> uaaBaseName;)" + 
 		")");
 		
 		
@@ -117,7 +118,7 @@ public class JHipsterTest extends FMLTest{
 		final String BASENAME = "jhipster";
 		final String PACKAGENAME = "io.variability.jhipster";
 		final String SERVERPORT = "8080";
-		final String JHIPSTERVERSION = "3.6.1";
+		final String JHIPSTERVERSION = "4.8.2";
 		final String JHIPREFIX = "jhi";
 		final String SESSIONKEY = "13e6029734fb9984533b9bb5c511bca6d624c6ed";
 		final String JWTKEY = "d8837e4a671d25456432b55b1e4a99fe0356ed07";
@@ -148,7 +149,7 @@ public class JHipsterTest extends FMLTest{
 			if( jhipsterConf.applicationType.equals("microservice") || (jhipsterConf.applicationType.equals("uaa") && jhipsterConf.applicationType.equals("gateway"))
 				||(jhipsterConf.authenticationType.equals("oauth2") && !Boolean.parseBoolean(isIncluded("DataBaseType", strConfs))) || (!Boolean.parseBoolean(isIncluded("DataBaseType", strConfs))))
 				
-				jhipsterConf.databaseType = falseByNo(get("Database", strConfs, fmvJhipster));
+				jhipsterConf.databaseType = falseByNo(get("DataBaseType", strConfs, fmvJhipster));
 			
 			
 			if(jhipsterConf.databaseType.equals("mongodb") || jhipsterConf.databaseType.equals("cassandra")){
@@ -184,24 +185,24 @@ public class JHipsterTest extends FMLTest{
 			if(jhipsterConf.applicationType.equals("gateway")) jhipsterConf.hibernateCache= "hazelcast" ;
 
 			
-			if(isIncluded("clusteredHttpSession", strConfs).equals("true"))jhipsterConf.clusteredHttpSession =  "clusteredHttpSession:hazelcast" ;
+			if(isIncluded("ClusteredHttpSession", strConfs).equals("true"))jhipsterConf.clusteredHttpSession =  "clusteredHttpSession:hazelcast" ;
 			else jhipsterConf.clusteredHttpSession = "no";
 				
-			if(isIncluded("springWebSockets", strConfs).equals("true")) jhipsterConf.websocket = "websocket:spring-websocket";
+			if(isIncluded("WebSocket", strConfs).equals("true")) jhipsterConf.websocket = "websocket:spring-websocket";
 			else jhipsterConf.websocket = "no";
 				
-             if(isIncluded("enableSocialSignIn", strConfs).equals("true")) jhipsterConf.enableSocialSignIn ="enableSocialSignIn :true";
+             if(isIncluded("SocialLogIn", strConfs).equals("true")) jhipsterConf.enableSocialSignIn ="enableSocialSignIn :true";
              else jhipsterConf.enableSocialSignIn = "no";
 		
 
-			if ((isIncluded("messageBroker", strConfs)).equals("true"))	jhipsterConf.messageBroker =    "messageBroker:kafka";
+			if ((isIncluded("MessageBroker", strConfs)).equals("true"))	jhipsterConf.messageBroker =  "messageBroker:kafka";
 			else jhipsterConf.messageBroker = "no";
 
 
-            if(isIncluded("enableSwaggerCodegen", strConfs).equals("true")) jhipsterConf.enableSwaggerCodegen = "enableSwaggerCodegen:true";
+            if(isIncluded("SwaggerCodegen", strConfs).equals("true")) jhipsterConf.enableSwaggerCodegen = "enableSwaggerCodegen:true";
 			else jhipsterConf.enableSwaggerCodegen = "no";
 
-            if(isIncluded("searchEngine", strConfs).equals("true")) jhipsterConf.searchEngine = "searchEngine:elasticsearch";
+            if(isIncluded("SearchEngine", strConfs).equals("true")) jhipsterConf.searchEngine = "searchEngine:elasticsearch";
 			else jhipsterConf.searchEngine = "no";
 
 		
@@ -364,10 +365,15 @@ public class JHipsterTest extends FMLTest{
 			case "MariaDBDev":				return "mariadb";
 			case "H2DiskBased":				return "h2Disk";
 			case "H2InMemory":				return "h2Memory";
-			case "ElasticSearch":			return "elasticsearch";
+			//case "ElasticSearch":			return "elasticsearch";
+			case "SearchEngine":            return "searchEngine";
+			case "SocialLogIn":             return "enableSocialSignIn";
 			case "HazelCast":				return "hazelcast";
 			case "EhCache":					return "ehcache";
+			case "Infinispan":              return "infinispan";
 			case "MySQL":					return "mysql";
+			case "MsSQL":                    return "mssql";
+			case "MsSql":                   return "mssql";
 			case "PostgreSQL":				return "postgresql";
 			case "HTTPSession":				return "session";
 			case "Uaa":						return "uaa";
@@ -376,7 +382,12 @@ public class JHipsterTest extends FMLTest{
 			case "Gatling":					return "gatling";
 			case "Protractor":				return "protractor";
 			case "Cucumber":				return "cucumber";
-			case "ServerApp":				return "serverApp";
+			case "Angular4":                return "angularX";
+			case "AngularJS":               return "angular1";
+			case "Eureka":                  return "eureka";
+			case "Consul":                  return "consul";
+			
+			//case "ServerApp":				return "serverApp";
 			default: 	return feature;
 		}
 	}
