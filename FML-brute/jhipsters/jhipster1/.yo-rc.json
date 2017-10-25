@@ -4,30 +4,32 @@
     "packageName": "io.variability.jhipster",
     "packageFolder": "io/variability/jhipster",
     "serverPort": "8080",
-    "authenticationType": "jwt",
+    "authenticationType": "oauth2",
     "hibernateCache": "no",
-    "clusteredHttpSession": "hazelcast",
-    "websocket": "no",
-    "databaseType": "sql",
-    "devDatabaseType": "DiskBased",
-    "prodDatabaseType": "postgresql",
-    "searchEngine": "elasticsearch",
+    "clusteredHttpSession": "clusteredHttpSession:hazelcast",
+    "websocket": "websocket:spring-websocket",
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
+    "searchEngine": "no",
     "buildTool": "maven",
-    "jwtSecretKey": "d8837e4a671d25456432b55b1e4a99fe0356ed07",
-    "applicationType": "monolith",
+    "applicationType": "uaa",
     "testFrameworks": [
-      "cucumber",
-      "gatling",
-      "protractor"
+      "protractor",
+      "cucumber"
     ],
-    "jhiPrefix": "jhi",
-    "jhipsterVersion": "3.6.1",
-    "useSass": true,
+    "jhipsterVersion": "4.8.2",
+    "servicediscoveryType": "eureka",
+    "installModules": false,
+    "messageBroker": "messageBroker:kafka",
     "enableTranslation": false,
     "languages": [
       null,
       null
     ],
-    "enableSocialSignIn": false
+    "skipClient": true,
+    "skipServer": false,
+    "enableSocialSignIn": "enableSocialSignIn :true",
+    "enableSwaggerCodegen": "enableSwaggerCodegen:true"
   }
 }

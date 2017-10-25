@@ -6,28 +6,33 @@
     "serverPort": "8080",
     "authenticationType": "session",
     "hibernateCache": "no",
-    "clusteredHttpSession": "hazelcast",
-    "websocket": "no",
-    "databaseType": "sql",
-    "devDatabaseType": "DiskBased",
-    "prodDatabaseType": "postgresql",
+    "clusteredHttpSession": "clusteredHttpSession:hazelcast",
+    "websocket": "websocket:spring-websocket",
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
     "searchEngine": "no",
     "buildTool": "maven",
-    "applicationType": "monolith",
+    "applicationType": "uaa",
     "testFrameworks": [
-      "protractor",
+      "gatling",
       "cucumber",
-      "gatling"
+      "protractor"
     ],
-    "jhiPrefix": "jhi",
-    "jhipsterVersion": "3.6.1",
-    "useSass": true,
-    "enableTranslation": false,
+    "jhipsterVersion": "4.8.2",
+    "servicediscoveryType": "false",
+    "installModules": false,
+    "messageBroker": "messageBroker:kafka",
+    "enableTranslation": true,
+    "nativeLanguage": "en",
     "languages": [
-      null,
-      null
+      "en",
+      "fr"
     ],
-    "enableSocialSignIn": true,
+    "skipClient": true,
+    "skipServer": false,
+    "enableSocialSignIn": "enableSocialSignIn :true",
+    "enableSwaggerCodegen": "enableSwaggerCodegen:true",
     "rememberMeKey": "13e6029734fb9984533b9bb5c511bca6d624c6ed"
   }
 }

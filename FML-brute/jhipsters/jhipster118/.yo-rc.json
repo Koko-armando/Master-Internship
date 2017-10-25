@@ -6,25 +6,32 @@
     "serverPort": "8080",
     "authenticationType": "uaa",
     "hibernateCache": "no",
-    "databaseType": "sql",
-    "devDatabaseType": "InMemory",
-    "prodDatabaseType": "mysql",
+    "clusteredHttpSession": "clusteredHttpSession:hazelcast",
+    "websocket": "websocket:spring-websocket",
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
     "searchEngine": "no",
     "buildTool": "maven",
-    "applicationType": "microservice",
+    "applicationType": "uaa",
     "testFrameworks": [
+      "gatling",
       "cucumber",
-      "gatling"
+      "protractor"
     ],
-    "jhiPrefix": "jhi",
-    "jhipsterVersion": "3.6.1",
-    "enableTranslation": false,
+    "jhipsterVersion": "4.8.2",
+    "servicediscoveryType": "eureka",
+    "installModules": false,
+    "messageBroker": "messageBroker:kafka",
+    "enableTranslation": true,
+    "nativeLanguage": "en",
     "languages": [
-      null,
-      null
+      "en",
+      "fr"
     ],
     "skipClient": true,
-    "skipUserManagement": true,
-    "uaaBaseName": "uaa"
+    "skipServer": false,
+    "enableSocialSignIn": "enableSocialSignIn :true",
+    "enableSwaggerCodegen": "enableSwaggerCodegen:true"
   }
 }

@@ -6,28 +6,32 @@
     "serverPort": "8080",
     "authenticationType": "oauth2",
     "hibernateCache": "no",
-    "clusteredHttpSession": "hazelcast",
-    "websocket": "no",
+    "clusteredHttpSession": "clusteredHttpSession:hazelcast",
+    "websocket": "websocket:spring-websocket",
     "databaseType": "mongodb",
     "devDatabaseType": "mongodb",
     "prodDatabaseType": "mongodb",
     "searchEngine": "no",
     "buildTool": "maven",
-    "applicationType": "monolith",
+    "applicationType": "uaa",
     "testFrameworks": [
       "gatling",
-      "protractor",
-      "cucumber"
+      "cucumber",
+      "protractor"
     ],
-    "jhiPrefix": "jhi",
-    "jhipsterVersion": "3.6.1",
-    "useSass": false,
+    "jhipsterVersion": "4.8.2",
+    "servicediscoveryType": "consul",
+    "installModules": false,
+    "messageBroker": "messageBroker:kafka",
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": [
       "en",
       "fr"
     ],
-    "enableSocialSignIn": false
+    "skipClient": true,
+    "skipServer": false,
+    "enableSocialSignIn": "enableSocialSignIn :true",
+    "enableSwaggerCodegen": "enableSwaggerCodegen:true"
   }
 }

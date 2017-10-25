@@ -6,28 +6,32 @@
     "serverPort": "8080",
     "authenticationType": "session",
     "hibernateCache": "no",
-    "clusteredHttpSession": "hazelcast",
-    "websocket": "spring-websocket",
-    "databaseType": "sql",
-    "devDatabaseType": "InMemory",
-    "prodDatabaseType": "mariadb",
+    "clusteredHttpSession": "clusteredHttpSession:hazelcast",
+    "websocket": "websocket:spring-websocket",
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
     "searchEngine": "no",
-    "buildTool": "gradle",
-    "applicationType": "monolith",
+    "buildTool": "maven",
+    "applicationType": "uaa",
     "testFrameworks": [
       "protractor",
-      "cucumber",
-      "gatling"
+      "gatling",
+      "cucumber"
     ],
-    "jhiPrefix": "jhi",
-    "jhipsterVersion": "3.6.1",
-    "useSass": true,
+    "jhipsterVersion": "4.8.2",
+    "servicediscoveryType": "consul",
+    "installModules": false,
+    "messageBroker": "messageBroker:kafka",
     "enableTranslation": false,
     "languages": [
       null,
       null
     ],
-    "enableSocialSignIn": false,
+    "skipClient": true,
+    "skipServer": false,
+    "enableSocialSignIn": "enableSocialSignIn :true",
+    "enableSwaggerCodegen": "enableSwaggerCodegen:true",
     "rememberMeKey": "13e6029734fb9984533b9bb5c511bca6d624c6ed"
   }
 }

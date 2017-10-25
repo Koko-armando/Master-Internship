@@ -5,29 +5,32 @@
     "packageFolder": "io/variability/jhipster",
     "serverPort": "8080",
     "authenticationType": "jwt",
-    "hibernateCache": "hazelcast",
-    "clusteredHttpSession": "no",
-    "websocket": "no",
-    "databaseType": "sql",
-    "devDatabaseType": "postgresql",
-    "prodDatabaseType": "postgresql",
-    "searchEngine": "elasticsearch",
-    "buildTool": "gradle",
+    "hibernateCache": "no",
+    "clusteredHttpSession": "clusteredHttpSession:hazelcast",
+    "websocket": "websocket:spring-websocket",
+    "databaseType": "mongodb",
+    "devDatabaseType": "mongodb",
+    "prodDatabaseType": "mongodb",
+    "searchEngine": "no",
+    "buildTool": "maven",
     "jwtSecretKey": "d8837e4a671d25456432b55b1e4a99fe0356ed07",
-    "applicationType": "monolith",
+    "applicationType": "uaa",
     "testFrameworks": [
       "protractor",
-      "gatling",
       "cucumber"
     ],
-    "jhiPrefix": "jhi",
-    "jhipsterVersion": "3.6.1",
-    "useSass": false,
+    "jhipsterVersion": "4.8.2",
+    "servicediscoveryType": "false",
+    "installModules": false,
+    "messageBroker": "messageBroker:kafka",
     "enableTranslation": false,
     "languages": [
       null,
       null
     ],
-    "enableSocialSignIn": false
+    "skipClient": true,
+    "skipServer": false,
+    "enableSocialSignIn": "enableSocialSignIn :true",
+    "enableSwaggerCodegen": "enableSwaggerCodegen:true"
   }
 }
