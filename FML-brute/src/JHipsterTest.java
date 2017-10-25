@@ -293,7 +293,7 @@ public class JHipsterTest extends FMLTest{
 
 		
 		_log.info(jhipsterConf.toString());
-		jhipsterConf.testFrameworks = gets("TesterFramework", strConfs, fmvJhipster);
+		//jhipsterConf.testFrameworks = gets("TesterFramework", strConfs, fmvJhipster);
 		
 		return jhipsterConf;
 	}	
@@ -513,7 +513,7 @@ public class JHipsterTest extends FMLTest{
     }
 	
 	/**
-	 * Generates all variants of JHipster 3.6.1 to test them afterwards. 
+	 * Generates all variants of JHipster 4.8.2 to test them afterwards. 
 	 */
 	@Test
 	public void testJHipsterGeneration() throws Exception{
@@ -548,13 +548,14 @@ public class JHipsterTest extends FMLTest{
 		Collections.shuffle(list);	
 		_log.info("koko...");
 
-		int i = 0;
-		for (Variable configuration : list){
+		//int i = 0;
+		/*for (Variable configuration : list){
 
 			_log.info("Extracting features from the configuration...");
 			Set<String> strConfs = extractFeatures(configuration);
 
 			JhipsterConfiguration jConf = toJhipsterConfiguration(strConfs, getFMJHipster());
+			
 			_log.info("koko BON...");
 
 			// TODO: Nevermind Oracle, H2, ClientApp & ServerApp for now.
@@ -578,6 +579,43 @@ public class JHipsterTest extends FMLTest{
 		
 				_log.info("Configuration "+i+", "+jConf.applicationType+", is done");
 		//	}
-		}
+		}*/
+		
+		
+	for (int i=0; i<11; i++) {
+		_log.info("Extracting features from the configuration...");
+		Set<String> strConfs = extractFeatures(list.get(i));
+
+		JhipsterConfiguration jConf = toJhipsterConfiguration(strConfs, getFMJHipster());
+		
+		_log.info("koko BON...");
+
+		// TODO: Nevermind Oracle, H2, ClientApp & ServerApp for now.
+	//	if((jConf.applicationType.endsWith("App"))|(jConf.devDatabaseType.equals("oracle"))|(jConf.prodDatabaseType.equals("oracle"))){}
+	//	else{
+			i++;
+			String jDirectory = "jhipster" + i;
+			mkdirJhipster(jDirectory);
+		 	
+			_log.info("Parsing JSON...");
+
+			GeneratorJhipsterConfiguration jhipGen = new GeneratorJhipsterConfiguration();
+			jhipGen.generatorJhipster = jConf;
+			String yorc = toJSON2(jhipGen);
+			Files.writeStringIntoFile(getjDirectory(jDirectory) + ".yo-rc.json", yorc);
+			_log.info("JSON generated...");
+			
+			_log.info("Generating scripts...");
+			SCRIPT_BUILDER.generateScripts(jConf, jDirectory);
+			_log.info("Scripts generated...");
+	
+			_log.info("Configuration "+i+", "+jConf.applicationType+", is done");	
+			
+			
+		}		
+		
+		
+		
+		
 	}
 }
