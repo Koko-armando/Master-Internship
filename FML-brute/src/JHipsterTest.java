@@ -53,51 +53,94 @@ public class JHipsterTest extends FMLTest{
 	 * @throws Exception If the syntax of the modeling is wrong.
 	 */
 	private FeatureModelVariable getFMJHipster() throws Exception {
-				
-		return FM ("jhipster", 
-				"FM (Generator : [Server] [Client]  Application ;"+
-				"Application : [ModuleTobeInstall]  ApplicationType  TestFramework  ;" + 
-				"TestFramework : [Protractor][Cucumber][Gatling] ;"+
-				"ApplicationType : (Monolithic|MicroserviceApplication|MicroserviceGateway|UaaServer) ;" + 
-				"Client : ClientFrameWork  [LibSass] ModuleNameClient  ;" + 
-				"ClientFrameWork : (AngularJS|Angular4) ;" + 
-				"Server : PackageName  ServerPortServeri18n  [ServerSideOption]  uaaBaseName [SocialLogIn][SearchEngine][WebSocket][ClusteredHttpSession] [MessageBroker] [SwaggerCodegen]  ; " + 
-				"ServerSideOption : AuthenticationType  [HibernateCache]  [DataBaseType]  [ProDataBaseType]  [DevDataBaseType]  BuildTool  [ServiceDiscoveryType]  ; " + 
-				"ServiceDiscoveryType : (Consul|Eureka|fAlse) ;" + 
-				"BuildTool : (Maven|Gradle) ; " + 
-				"DevDataBaseType : (MsSql|H2DiskBased|PostgreSQLDev|Oracle12c|MariaDBDev|H2InMemory|MySql) ; " + 
-				"ProDataBaseType : (MsSQL|MariaDB|MySQL|PostgreSQL|Oracle) ;" + 
-				"DataBaseType : (SQL|Cassandra|nodbtype|MongoDB) ;" + 
-				"HibernateCache : (EhCache|Infinispan|HazelCast) ; AuthenticationType : (HTTPSession|OAuth2|JWT|Uaa) ;" + 
-				"! DataBaseType -> (SQL or Cassandra or MongoDB); " + 
-				"SQL -> MySQL|MsSQL|MariaDB|PostgreSQL|Oracle;" + 
-				"(SQL and (! MicroserviceGateway)) -> HibernateCache;" + 
-				"SQL-> SearchEngine| MessageBroker|SwaggerCodegen;" + 
-				"(MicroserviceApplication|Uaaserver|MicroserviceGateway) -> DataBaseType;" + 
-				"(Monolithic -> (!ServiceDiscoveryType|Eureka)) ; " + 
-				"((Monolithic & !Eureka) -> JWT |HTTPSession | OAuth2) ; " + 
-				"(Server -> UaaServer) ; "+
-			    "((oauth2 & ! DataBaseType) -> (SQL | MongoDB)) ;" + 
-				"((SQL & PostgreSQL) -> ((H2DiskBased | H2InMemory) | PostgreSQLDev)) ;" + 
-				"(((MicroserviceGateway | MicroserviceApplication)) -> JWT | Uaa) ; " + 
-				"(((!Cassandra & Monolithic) & (HTTPSession | JWT)) -> SocialLogIn| MessageBroker | SwaggerCodegen) ;" + 
-				"((SQL & MySQL) -> ((H2DiskBased | H2InMemory) | MySql)) ;" + 
-				"((Monolithic | MicroserviceGateway) -> WebSocket| MessageBroker | SwaggerCodegen) ;" + 
-				"((SQL & MariaDB) -> ((H2DiskBased | H2InMemory) | MariaDBDev)) ; " + 
-				"(((Monolithic | MicroserviceGateway) & (!HibernateCache | HazelCast)) -> ClusteredHttpSession| MessageBroker | SwaggerCodegen ) ;" + 
-				"//((MicroserviceGateway|Monolithic) -> Cucumber | Gatling|Protractor) ;" + 
-				"( MicroserviceApplication|UaaServer )-> Cucumber | Gatling;" + 
-				"((SQL & MsSQL) -> ((H2DiskBased | H2InMemory) | MsSql)) ;" + 
-				"((Eureka & !UaaServer) -> JWT) ; " + 
-				"((SQL & Oracle) -> ((H2DiskBased | H2InMemory) | Oracle12c)) ; " + 
-				"(MicroserviceGateway -> HazelCast) ; " + 
-				"((MicroserviceGateway | MicroserviceApplication) & Uaa) -> uaaBaseName;" + 
-				"(MongoDB ->  !ProDataBaseType and !DevDataBaseType and !HibernateCache) ; " + 
-				"(Cassandra -> !ProDataBaseType and !DevDataBaseType and !HibernateCache) ;" + 
-				"nodbtype-> !ProDataBaseType and !DevDataBaseType and !HibernateCache;" + 
-		")");
+	/*	return FM ("jhipster", "FM (jhipster :Base; Base: "
+				+"[Server] [Client]  Application [InternationalizationSupport];"
+				+"Application : [ModuleTobeInstall]  ApplicationType  TestFramework  ;" 
+				+"TestFramework : [Protractor][Cucumber][Gatling] ;"
+				+"ApplicationType : (Monolithic|MicroserviceApplication|MicroserviceGateway|UaaServer) ;" 
+				+"Client : ClientFrameWork  [LibSass] ModuleNameClient  ;" 
+				+"ClientFrameWork : (AngularJS|Angular4) ;"
+				+"Server : PackageName  ServerPortServeri18n  [ServerSideOption]  uaaBaseName [SocialLogIn][SearchEngine][WebSocket][ClusteredHttpSession] [MessageBroker] [SwaggerCodegen]  ; " 
+				+"ServerSideOption : AuthenticationType  [HibernateCache]  [DataBaseType]  [ProDataBaseType]  [DevDataBaseType]  BuildTool  [ServiceDiscoveryType]  ; " 
+				+"ServiceDiscoveryType : (Consul|Eureka|fAlse) ;"
+				+"BuildTool : (Maven|Gradle) ; "
+				+"DevDataBaseType : (MsSql|H2DiskBased|PostgreSQLDev|Oracle12c|MariaDBDev|H2InMemory|MySql) ; " 
+				+"ProDataBaseType : (MsSQL|MariaDB|MySQL|PostgreSQL|Oracle) ;" 
+				+"DataBaseType : (SQL|Cassandra|nodbtype|MongoDB) ;"
+				+"HibernateCache : (EhCache|Infinispan|HazelCast) ; AuthenticationType : (HTTPSession|OAuth2|JWT|Uaa) ;" 
+				+"! DataBaseType -> (SQL or Cassandra or MongoDB); " 
+				+"SQL -> MySQL|MsSQL|MariaDB|PostgreSQL|Oracle;"
+				+"(SQL and (! MicroserviceGateway)) -> HibernateCache;" 
+				+"SQL-> SearchEngine| MessageBroker|SwaggerCodegen;"
+				+"(MicroserviceApplication|Uaaserver|MicroserviceGateway) -> DataBaseType;"
+				+"(Monolithic -> (!ServiceDiscoveryType|Eureka)) ; "
+				+"((Monolithic & !Eureka) -> JWT |HTTPSession | OAuth2) ; " 
+				+"(Server -> UaaServer) ; "
+			    +"((oauth2 & ! DataBaseType) -> (SQL | MongoDB)) ;"
+				+"((SQL & PostgreSQL) -> ((H2DiskBased | H2InMemory) | PostgreSQLDev)) ;" 
+				+"(((MicroserviceGateway | MicroserviceApplication)) -> JWT | Uaa) ; "
+				+"(((!Cassandra & Monolithic) & (HTTPSession | JWT)) -> SocialLogIn| MessageBroker | SwaggerCodegen) ;" 
+				+"((SQL & MySQL) -> ((H2DiskBased | H2InMemory) | MySql)) ;" 
+				+"((Monolithic | MicroserviceGateway) -> WebSocket| MessageBroker | SwaggerCodegen) ;"
+				+"((SQL & MariaDB) -> ((H2DiskBased | H2InMemory) | MariaDBDev)) ; "
+				+"(((Monolithic | MicroserviceGateway) & (!HibernateCache | HazelCast)) -> ClusteredHttpSession| MessageBroker | SwaggerCodegen ) ;" 
+				//((MicroserviceGateway|Monolithic) -> Cucumber | Gatling|Protractor) ;"
+				+"( MicroserviceApplication|UaaServer )-> Cucumber | Gatling;" 
+				+"((SQL & MsSQL) -> ((H2DiskBased | H2InMemory) | MsSql)) ;" 
+				+"((Eureka & !UaaServer) -> JWT) ; "
+				+"((SQL & Oracle) -> ((H2DiskBased | H2InMemory) | Oracle12c)) ; "
+				+"(MicroserviceGateway -> HazelCast) ; "
+				+"((MicroserviceGateway | MicroserviceApplication) & Uaa) -> uaaBaseName;"
+				+"(MongoDB ->  !ProDataBaseType and !DevDataBaseType and !HibernateCache) ; " 
+				+"(Cassandra -> !ProDataBaseType and !DevDataBaseType and !HibernateCache) ;" 
+				+"nodbtype-> !ProDataBaseType and !DevDataBaseType and !HibernateCache;"  
+		        +")");
 		
 		
+	}*/
+		return FM ("jhipster", "FM ( jhipster :  Base ; Base : "
+				+ "[InternationalizationSupport] [Database] [Authentication] Generator [Libsass] [SpringWebSockets] [SocialLogin] [ClusteredSession] TestingFrameworks [BackEnd] ; "
+				+ "Authentication : (HTTPSession | Uaa | OAuth2 | JWT) ; "
+				//TODO
+//				+ "TestingFrameworks : [Gatling] [Protractor] [Cucumber] ; "
+				+ "TestingFrameworks : Gatling [Protractor] Cucumber ; "
+//				+ "Generator : (Server | Application | Client) ; "
+				+ "Generator : (Server | Application) ; "
+//				+ "Server : (MicroserviceApplication | UaaServer | ServerApp) ; "
+				+ "Server : (MicroserviceApplication | UaaServer) ; "
+				+ "Application : (MicroserviceGateway | Monolithic) ; "
+				+ "Database : (SQL | Cassandra | MongoDB) ; "
+				+ "SQL: Development [Hibernate2ndLvlCache] Production [ElasticSearch] ; "
+				+ "Development : (Oracle12c | H2 | PostgreSQLDev | MariaDBDev | MySql) ; "
+//				+ "Development : (PostgreSQLDev | MariaDBDev | MySql) ; "
+				+ "H2 : (DiskBased | InMemory) ; "
+				+ "Hibernate2ndLvlCache : (HazelCast | EhCache) ; " 
+				+ "Production : (MySQL | Oracle | MariaDB | PostgreSQL) ; "
+//				+ "Production : (MySQL | MariaDB | PostgreSQL) ; "
+				+ "BackEnd : (Gradle | Maven) ; "
+				// Constraints
+				+ "(OAuth2 & !SocialLogin & !MicroserviceApplication) -> (SQL | MongoDB) ; "
+//				+ "SocialLogin -> ((HTTPSession | JWT) & (ServerApp | Monolithic) & (SQL | MongoDB)) ; "
+				+ "SocialLogin -> ((HTTPSession | JWT) & (Monolithic) & (SQL | MongoDB)) ; "
+				+ "UaaServer -> Uaa ; "
+				+ "Oracle -> (H2 | Oracle12c) ; "
+				+ "(!OAuth2 & !SocialLogin & !MicroserviceApplication) -> (SQL | MongoDB | Cassandra) ; "
+				+ "Server -> !Protractor ; "
+				+ "!Server -> Protractor ; "
+				+ "MySQL -> (H2 | MySql) ; "
+//				+ "MySQL -> (MySql) ; "
+				+ "(MicroserviceApplication | MicroserviceGateway) -> (JWT | Uaa) ; "
+				+ "Monolithic -> (JWT | HTTPSession | OAuth2) ; "
+				+ "MariaDB -> (H2 | MariaDBDev) ; "
+//				+ "MariaDB -> (MariaDBDev) ; "
+				+ "PostgreSQL -> (H2 | PostgreSQLDev) ; "
+//				+ "PostgreSQL -> (PostgreSQLDev) ; "
+				+ "(Server | Application) -> (BackEnd & Authentication) ; "
+				+ "(SpringWebSockets | ClusteredSession) -> Application ; "
+//				+ "Client -> (!Gatling & !Cucumber & !BackEnd & !Authentication) ; "
+//				+ "Libsass -> (Application | Client) ; "
+				+ "Libsass -> (Application) ; "
+				+ " )");
 	}
 	
 	
