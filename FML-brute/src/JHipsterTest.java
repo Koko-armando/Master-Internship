@@ -54,49 +54,47 @@ public class JHipsterTest extends FMLTest{
 	 */
 	private FeatureModelVariable getFMJHipster() throws Exception {
 				
-		return FM ("jhipster", "FM ( Generator : [Server] [Client]  Application   ;" + 
-		"Application : [ModuleTobeInstall]  ApplicationType  TestFramework  ;" + 
-		"TestFramework : [Protractor][Cucumber][Gatling] ;"+
-		"ApplicationType : (Monolithic|MicroserviceApplication|MicroserviceGateway|UaaServer) ;" + 
-		"Client : ClientFrameWork  [LibSass] ModuleNameClient  ;" + 
-		"ClientFrameWork : (AngularJS|Angular4) ;" + 
-		"Server : PackageName  ServerPort    Serveri18n  [ServerSideOption]  uaaBaseName [SocialLogIn]"
-		+ "[SearchEngine][WebSocket][ClusteredHttpSession] [MessageBroker] [SwaggerCodegen]  ;" + 
-		"ServerSideOption : AuthenticationType  [HibernateCache]  [DataBaseType]  [ProDataBaseType]  [DevDataBaseType]  BuildTool  [ServiceDiscoveryType]  ;" + 
-		"ServiceDiscoveryType : (Consul|Eureka|false) ;"+
-		"BuildTool : (Maven|Gradle) ;" + 
-		"DevDataBaseType : (no|MsSql|H2DiskBased|PostgreSQLDev|Oracle12c|MariaDBDev|H2InMemory|MySql) ;" + 
-		"ProDataBaseType : (MsSQL|no|MariaDB|MySQL|PostgreSQL|Oracle) ;" + 
-		"DataBaseType : (SQL|Cassandra|no|MongoDB) ;"+
-		"HibernateCache : (EhCache|Infinispan|HazelCast|nohbcache) ;" + 
-		"AuthenticationType : (HTTPSession|OAuth2|JWT|Uaa) ;" + 
-		"! DataBaseType -> (SQL or Cassandra or MongoDB);" + 
-		"SQL -> MySQL|MsSQL|MariaDB|PostgreSQL|Oracle;" + 
-		"(SQL and (! MicroserviceGateway)) -> HibernateCache;" + 
-		"(MicroserviceApplication | Uaaserver | MicroserviceGateway) -> DataBaseType;" + 
-		"(Monolithic -> (!ServiceDiscoveryType | Eureka)) ; "+
-		"((((Monolithic & !Eureka) -> JWT) | HTTPSession) | OAuth2) ; "+ 
-		"(Server -> UaaServer) ; " + 
-		//"(MongoDB -> ((mongodb & mongodb) & nohbcache)) ; " + 
-		"((oauth2 & ! DataBaseType) -> (SQL | MongoDB)) ;" + 
-		"((SQL & PostgreSQL) -> ((H2DiskBased | H2InMemory) | PostgreSQLDev)) ;" + 
-		"(((MicroserviceGateway | MicroserviceApplication)) -> JWT | Uaa) ; " + 
-		"(((!Cassandra & Monolithic) & (HTTPSession | JWT)) -> SocialLogIn) ;" + 
-		"((SQL & MySQL) -> ((H2DiskBased | H2InMemory) | MySql)) ;" + 
-		//"(SQL -> SearchEngine|) ;" + 
-		"((Monolithic | MicroserviceGateway) -> WebSocket) ;"+
-	//	" (cassandra -> ((cassandra & cassandr)a & nohbcache)) ;" + 
-	//	"(sql -> ((((mysql | mariadb) | postgresql) | oracle) | mssql) ;" + 
-		"((SQL & MariaDB) -> ((H2DiskBased | H2InMemory) | MariaDBDev)) ; " + 
-		"(((Monolithic | MicroserviceGateway) & (nohbcache | HazelCast)) -> ClusteredHttpSession) ; " + 
-		"((MicroserviceGateway|Monolithic) -> Cucumber | Gatling|Protractor) ;" + 
-		"( MicroserviceApplication|UaaServer )-> Cucumber | Gatling;" + 
-		"((SQL & MsSQL) -> ((H2DiskBased | H2InMemory) | MsSql)) ;"+
-		" ((Eureka & !UaaServer) -> JWT) ;" + 
-		"((SQL & Oracle) -> ((H2DiskBased | H2InMemory) | Oracle12c)) ;" + 
-		"(MicroserviceGateway -> HazelCast) ; "+
-		//"(nodbtype -> ((SQL | MongoDB) | Cassandra)) ; " + 
-		"((MicroserviceGateway | MicroserviceApplication) & Uaa) -> uaaBaseName;)" + 
+		return FM ("jhipster", 
+				"FM (Generator : [Server] [Client]  Application ;"+
+				"Application : [ModuleTobeInstall]  ApplicationType  TestFramework  ;" + 
+				"TestFramework : [Protractor][Cucumber][Gatling] ;"+
+				"ApplicationType : (Monolithic|MicroserviceApplication|MicroserviceGateway|UaaServer) ;" + 
+				"Client : ClientFrameWork  [LibSass] ModuleNameClient  ;" + 
+				"ClientFrameWork : (AngularJS|Angular4) ;" + 
+				"Server : PackageName  ServerPortServeri18n  [ServerSideOption]  uaaBaseName [SocialLogIn][SearchEngine][WebSocket][ClusteredHttpSession] [MessageBroker] [SwaggerCodegen]  ; " + 
+				"ServerSideOption : AuthenticationType  [HibernateCache]  [DataBaseType]  [ProDataBaseType]  [DevDataBaseType]  BuildTool  [ServiceDiscoveryType]  ; " + 
+				"ServiceDiscoveryType : (Consul|Eureka|fAlse) ;" + 
+				"BuildTool : (Maven|Gradle) ; " + 
+				"DevDataBaseType : (MsSql|H2DiskBased|PostgreSQLDev|Oracle12c|MariaDBDev|H2InMemory|MySql) ; " + 
+				"ProDataBaseType : (MsSQL|MariaDB|MySQL|PostgreSQL|Oracle) ;" + 
+				"DataBaseType : (SQL|Cassandra|nodbtype|MongoDB) ;" + 
+				"HibernateCache : (EhCache|Infinispan|HazelCast) ; AuthenticationType : (HTTPSession|OAuth2|JWT|Uaa) ;" + 
+				"! DataBaseType -> (SQL or Cassandra or MongoDB); " + 
+				"SQL -> MySQL|MsSQL|MariaDB|PostgreSQL|Oracle;" + 
+				"(SQL and (! MicroserviceGateway)) -> HibernateCache;" + 
+				"SQL-> SearchEngine| MessageBroker|SwaggerCodegen;" + 
+				"(MicroserviceApplication|Uaaserver|MicroserviceGateway) -> DataBaseType;" + 
+				"(Monolithic -> (!ServiceDiscoveryType|Eureka)) ; " + 
+				"((Monolithic & !Eureka) -> JWT |HTTPSession | OAuth2) ; " + 
+				"(Server -> UaaServer) ; "+
+			    "((oauth2 & ! DataBaseType) -> (SQL | MongoDB)) ;" + 
+				"((SQL & PostgreSQL) -> ((H2DiskBased | H2InMemory) | PostgreSQLDev)) ;" + 
+				"(((MicroserviceGateway | MicroserviceApplication)) -> JWT | Uaa) ; " + 
+				"(((!Cassandra & Monolithic) & (HTTPSession | JWT)) -> SocialLogIn| MessageBroker | SwaggerCodegen) ;" + 
+				"((SQL & MySQL) -> ((H2DiskBased | H2InMemory) | MySql)) ;" + 
+				"((Monolithic | MicroserviceGateway) -> WebSocket| MessageBroker | SwaggerCodegen) ;" + 
+				"((SQL & MariaDB) -> ((H2DiskBased | H2InMemory) | MariaDBDev)) ; " + 
+				"(((Monolithic | MicroserviceGateway) & (!HibernateCache | HazelCast)) -> ClusteredHttpSession| MessageBroker | SwaggerCodegen ) ;" + 
+				"//((MicroserviceGateway|Monolithic) -> Cucumber | Gatling|Protractor) ;" + 
+				"( MicroserviceApplication|UaaServer )-> Cucumber | Gatling;" + 
+				"((SQL & MsSQL) -> ((H2DiskBased | H2InMemory) | MsSql)) ;" + 
+				"((Eureka & !UaaServer) -> JWT) ; " + 
+				"((SQL & Oracle) -> ((H2DiskBased | H2InMemory) | Oracle12c)) ; " + 
+				"(MicroserviceGateway -> HazelCast) ; " + 
+				"((MicroserviceGateway | MicroserviceApplication) & Uaa) -> uaaBaseName;" + 
+				"(MongoDB ->  !ProDataBaseType and !DevDataBaseType and !HibernateCache) ; " + 
+				"(Cassandra -> !ProDataBaseType and !DevDataBaseType and !HibernateCache) ;" + 
+				"nodbtype-> !ProDataBaseType and !DevDataBaseType and !HibernateCache;" + 
 		")");
 		
 		
