@@ -19,13 +19,16 @@
       "cucumber"
     ],
     "jhipsterVersion": "4.8.2",
-    "servicediscoveryType": "eureka",
+    "clientframework": "no",
+    "servicediscoveryType": "false",
     "installModules": false,
+    "useLibSass": false,
     "messageBroker": "messageBroker:kafka",
-    "enableTranslation": false,
+    "enableTranslation": true,
+    "nativeLanguage": "en",
     "languages": [
-      null,
-      null
+      "en",
+      "fr"
     ],
     "skipClient": true,
     "skipServer": false,

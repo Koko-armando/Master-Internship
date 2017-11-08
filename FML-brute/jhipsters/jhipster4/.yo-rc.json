@@ -12,16 +12,18 @@
     "devDatabaseType": "mongodb",
     "prodDatabaseType": "mongodb",
     "searchEngine": "no",
-    "buildTool": "maven",
+    "buildTool": "gradle",
     "applicationType": "uaa",
     "testFrameworks": [
       "protractor",
-      "gatling",
-      "cucumber"
+      "cucumber",
+      "gatling"
     ],
     "jhipsterVersion": "4.8.2",
-    "servicediscoveryType": "eureka",
+    "clientframework": "no",
+    "servicediscoveryType": "consul",
     "installModules": false,
+    "useLibSass": false,
     "messageBroker": "messageBroker:kafka",
     "enableTranslation": true,
     "nativeLanguage": "en",

@@ -52,7 +52,8 @@ public class ScriptsBuilder {
 				+ property.getProperty("mysqlStop")
 				+ property.getProperty("cassandraStop")
 				+ property.getProperty("mongodbStop")
-				+ property.getProperty("postgreStop");
+				+ property.getProperty("postgreStop")
+		        + property.getProperty("mssql");
 
 		Files.writeStringIntoFile(jDirectory+"/stopDB.sh", script);
 	}
@@ -67,10 +68,10 @@ public class ScriptsBuilder {
 	private void generateYoJhipsterScript(JhipsterConfiguration jconf, String jDirectory){
 		String script = "#!/bin/bash\n\n";
 
-		if(jconf.applicationType.equals("clientApp")) script += "yo jhipster:client --auth session ";
-		else if (jconf.applicationType.equals("serverApp")) script += "yo jhipster:server ";
-		else script += "yo jhipster ";
-
+		//if(jconf.applicationType.equals("clientApp")) script += "yo jhipster:client --auth session ";
+		//else if (jconf.applicationType.equals("serverApp")) script += "yo jhipster:server ";
+		//else script += "yo jhipster ";
+		script += "yo jhipster ";
 		script += ">> generate.log 2>&1\n";
 		
 		Files.writeStringIntoFile(getjDirectory(jDirectory) + "generate.sh", script);
@@ -95,6 +96,8 @@ public class ScriptsBuilder {
 		case "postgresql": 	script += getPostgreScript();
 		break;
 		case "mariadb":	script += getMysqlScript();
+		break;
+		case "mssql":	script += getMssqlScript();
 		break;
 		}
 		
@@ -358,6 +361,34 @@ public class ScriptsBuilder {
 				+ properties.getProperty("mysqlCloseConnexion");
 	}
 
+	
+	
+	
+	
+	
+	/**
+	 * Retrieve MsSQL related scripts in the System.properties file.
+	 * 
+	 * @return MsSQL script
+	 */
+	private String getMssqlScript(){
+		Properties properties = getProperties(PROPERTIES_FILE);
+
+		return 	properties.getProperty("mssqlService")
+				+ properties.getProperty("sleep")
+				+ properties.getProperty("mssqlInitiateConnexion")
+				+ properties.getProperty("mssqlDropDatabase")
+				+ properties.getProperty("mssqlFlush")
+				+ properties.getProperty("mssqlCreateDatabase")
+				+ properties.getProperty("mssqlCloseConnexion");
+	}
+
+	
+	
+	
+	
+	
+	
 	private String getCassandraScript(){
 		Properties properties = getProperties(PROPERTIES_FILE);
 

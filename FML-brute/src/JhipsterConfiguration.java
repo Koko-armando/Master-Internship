@@ -24,12 +24,12 @@ public class JhipsterConfiguration {
 	String[] testFrameworks;
 	String jhiPrefix;
 	String jhipsterVersion;
-	String clientframework;
-	String servicediscoveryType;
+	String clientFramework;
+	String serviceDiscoveryType;
 	Boolean installModules=false;
-	Boolean useLibSass = null;
+	Boolean useSass = false;
 	String messageBroker;
-	boolean enableTranslation; 
+	boolean enableTranslation=false; 
 	String nativeLanguage;
 	String[] languages = new String[2];
 	String[] othersgenerator;
@@ -53,7 +53,7 @@ public class JhipsterConfiguration {
 				" " + packageName + 
 				" " +"packageFolder" + 
 				" " + applicationType+ 
-   				" " + servicediscoveryType+ 
+   				" " + serviceDiscoveryType+ 
 				" " + authenticationType + 
 				" " + databaseType + 
 				" " + prodDatabaseType +
@@ -66,7 +66,7 @@ public class JhipsterConfiguration {
 				" " + messageBroker +
 				" " + enableSocialSignIn +
 				" " + enableSwaggerCodegen +
-				" " + clientframework ;
+				" " + clientFramework ;
 
 				
 		String strTestFrameworks = "[";
@@ -142,7 +142,7 @@ public class JhipsterConfiguration {
 				&& jo.messageBroker.equals(messageBroker)
 				&& jo.searchEngine.equals(searchEngine)
 				&& jo.websocket.equals(websocket)
-				&& jo.clientframework.equals(clientframework)
+				&& jo.clientFramework.equals(clientFramework)
 				// TODO
 				;
 	}

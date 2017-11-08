@@ -12,7 +12,7 @@
     "devDatabaseType": "mongodb",
     "prodDatabaseType": "mongodb",
     "searchEngine": "no",
-    "buildTool": "maven",
+    "buildTool": "gradle",
     "applicationType": "uaa",
     "testFrameworks": [
       "protractor",
@@ -20,13 +20,16 @@
       "gatling"
     ],
     "jhipsterVersion": "4.8.2",
-    "servicediscoveryType": "fAlse",
+    "clientframework": "no",
+    "servicediscoveryType": "consul",
     "installModules": false,
+    "useLibSass": false,
     "messageBroker": "messageBroker:kafka",
-    "enableTranslation": false,
+    "enableTranslation": true,
+    "nativeLanguage": "en",
     "languages": [
-      null,
-      null
+      "en",
+      "fr"
     ],
     "skipClient": true,
     "skipServer": false,

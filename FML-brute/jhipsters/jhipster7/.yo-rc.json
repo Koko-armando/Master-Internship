@@ -4,24 +4,26 @@
     "packageName": "io.variability.jhipster",
     "packageFolder": "io/variability/jhipster",
     "serverPort": "8080",
-    "authenticationType": "session",
+    "authenticationType": "uaa",
     "hibernateCache": "no",
     "clusteredHttpSession": "clusteredHttpSession:hazelcast",
     "websocket": "websocket:spring-websocket",
-    "databaseType": "mongodb",
-    "devDatabaseType": "mongodb",
-    "prodDatabaseType": "mongodb",
+    "databaseType": "no",
+    "devDatabaseType": "no",
+    "prodDatabaseType": "no",
     "searchEngine": "no",
     "buildTool": "maven",
     "applicationType": "uaa",
     "testFrameworks": [
-      "cucumber",
       "gatling",
-      "protractor"
+      "protractor",
+      "cucumber"
     ],
     "jhipsterVersion": "4.8.2",
-    "servicediscoveryType": "eureka",
+    "clientframework": "no",
+    "servicediscoveryType": "consul",
     "installModules": false,
+    "useLibSass": false,
     "messageBroker": "messageBroker:kafka",
     "enableTranslation": true,
     "nativeLanguage": "en",
@@ -32,7 +34,6 @@
     "skipClient": true,
     "skipServer": false,
     "enableSocialSignIn": "enableSocialSignIn :true",
-    "enableSwaggerCodegen": "enableSwaggerCodegen:true",
-    "rememberMeKey": "13e6029734fb9984533b9bb5c511bca6d624c6ed"
+    "enableSwaggerCodegen": "enableSwaggerCodegen:true"
   }
 }
