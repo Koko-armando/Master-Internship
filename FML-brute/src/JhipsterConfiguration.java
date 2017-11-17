@@ -25,7 +25,9 @@ public class JhipsterConfiguration {
 	String jhiPrefix;
 	String jhipsterVersion;
 	String clientFramework;
-	String serviceDiscoveryType;
+	String serviceDiscoveryType2=null;
+    Boolean serviceDiscoveryType1=null;
+	
 	Boolean installModules=false;
 	Boolean useSass = false;
 	String messageBroker;
@@ -53,7 +55,6 @@ public class JhipsterConfiguration {
 				" " + packageName + 
 				" " +"packageFolder" + 
 				" " + applicationType+ 
-   				" " + serviceDiscoveryType+ 
 				" " + authenticationType + 
 				" " + databaseType + 
 				" " + prodDatabaseType +
@@ -87,7 +88,15 @@ public class JhipsterConfiguration {
 	
 				
 				
-				
+	  public void getServiceDiscoveryType(String serviceDiscoveryType) {
+  	    if (serviceDiscoveryType.equals("false")) 
+  	    serviceDiscoveryType1= Boolean.parseBoolean(serviceDiscoveryType);
+  	    else serviceDiscoveryType2= serviceDiscoveryType;
+
+  	 
+  	 
+  	 
+   }		
 				
 				
 		

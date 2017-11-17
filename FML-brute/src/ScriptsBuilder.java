@@ -71,7 +71,7 @@ public class ScriptsBuilder {
 		//if(jconf.applicationType.equals("clientApp")) script += "yo jhipster:client --auth session ";
 		//else if (jconf.applicationType.equals("serverApp")) script += "yo jhipster:server ";
 		//else script += "yo jhipster ";
-		script += "yo jhipster ";
+		script += "jhipster";
 		script += ">> generate.log 2>&1\n";
 		
 		Files.writeStringIntoFile(getjDirectory(jDirectory) + "generate.sh", script);
@@ -102,7 +102,7 @@ public class ScriptsBuilder {
 		}
 		
 		
-		if(jconf.buildTool.equals("maven")) script+= "mvn compile";
+		if(jconf.buildTool.equals("maven")) script+= "./mvnw compile";
 		else script+="./gradlew compileJava";
 
 		script += ">> compile.log 2>&1";
@@ -116,8 +116,7 @@ public class ScriptsBuilder {
 	 * @param jDirectory Directory where the script must be generated.
 	 */
 	private void generateBuildScript(JhipsterConfiguration jconf, String jDirectory){
-		String script = "#!/bin/bash\n\n";	
-		
+		String script = "#!/bin/bash\n\n";			
 		// TODO See if we include dev profile for all variants
 		if(jconf.devDatabaseType.startsWith("h2")){
 			if(jconf.buildTool.equals("maven")) script += "./mvnw -Pdev ";
@@ -452,4 +451,13 @@ public class ScriptsBuilder {
 		}
 		return prop; // default linux
 	}
+	
+	
+	
+	
+	
+	
+	
 }
+
+

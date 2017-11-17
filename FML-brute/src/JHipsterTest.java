@@ -18,7 +18,7 @@ import org.prop4j.Node;
  
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
- 
+
 import csv.CSVUtils;
 import fr.familiar.FMLTest; 
 import fr.familiar.operations.featureide.SATFMLFormula;
@@ -99,15 +99,15 @@ public class JHipsterTest extends FMLTest{
 
          // +++++++++++++++++++++++++++++++++++imposé++++++++++++++++++++++++++++++
 
-         //+"(MicroserviceApplication | UaaServer) -> (!Client & Cucumber & Gatling & !Protractor);"
-         //+"(Monolithic|MicroserviceGateway)->(Client & Cucumber & Protractor & Gatling );"
+         +"(MicroserviceApplication | UaaServer) -> (!Client & Cucumber & Gatling & !Protractor);"
+         +"(Monolithic|MicroserviceGateway)->(Client & Cucumber & Protractor & Gatling );"
 
          //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 
          //+++++++++++++++++++++++++++++ vrai contrainte+++++++++++++++++++++++++++++
 
-        +"(MicroserviceApplication | UaaServer) -> (!Client & !Protractor);"
-        +"(Monolithic|MicroserviceGateway)->Client ;"
+       // +"(MicroserviceApplication | UaaServer) -> (!Client & !Protractor);"
+       // +"(Monolithic|MicroserviceGateway)->Client ;"
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
              // +"!SQL;"
               //+"!Client;"
@@ -163,9 +163,10 @@ public class JHipsterTest extends FMLTest{
             jhipsterConf.packageName = PACKAGENAME;
             jhipsterConf.packageFolder = PACKAGENAME.replace(".", "/");
             if(!jhipsterConf.applicationType.equals("monolith")) jhipsterConf.serverPort = SERVERPORT;
-            jhipsterConf.serviceDiscoveryType = get("ServiceDiscoveryType", strConfs, fmvJhipster);
-             
- 
+            //jhipsterConf.serviceDiscoveryType=null;= new serviceDiscovery(true);
+            
+                  		  
+            jhipsterConf.getServiceDiscoveryType(get("ServiceDiscoveryType", strConfs, fmvJhipster)  ); 
             jhipsterConf.authenticationType = get("AuthenticationType", strConfs, fmvJhipster);
      
             if ((jhipsterConf.applicationType.equals("gateway") || jhipsterConf.applicationType.equals("microservice")) && jhipsterConf.authenticationType.equals("uaa"))
@@ -303,7 +304,7 @@ public class JHipsterTest extends FMLTest{
      
      
      
-     
+   
      
      
      
@@ -325,8 +326,10 @@ public class JHipsterTest extends FMLTest{
         /*if (!Utils.testJson(gson.toJsonTree(jhipsterConf), new JsonChecker())){
             System.err.println("JSON parsed is wrong !!!");
         }*/
-         
-        return gson.toJson(jhipsterConf);   
+        if (jhipsterConf.generatorJhipster.serviceDiscoveryType1==null)
+        return (gson.toJson(jhipsterConf)).replaceAll("serviceDiscoveryType2", "serviceDiscoveryType"); 
+        else 
+         return (gson.toJson(jhipsterConf)).replaceAll("serviceDiscoveryType1", "serviceDiscoveryType");   
     }
  
     /**
@@ -546,43 +549,9 @@ public class JHipsterTest extends FMLTest{
         // Transform to list for shuffling
         List<Variable> list = new ArrayList<Variable>(confs);
         Collections.shuffle(list);  
-        _log.info("koko...");
- 
-        //int i = 0;
-        /*for (Variable configuration : list){
- 
-            _log.info("Extracting features from the configuration...");
-            Set<String> strConfs = extractFeatures(configuration);
- 
-            JhipsterConfiguration jConf = toJhipsterConfiguration(strConfs, getFMJHipster());
              
-            _log.info("koko BON...");
- 
-            // TODO: Nevermind Oracle, H2, ClientApp & ServerApp for now.
-        //  if((jConf.applicationType.endsWith("App"))|(jConf.devDatabaseType.equals("oracle"))|(jConf.prodDatabaseType.equals("oracle"))){}
-        //  else{
-                i++;
-                String jDirectory = "jhipster" + i;
-                mkdirJhipster(jDirectory);
-                 
-                _log.info("Parsing JSON...");
-     
-                GeneratorJhipsterConfiguration jhipGen = new GeneratorJhipsterConfiguration();
-                jhipGen.generatorJhipster = jConf;
-                String yorc = toJSON2(jhipGen);
-                Files.writeStringIntoFile(getjDirectory(jDirectory) + ".yo-rc.json", yorc);
-                _log.info("JSON generated...");
-                 
-                _log.info("Generating scripts...");
-                SCRIPT_BUILDER.generateScripts(jConf, jDirectory);
-                _log.info("Scripts generated...");
          
-                _log.info("Configuration "+i+", "+jConf.applicationType+", is done");
-        //  }
-        }*/
-         
-         
-    for (int i=1200; i<1211; i++) {
+    for (int i=0; i<11; i++) {
         _log.info("Extracting features from the configuration...");
         Set<String> strConfs = extractFeatures(list.get(i));
  
@@ -601,6 +570,9 @@ public class JHipsterTest extends FMLTest{
             GeneratorJhipsterConfiguration jhipGen = new GeneratorJhipsterConfiguration();
             jhipGen.generatorJhipster = jConf;
             String yorc = toJSON2(jhipGen);
+            _log.info(""+yorc);
+
+            
             Files.writeStringIntoFile(getjDirectory(jDirectory) + ".yo-rc.json", yorc);
             _log.info("JSON generated...");
              

@@ -43,10 +43,15 @@ public class ResultChecker {
 
 		//CHECK IF Server app generated successfully.
 		//OR Client app generated successfully.
-		Matcher m = Pattern.compile("((.*?)Server app generated successfully.)").matcher(text);
-		Matcher m2 = Pattern.compile("((.*?)Client app generated successfully.)").matcher(text);
 
-		while(m.find() | m2.find()) return true; 
+		Matcher m = Pattern.compile("((.*?)Server application generated successfully.)").matcher(text);
+		_log.info(m.find() );
+
+		Matcher m2 = Pattern.compile("((.*?)Client application generated successfully.)").matcher(text);
+		_log.info(m2.find() );
+
+
+		while(m.find() | m2.find()) {return true; }
 		return false;
 		} catch (Exception e){
 			return false;

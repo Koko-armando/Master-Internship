@@ -264,8 +264,10 @@ public class Oracle {
 	//public void genJHipsterVariants() throws Exception{
 	public static void main(String[] args) throws Exception{
 		//Folder i to j Oracle 
-		Integer jhipsterI = Integer.parseInt(args[0]);
-		Integer jhipsterJ = Integer.parseInt(args[1]);
+		Integer jhipsterI = Integer.parseInt("2");
+		Integer jhipsterJ = Integer.parseInt("99");
+		//Integer jhipsterI = Integer.parseInt(args[0]);
+				//Integer jhipsterJ = Integer.parseInt(args[1]);
 		
 		//GET ID OF SPREADSHEETS
 		Properties property = getProperties(PROPERTIES_FILE);
@@ -378,6 +380,7 @@ public class Oracle {
 	
 					if(resultChecker.checkGenerateApp("generate.log")){
 						generation =SUCCEED;
+
 						// Time to Generate
 						Long generationTimeLong = millisAfterGenerate - millis;
 						Double generationTimeDouble = generationTimeLong/1000.0;
@@ -410,7 +413,7 @@ public class Oracle {
 							cucumber= resultChecker.extractCucumber("test.log");
 	
 							//csvUtils = new CSVUtils(getjDirectory(jDirectory));
-							SpreadsheetUtils spreadsheetUtils = new SpreadsheetUtils(getjDirectory(jDirectory));
+							//SpreadsheetUtils spreadsheetUtils = new SpreadsheetUtils(getjDirectory(jDirectory));
 							
 							// JACOCO Coverage results are only available with Maven
 							if(buildTool.equals("\"maven\"")){
@@ -430,7 +433,7 @@ public class Oracle {
 							
 							//Extract CSV Coverage and write in the spreadsheet coverage
 							//Integer numberOfLineCoverage = SpreadsheetUtils.CheckNumberLineSpreadSheet(idSpreadsheet_coverage);
-							spreadsheetUtils.writeLinesCoverageCSV("jacoco.csv", idSpreadsheet_coverage, jDirectory, Id, i);
+							//spreadsheetUtils.writeLinesCoverageCSV("jacoco.csv", idSpreadsheet_coverage, jDirectory, Id, i);
 	
 							_log.info("Compilation success ! Trying to build the App...");
 	
@@ -447,15 +450,15 @@ public class Oracle {
 	
 							if(build.toString().equals(FAIL)) stacktracesBuild = resultChecker.extractStacktraces("build.log");
 							else {
-								protractor = resultChecker.extractProtractor("testProtractor.log");
+								//protractor = resultChecker.extractProtractor("testProtractor.log");
 								
 								String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
 								//CSVUtils.writeNewLineCSV("cucumber.csv", cucumberResults);
-								SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumber, cucumberResults, i);
+								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumber, cucumberResults, i);
 								
 								String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"false"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
 								//CSVUtils.writeNewLineCSV("cucumber.csv", cucumberResults);
-								SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_oracle, oracleResults, i*2);
+								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_oracle, oracleResults, i*2);
 								
 								buildTime = resultChecker.extractTime("build.log");	
 								String[] partsBuildWithoutDocker = buildTime.split(";");
@@ -463,6 +466,12 @@ public class Oracle {
 							}
 							
 							_log.info("Trying to build the App with Docker...");
+							
+							
+							
+							
+							
+							/*
 							
 							initialization(true, applicationType, authenticationType);
 							imageSize = new StringBuilder();
@@ -514,7 +523,13 @@ public class Oracle {
 							}
 							
 							_log.info("Cleaning up... Docker");
-							cleanUp(jDirectory,true);						
+							cleanUp(jDirectory,true);	*/	
+							
+							
+							
+							
+							
+							
 						} else{
 							_log.error("App Compilation Failed ...");
 							compile = FAIL;
@@ -533,7 +548,7 @@ public class Oracle {
 					_log.info("Writing into jhipster.csv");
 	
 					//WITH DOCKER
-					String docker = "true";
+					/*String docker = "true";
 	
 					if (stacktracesCompile.length() > 48000) stacktracesCompile = stacktracesCompile.substring(0, 48000);
 					if (stacktracesBuildWithDocker.length() > 48000) stacktracesBuildWithDocker = stacktracesBuildWithDocker.substring(0, 48000);
@@ -565,7 +580,7 @@ public class Oracle {
 					//write into CSV file
 					//CSVUtils.writeNewLineCSV("jhipster.csv",line2);
 					//write in the Spreadsheet
-					SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line2, i*2);
+					SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line2, i*2);*/
 				}
 				else {
 					_log.info("This configuration has been already tested");
@@ -585,7 +600,7 @@ public class Oracle {
 	/**
 	 * Create CSV BUGS 
 	 */
-	@Test
+/*	@Test
 	public void writeCSVBugs() throws Exception{
 		//boolean false = not check doublon , true yes
 		//CSVUtils.createBugsCSV("jhipster.csv", "bugs.csv",true);
@@ -595,5 +610,5 @@ public class Oracle {
 	public void testCSVmethod() throws Exception{
 		CSVUtils.createCSVFileJHipster("2wise.csv");
 		CSVUtils.createNwiseCSV("jhipster.csv","FM-3.6.1-refined.m.ca2.csv","2wise.csv");
-	}
+	}*/
 }
