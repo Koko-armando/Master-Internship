@@ -98,6 +98,7 @@ public class ThreadCheckBuild extends Thread {
 			if(buildSuccess){
 				_log.info("Build successful ! Trying to run tests...");
 				
+
 				if(database.equals("\"mysql\"") || database.equals("\"postgresql\"") 
 				|| database.equals("\"mongodb\"") || database.equals("\"cassandra\"")){
 					_log.info("Starting to populate the database");
@@ -106,9 +107,14 @@ public class ThreadCheckBuild extends Thread {
 					_log.info("Done");
 				}
 				_log.info("Running some tests...");
+				// a enlever....
+				killServer();
+
 				buildResult.delete(0,5);
 				buildResult.append("OK");
 				// if success: run Tests
+				
+				
 				if (!USE_DOCKER) startProcess(TEST_FILE);
 				else startProcess(DOCKER_TEST_FILE);
 				//Extract docker images size

@@ -1,7 +1,7 @@
 #!/bin/bash
 
-service mysql stop
-service cassandra stop
-service mongodb stop
+sudo service mysql stop
+sudo service cassandra stop
+sudo service mongodb stop
 service postgresql stop
 null

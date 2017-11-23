@@ -1,3 +1,3 @@
 #!/bin/bash
 
-yo jhipster >> generate.log 2>&1
+jhipster>> generate.log 2>&1

@@ -1,4 +1,4 @@
 #!/bin/bash
 
-service mongodb start
-mvn compile>> compile.log 2>&1
+sudo service mongodb start
+./mvnw compile>> compile.log 2>&1

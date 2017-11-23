@@ -1,4 +1,0 @@
-#!/bin/bash
-
-tar acf jhipster4366.tar.gz *.log
-gdrive upload jhipster4366.tar.gz

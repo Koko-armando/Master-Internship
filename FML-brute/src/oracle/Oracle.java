@@ -201,11 +201,11 @@ public class Oracle {
 		startProcess("./dockerStart.sh",getjDirectory(jDirectory));
 	}
 	
-	private static void oracleCopyJAR(String jDirectory){
+/*	private static void oracleCopyJAR(String jDirectory){
 		// Copy files for oracle database
 		startProcess("./oracleCopyJAR.sh",getjDirectory(jDirectory));
 	}
-	
+	*/
 	/**
 	 * Check If the file exist
 	 *  
@@ -260,14 +260,11 @@ public class Oracle {
 	/**
 	 * Generate & Build & Tests all variants of JHipster 3.6.1. 
 	 */
-	//@Test
-	//public void genJHipsterVariants() throws Exception{
 	public static void main(String[] args) throws Exception{
 		//Folder i to j Oracle 
-		Integer jhipsterI = Integer.parseInt("2");
-		Integer jhipsterJ = Integer.parseInt("99");
-		//Integer jhipsterI = Integer.parseInt(args[0]);
-				//Integer jhipsterJ = Integer.parseInt(args[1]);
+		Integer jhipsterI = Integer.parseInt("5");
+		Integer jhipsterJ = Integer.parseInt("30");
+		
 		
 		//GET ID OF SPREADSHEETS
 		Properties property = getProperties(PROPERTIES_FILE);
@@ -276,7 +273,7 @@ public class Oracle {
 		String idSpreadsheet_cucumber = property.getProperty("idSpreadsheetCucumber");
 		String idSpreadsheet_oracle = property.getProperty("idSpreadsheetOracle");
 		final String idSpreadsheet_cucumberDocker = property.getProperty("idSpreadsheetCucumberDocker");
-		
+
 		for (int i = jhipsterI;i<=jhipsterJ-1;i++){
 			_log.info("Starting treatment of JHipster n° "+i);
 
@@ -364,10 +361,10 @@ public class Oracle {
 				//check if the variant is present or not in the SpreadSheet and return the number of lines
 				Integer numberOfLine = SpreadsheetUtils.CheckNotExistLineSpreadSheet(idSpreadsheet_jhipster,yorc);
 	
-				//if(CSVUtils.CheckNotExistLineCSV("jhipster.csv", yorc))
 				// -1 : the yorc is already present
 				if(numberOfLine != -1)
-				{
+				{   
+					
 					_log.info("Copying node_modules...");
 					startProcess("./init.sh", getjDirectory(jDirectory));
 					_log.info("Generating the App..."); 
@@ -378,6 +375,9 @@ public class Oracle {
 	
 					_log.info("Checking the generation of the App...");
 	
+					
+					_log.info(resultChecker.checkGenerateApp("generate.log") );
+
 					if(resultChecker.checkGenerateApp("generate.log")){
 						generation =SUCCEED;
 
@@ -388,11 +388,11 @@ public class Oracle {
 						stacktracesGen = resultChecker.extractStacktraces("generate.log");
 						
 						//case of ORACLE copy jar 
-						if(prodDatabaseType.equals("\"oracle\"")|devDatabaseType.equals("\"oracle\"")){
+	/*					if(prodDatabaseType.equals("\"oracle\"")|devDatabaseType.equals("\"oracle\"")){
 							_log.info("Copy jar Oracle...");
 							oracleCopyJAR(jDirectory);
 						}
-	
+	*/
 						_log.info("Generation complete ! Trying to compile the App...");
 						compileApp(jDirectory);
 	
@@ -412,12 +412,13 @@ public class Oracle {
 							karmaJS = resultChecker.extractKarmaJS("testKarmaJS.log");
 							cucumber= resultChecker.extractCucumber("test.log");
 	
-							//csvUtils = new CSVUtils(getjDirectory(jDirectory));
-							//SpreadsheetUtils spreadsheetUtils = new SpreadsheetUtils(getjDirectory(jDirectory));
+							SpreadsheetUtils spreadsheetUtils = new SpreadsheetUtils(getjDirectory(jDirectory));
 							
 							// JACOCO Coverage results are only available with Maven
 							if(buildTool.equals("\"maven\"")){
 								_log.info("maven Coverage");
+								
+
 								coverageInstuctions= resultChecker.extractCoverageIntstructions("index.html");
 								coverageBranches = resultChecker.extractCoverageBranches("index.html");
 								coverageJSBranches = resultChecker.extractJSCoverageBranches(JS_COVERAGE_PATH);
@@ -428,12 +429,8 @@ public class Oracle {
 								coverageJSStatements = resultChecker.extractJSCoverageStatements(JS_COVERAGE_PATH_GRADLE);
 							}
 	
-							//Extract CSV Coverage Data and write in coverage.csv
-							//csvUtils.writeLinesCoverageCSV("jacoco.csv","coverageJACOCO.csv",jDirectory,Id);
 							
-							//Extract CSV Coverage and write in the spreadsheet coverage
-							//Integer numberOfLineCoverage = SpreadsheetUtils.CheckNumberLineSpreadSheet(idSpreadsheet_coverage);
-							//spreadsheetUtils.writeLinesCoverageCSV("jacoco.csv", idSpreadsheet_coverage, jDirectory, Id, i);
+							spreadsheetUtils.writeLinesCoverageCSV("jacoco.csv", idSpreadsheet_coverage, jDirectory, Id, i);
 	
 							_log.info("Compilation success ! Trying to build the App...");
 	
@@ -446,18 +443,16 @@ public class Oracle {
 							buildApp(jDirectory);
 							Thread.sleep(3000);
 							t2.done();
-							cleanUp(jDirectory,false);
+                            cleanUp(jDirectory,false);
 	
 							if(build.toString().equals(FAIL)) stacktracesBuild = resultChecker.extractStacktraces("build.log");
 							else {
 								//protractor = resultChecker.extractProtractor("testProtractor.log");
 								
 								String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
-								//CSVUtils.writeNewLineCSV("cucumber.csv", cucumberResults);
 								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumber, cucumberResults, i);
 								
 								String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"false"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
-								//CSVUtils.writeNewLineCSV("cucumber.csv", cucumberResults);
 								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_oracle, oracleResults, i*2);
 								
 								buildTime = resultChecker.extractTime("build.log");	
@@ -600,7 +595,7 @@ public class Oracle {
 	/**
 	 * Create CSV BUGS 
 	 */
-/*	@Test
+	@Test
 	public void writeCSVBugs() throws Exception{
 		//boolean false = not check doublon , true yes
 		//CSVUtils.createBugsCSV("jhipster.csv", "bugs.csv",true);
@@ -610,5 +605,5 @@ public class Oracle {
 	public void testCSVmethod() throws Exception{
 		CSVUtils.createCSVFileJHipster("2wise.csv");
 		CSVUtils.createNwiseCSV("jhipster.csv","FM-3.6.1-refined.m.ca2.csv","2wise.csv");
-	}*/
+	}
 }

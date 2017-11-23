@@ -116,9 +116,9 @@ public class JHipsterTest extends FMLTest{
               //+"!NoDB;"
               //+"!MySQL;"
               //+"!MsSQL;"
-              //+"!Oracle;"
+              +"!Oracle;"
               //+"!MariaDB;"
-              //+"!Oracle12c;"
+              +"!Oracle12c;"
               //+ "!MariaDBDev;"
               //+ "!MsSql;"
               //+ "!MySql;"
@@ -551,7 +551,7 @@ public class JHipsterTest extends FMLTest{
         Collections.shuffle(list);  
              
          
-    for (int i=0; i<11; i++) {
+    for (int i=0; i<40; i++) {
         _log.info("Extracting features from the configuration...");
         Set<String> strConfs = extractFeatures(list.get(i));
  

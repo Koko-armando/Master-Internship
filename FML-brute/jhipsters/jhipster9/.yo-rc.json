@@ -1,0 +1,38 @@
+{
+  "generator-jhipster": {
+    "baseName": "jhipster",
+    "packageName": "io.variability.jhipster",
+    "packageFolder": "io/variability/jhipster",
+    "authenticationType": "Oauth2",
+    "hibernateCache": "hazelcast",
+    "clusteredHttpSession": "false",
+    "websocket": "false",
+    "databaseType": "sql",
+    "devDatabaseType": "h2Memory",
+    "prodDatabaseType": "mysql",
+    "searchEngine": "searchEngine:elasticsearch",
+    "buildTool": "maven",
+    "applicationType": "monolith",
+    "testFrameworks": [
+      "protractor",
+      "gatling",
+      "cucumber"
+    ],
+    "jhipsterVersion": "4.8.2",
+    "clientFramework": "angular1",
+    "serviceDiscoveryType": false,
+    "installModules": false,
+    "useSass": true,
+    "messageBroker": "messageBroker:kafka",
+    "enableTranslation": true,
+    "nativeLanguage": "en",
+    "languages": [
+      "en",
+      "fr"
+    ],
+    "skipClient": false,
+    "skipServer": false,
+    "enableSocialSignIn": "no",
+    "enableSwaggerCodegen": "enableSwaggerCodegen:true"
+  }
+}
