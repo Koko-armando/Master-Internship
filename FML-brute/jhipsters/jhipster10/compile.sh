@@ -8,4 +8,4 @@ FLUSH TABLES;
 create database if not exists jhipster;
 \q
 EOF
-./mvnw compile>> compile.log 2>&1
+./gradlew compileJava>> compile.log 2>&1

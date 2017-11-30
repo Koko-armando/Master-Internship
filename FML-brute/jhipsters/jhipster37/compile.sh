@@ -1,11 +1,14 @@
 #!/bin/bash
 
-sudo service mysql restart
+sudo service  mssql-server restart
 sleep 45
-mysql -u root <<EOF
+sqlcmd -S localhost -U SA -P 'root4242.'<<EOF
 drop database if exists jhipster;
+  GO 
 FLUSH TABLES;
-create database if not exists jhipster;
+  GO 
+if not exists(SELECT 1 FROM sys.databases WHERE name = N'jhipster') create database jhipster;
+ GO 
 \q
 EOF
 ./mvnw compile>> compile.log 2>&1

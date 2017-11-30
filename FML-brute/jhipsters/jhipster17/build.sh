@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./gradlew -Pdev >> build.log 2>&1
+./gradlew -Pprod >> build.log 2>&1

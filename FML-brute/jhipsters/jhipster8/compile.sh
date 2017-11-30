@@ -7,4 +7,4 @@ create role jhipster login;
 create database jhipster;
 \q
 EOF
-./mvnw compile>> compile.log 2>&1
+./gradlew compileJava>> compile.log 2>&1

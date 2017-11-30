@@ -3,15 +3,12 @@
     "baseName": "jhipster",
     "packageName": "io.variability.jhipster",
     "packageFolder": "io/variability/jhipster",
-    "authenticationType": "session",
-    "hibernateCache": "ehcache",
-    "clusteredHttpSession": "false",
-    "websocket": "false",
+    "authenticationType": "oauth2",
+    "hibernateCache": "hazelcast",
     "databaseType": "sql",
     "devDatabaseType": "h2Disk",
-    "prodDatabaseType": "mssql",
-    "searchEngine": "searchEngine:elasticsearch",
-    "buildTool": "gradle",
+    "prodDatabaseType": "mariadb",
+    "buildTool": "maven",
     "applicationType": "monolith",
     "testFrameworks": [
       "gatling",
@@ -19,11 +16,9 @@
       "cucumber"
     ],
     "jhipsterVersion": "4.8.2",
-    "clientFramework": "angularX",
-    "serviceDiscoveryType": false,
+    "clientFramework": "angular1",
     "installModules": false,
-    "useSass": false,
-    "messageBroker": "messageBroker:kafka",
+    "useSass": true,
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": [
@@ -32,8 +27,12 @@
     ],
     "skipClient": false,
     "skipServer": false,
-    "enableSocialSignIn": "no",
-    "enableSwaggerCodegen": "enableSwaggerCodegen:true",
-    "rememberMeKey": "13e6029734fb9984533b9bb5c511bca6d624c6ed"
+    "enableSocialSignIn": false,
+    "enableSwaggerCodegen": false,
+    "serviceDiscoveryType": false,
+    "messageBroker": "kafka",
+    "searchEngine": "elasticsearch",
+    "websocket": false,
+    "clusteredHttpSession": "hazelcast"
   }
 }

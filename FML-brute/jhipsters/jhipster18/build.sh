@@ -1,3 +1,3 @@
 #!/bin/bash
 
-./mvnw -Pdev >> build.log 2>&1
+./mvnw -Pprod >> build.log 2>&1

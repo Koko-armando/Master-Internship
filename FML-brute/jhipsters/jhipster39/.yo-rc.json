@@ -3,27 +3,24 @@
     "baseName": "jhipster",
     "packageName": "io.variability.jhipster",
     "packageFolder": "io/variability/jhipster",
-    "authenticationType": "Oauth2",
-    "hibernateCache": "no",
-    "clusteredHttpSession": "false",
-    "websocket": "websocket:spring-websocket",
+    "serverPort": "8080",
+    "authenticationType": "jwt",
+    "hibernateCache": "hazelcast",
     "databaseType": "sql",
     "devDatabaseType": "h2Disk",
     "prodDatabaseType": "mariadb",
-    "searchEngine": "false",
-    "buildTool": "gradle",
-    "applicationType": "monolith",
+    "buildTool": "maven",
+    "jwtSecretKey": "d8837e4a671d25456432b55b1e4a99fe0356ed07",
+    "applicationType": "gateway",
     "testFrameworks": [
-      "gatling",
+      "cucumber",
       "protractor",
-      "cucumber"
+      "gatling"
     ],
     "jhipsterVersion": "4.8.2",
-    "clientFramework": "angularX",
-    "serviceDiscoveryType": false,
+    "clientFramework": "angular1",
     "installModules": false,
     "useSass": true,
-    "messageBroker": "false",
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": [
@@ -32,7 +29,12 @@
     ],
     "skipClient": false,
     "skipServer": false,
-    "enableSocialSignIn": "no",
-    "enableSwaggerCodegen": "no"
+    "enableSocialSignIn": false,
+    "enableSwaggerCodegen": true,
+    "serviceDiscoveryType": "consul",
+    "messageBroker": false,
+    "searchEngine": "elasticsearch",
+    "websocket": false,
+    "clusteredHttpSession": "hazelcast"
   }
 }

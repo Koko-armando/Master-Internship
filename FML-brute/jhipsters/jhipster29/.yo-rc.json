@@ -3,29 +3,22 @@
     "baseName": "jhipster",
     "packageName": "io.variability.jhipster",
     "packageFolder": "io/variability/jhipster",
-    "serverPort": "8080",
-    "authenticationType": "jwt",
-    "hibernateCache": "hazelcast",
-    "clusteredHttpSession": "false",
-    "websocket": "websocket:spring-websocket",
+    "authenticationType": "session",
+    "hibernateCache": "no",
     "databaseType": "sql",
-    "devDatabaseType": "mysql",
+    "devDatabaseType": "h2Disk",
     "prodDatabaseType": "mysql",
-    "searchEngine": "false",
-    "buildTool": "gradle",
-    "jwtSecretKey": "d8837e4a671d25456432b55b1e4a99fe0356ed07",
-    "applicationType": "gateway",
+    "buildTool": "maven",
+    "applicationType": "monolith",
     "testFrameworks": [
-      "cucumber",
+      "gatling",
       "protractor",
-      "gatling"
+      "cucumber"
     ],
     "jhipsterVersion": "4.8.2",
     "clientFramework": "angularX",
-    "serviceDiscoveryType": "eureka",
     "installModules": false,
     "useSass": true,
-    "messageBroker": "messageBroker:kafka",
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": [
@@ -34,7 +27,13 @@
     ],
     "skipClient": false,
     "skipServer": false,
-    "enableSocialSignIn": "no",
-    "enableSwaggerCodegen": "no"
+    "enableSocialSignIn": false,
+    "enableSwaggerCodegen": true,
+    "rememberMeKey": "13e6029734fb9984533b9bb5c511bca6d624c6ed",
+    "serviceDiscoveryType": false,
+    "messageBroker": "kafka",
+    "searchEngine": "elasticsearch",
+    "websocket": "spring-websocket",
+    "clusteredHttpSession": false
   }
 }

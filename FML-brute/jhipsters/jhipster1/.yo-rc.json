@@ -5,12 +5,9 @@
     "packageFolder": "io/variability/jhipster",
     "authenticationType": "jwt",
     "hibernateCache": "no",
-    "clusteredHttpSession": "clusteredHttpSession:hazelcast",
-    "websocket": "false",
     "databaseType": "sql",
-    "devDatabaseType": "postgresql",
-    "prodDatabaseType": "postgresql",
-    "searchEngine": "false",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mssql",
     "buildTool": "gradle",
     "jwtSecretKey": "d8837e4a671d25456432b55b1e4a99fe0356ed07",
     "applicationType": "monolith",
@@ -20,11 +17,9 @@
       "gatling"
     ],
     "jhipsterVersion": "4.8.2",
-    "clientFramework": "angularX",
-    "serviceDiscoveryType": false,
+    "clientFramework": "angular1",
     "installModules": false,
     "useSass": false,
-    "messageBroker": "messageBroker:kafka",
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": [
@@ -33,7 +28,12 @@
     ],
     "skipClient": false,
     "skipServer": false,
-    "enableSocialSignIn": "enableSocialSignIn :true",
-    "enableSwaggerCodegen": "no"
+    "enableSocialSignIn": true,
+    "enableSwaggerCodegen": false,
+    "serviceDiscoveryType": "eureka",
+    "messageBroker": false,
+    "searchEngine": false,
+    "websocket": false,
+    "clusteredHttpSession": "hazelcast"
   }
 }

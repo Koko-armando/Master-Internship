@@ -11,4 +11,4 @@ if not exists(SELECT 1 FROM sys.databases WHERE name = N'jhipster') create datab
  GO 
 \q
 EOF
-./mvnw compile>> compile.log 2>&1
+./gradlew compileJava>> compile.log 2>&1

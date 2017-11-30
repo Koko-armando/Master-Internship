@@ -1,4 +1,3 @@
-
 import static org.junit.Assert.assertTrue;
 import java.io.File;
 import java.lang.reflect.Field;
@@ -75,7 +74,7 @@ public class JHipsterTest extends FMLTest{
        // + "(!MicroserviceApplication & (!Uaa | !MicroserviceGateway ))-> !NoDB;"
        // + "!DataBaseType -> (SQL|Cassandra|MongoDB);"
         + "(Monolithic -> (False|Eureka)) ;"
-        + "((Monolithic & !Eureka) -> (JWT|HTTPSession|Oauth2)) ;"
+        + "(Monolithic -> !Uaa) ;"
         + "(((MicroserviceGateway | MicroserviceApplication)) -> (JWT | Uaa)) ;"
         + "(!MicroserviceApplication & (!Uaa | !MicroserviceGateway ))-> !NoDB;"
         + " Oauth2 -> (SQL | MongoDB);"
@@ -213,37 +212,33 @@ public class JHipsterTest extends FMLTest{
                     else if (jhipsterConf.applicationType.equals("gateway")  && jhipsterConf.authenticationType.equals("uaa")){jhipsterConf.skipUserManagement =true;}
                      
  
-            if(isIncluded("ClusteredHttpSession", strConfs).equals("true"))jhipsterConf.clusteredHttpSession = "clusteredHttpSession:hazelcast" ;
-            else jhipsterConf.clusteredHttpSession = "false";
+            if(isIncluded("ClusteredHttpSession", strConfs).equals("true"))jhipsterConf.getClustered("hazelcast");
+            else jhipsterConf.getClustered("false");
              
  
  
-            if(isIncluded("WebSocket", strConfs).equals("true")) jhipsterConf.websocket = "websocket:spring-websocket";
-            else jhipsterConf.websocket = "false";
+            if(isIncluded("WebSocket", strConfs).equals("true")) jhipsterConf.getWebSocket("spring-websocket");
+            else jhipsterConf.getWebSocket("false");
              
  
                  
-             if(isIncluded("SocialLogIn", strConfs).equals("true")) jhipsterConf.enableSocialSignIn ="enableSocialSignIn :true";
-             else jhipsterConf.enableSocialSignIn = "no";
+             if(isIncluded("SocialLogIn", strConfs).equals("true")) jhipsterConf.enableSocialSignIn =true;
+             else jhipsterConf.enableSocialSignIn = false;
               
  
- 
-            if ((isIncluded("MessageBroker", strConfs)).equals("true")) jhipsterConf.messageBroker =  "messageBroker:kafka";
-            else jhipsterConf.messageBroker = "false";
+            if ((isIncluded("MessageBroker", strConfs)).equals("true")) jhipsterConf.getMessageBroker("kafka");
+            else jhipsterConf.getMessageBroker("false");
              
  
  
-            if(isIncluded("SwaggerCodegen", strConfs).equals("true")) jhipsterConf.enableSwaggerCodegen = "enableSwaggerCodegen:true";
-            else jhipsterConf.enableSwaggerCodegen = "no";
+            if(isIncluded("SwaggerCodegen", strConfs).equals("true")) jhipsterConf.enableSwaggerCodegen = true;
+            else jhipsterConf.enableSwaggerCodegen = false;
              
  
- 
-            if(isIncluded("SearchEngine", strConfs).equals("true")) jhipsterConf.searchEngine = "searchEngine:elasticsearch";
-            else jhipsterConf.searchEngine = "false";
-             
- 
- 
-             
+            if(isIncluded("SearchEngine", strConfs).equals("true")) jhipsterConf.getSearchEngine("elasticsearch");
+            else jhipsterConf.getSearchEngine("false"); 
+            
+                  
         if (jhipsterConf.applicationType.equals("microservice") || jhipsterConf.applicationType.equals("uaa")) {
             jhipsterConf.skipClient = true;
             jhipsterConf.skipServer = false;
@@ -304,7 +299,57 @@ public class JHipsterTest extends FMLTest{
      
      
      
-   
+    private static String replace(String originalText,String subStringToFind, String subStringToReplaceWith) {
+        int s = 0; int e = 0;
+      StringBuffer newText = new StringBuffer();
+      while ((e = originalText.indexOf(subStringToFind, s)) >= 0) {
+                    newText.append(originalText.substring(s, e));
+                    newText.append(subStringToReplaceWith);
+                    s = e + subStringToFind.length();
+                 }
+
+                 newText.append(originalText.substring(s));
+                 return newText.toString();
+
+                } // end replace(String, String, String)
+ 
+    /*
+     * Give the real name of every feature depending of her values( string or boolean)
+     * 
+     */
+ 
+ private static String replaceALL(String chaine, JhipsterConfiguration jConf) {
+ 	    	
+  if (jConf.serviceDiscoveryBooleanValue==null)
+ 	     	 
+		 chaine=replace(chaine, "serviceDiscoveryStringValue", "serviceDiscoveryType"); 
+         else 
+        	 chaine= replace(chaine,"serviceDiscoveryBooleanValue", "serviceDiscoveryType");   
+         
+         if (jConf.BrokerBooleanValue==null)
+        	 chaine= replace(chaine,"BrokerStringValue", "messageBroker"); 
+             else 
+            	 chaine=replace(chaine,"BrokerBooleanValue", "messageBroker"); 
+         
+         if (jConf.cluteredBooleanValue==null)
+        	 chaine=replace(chaine,"cluteredStringValue", "clusteredHttpSession"); 
+             else 
+            	 chaine=replace(chaine,"cluteredBooleanValue", "clusteredHttpSession"); 
+         
+         
+         if (jConf.websocketBooleanValue==null)
+        	 chaine=replace(chaine,"websocketStringValue", "websocket"); 
+             else 
+            	 chaine=replace(chaine,"websocketBooleanValue", "websocket"); 
+         
+         if (jConf.SearchEngineBooleanValue==null)
+        	 chaine=replace(chaine,"SearchEngineStringValue", "searchEngine"); 
+             else 
+            	 chaine=replace(chaine,"SearchEngineBooleanValue", "searchEngine"); 
+        	   	
+         return chaine;
+}
+
      
      
      
@@ -326,10 +371,15 @@ public class JHipsterTest extends FMLTest{
         /*if (!Utils.testJson(gson.toJsonTree(jhipsterConf), new JsonChecker())){
             System.err.println("JSON parsed is wrong !!!");
         }*/
-        if (jhipsterConf.generatorJhipster.serviceDiscoveryType1==null)
-        return (gson.toJson(jhipsterConf)).replaceAll("serviceDiscoveryType2", "serviceDiscoveryType"); 
-        else 
-         return (gson.toJson(jhipsterConf)).replaceAll("serviceDiscoveryType1", "serviceDiscoveryType");   
+        
+        
+        return (replaceALL(gson.toJson(jhipsterConf), jhipsterConf.generatorJhipster));
+        
+       
+        
+       
+        
+       
     }
  
     /**
@@ -434,7 +484,7 @@ public class JHipsterTest extends FMLTest{
             case "PostgreSQL":              return "postgresql";
             case "HTTPSession":             return "session";
             case "Uaa":                     return "uaa";
-            case "OAuth2":                  return "oauth2";
+            case "Oauth2":                  return "oauth2";
             case "JWT":                     return "jwt";
             case "Gatling":                 return "gatling";
             case "Protractor":              return "protractor";
@@ -509,6 +559,13 @@ public class JHipsterTest extends FMLTest{
         Files.writeStringIntoFile(DIMACS_FILENAME, dimacsHipster.replace("XXXXXX", "" + nbClauses(n)));
     }
  
+    
+    
+    
+      
+    
+    
+    
      
     public static void main(String[] args) {
         JUnitCore jCore = new JUnitCore();
@@ -570,6 +627,10 @@ public class JHipsterTest extends FMLTest{
             GeneratorJhipsterConfiguration jhipGen = new GeneratorJhipsterConfiguration();
             jhipGen.generatorJhipster = jConf;
             String yorc = toJSON2(jhipGen);
+            
+     
+            
+            
             _log.info(""+yorc);
 
             

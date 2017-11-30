@@ -3,27 +3,23 @@
     "baseName": "jhipster",
     "packageName": "io.variability.jhipster",
     "packageFolder": "io/variability/jhipster",
-    "authenticationType": "session",
+    "authenticationType": "jwt",
     "hibernateCache": "infinispan",
-    "clusteredHttpSession": "false",
-    "websocket": "false",
     "databaseType": "sql",
     "devDatabaseType": "h2Memory",
-    "prodDatabaseType": "mysql",
-    "searchEngine": "searchEngine:elasticsearch",
-    "buildTool": "gradle",
+    "prodDatabaseType": "postgresql",
+    "buildTool": "maven",
+    "jwtSecretKey": "d8837e4a671d25456432b55b1e4a99fe0356ed07",
     "applicationType": "monolith",
     "testFrameworks": [
-      "protractor",
+      "gatling",
       "cucumber",
-      "gatling"
+      "protractor"
     ],
     "jhipsterVersion": "4.8.2",
-    "clientFramework": "angular1",
-    "serviceDiscoveryType": false,
+    "clientFramework": "angularX",
     "installModules": false,
-    "useSass": true,
-    "messageBroker": "false",
+    "useSass": false,
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": [
@@ -32,8 +28,12 @@
     ],
     "skipClient": false,
     "skipServer": false,
-    "enableSocialSignIn": "enableSocialSignIn :true",
-    "enableSwaggerCodegen": "enableSwaggerCodegen:true",
-    "rememberMeKey": "13e6029734fb9984533b9bb5c511bca6d624c6ed"
+    "enableSocialSignIn": true,
+    "enableSwaggerCodegen": true,
+    "serviceDiscoveryType": false,
+    "messageBroker": false,
+    "searchEngine": false,
+    "websocket": false,
+    "clusteredHttpSession": false
   }
 }

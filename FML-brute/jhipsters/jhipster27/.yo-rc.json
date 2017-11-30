@@ -3,36 +3,37 @@
     "baseName": "jhipster",
     "packageName": "io.variability.jhipster",
     "packageFolder": "io/variability/jhipster",
-    "serverPort": "8080",
-    "authenticationType": "uaa",
-    "hibernateCache": "hazelcast",
-    "clusteredHttpSession": "false",
-    "websocket": "false",
+    "authenticationType": "session",
+    "hibernateCache": "ehcache",
     "databaseType": "sql",
     "devDatabaseType": "postgresql",
     "prodDatabaseType": "postgresql",
-    "searchEngine": "searchEngine:elasticsearch",
     "buildTool": "maven",
-    "applicationType": "uaa",
+    "applicationType": "monolith",
     "testFrameworks": [
       "gatling",
-      "cucumber"
+      "cucumber",
+      "protractor"
     ],
     "jhipsterVersion": "4.8.2",
-    "clientFramework": "no",
-    "serviceDiscoveryType": "consul",
+    "clientFramework": "angularX",
     "installModules": false,
-    "useSass": false,
-    "messageBroker": "false",
+    "useSass": true,
     "enableTranslation": true,
     "nativeLanguage": "en",
     "languages": [
       "en",
       "fr"
     ],
-    "skipClient": true,
+    "skipClient": false,
     "skipServer": false,
-    "enableSocialSignIn": "no",
-    "enableSwaggerCodegen": "enableSwaggerCodegen:true"
+    "enableSocialSignIn": false,
+    "enableSwaggerCodegen": true,
+    "rememberMeKey": "13e6029734fb9984533b9bb5c511bca6d624c6ed",
+    "serviceDiscoveryType": false,
+    "messageBroker": false,
+    "searchEngine": "elasticsearch",
+    "websocket": false,
+    "clusteredHttpSession": false
   }
 }
