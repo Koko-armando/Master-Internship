@@ -110,17 +110,21 @@ public class JHipsterTest extends FMLTest{
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
              // +"!SQL;"
               //+"!Client;"
-             //+"!MongoDB;"
-              //+"!Cassandra;"
+             +"!MongoDB;"
+              +"!Cassandra;"
+              +"!Eureka;"
+              +"!MessageBroker;"
               //+"!NoDB;"
-              //+"!MySQL;"
-              //+"!MsSQL;"
               +"!Oracle;"
-              //+"!MariaDB;"
               +"!Oracle12c;"
-              //+ "!MariaDBDev;"
-              //+ "!MsSql;"
-              //+ "!MySql;"
+              +"!MariaDB;"
+              +"!MariaDBDev;"
+              +"!PostgreSQL;"
+              +"!PostgreSQLDev;"
+              +"!MsSQL;"
+              +"!MsSql;"
+              //+"!MySQL;"
+              //+"!MySql;"
                 
                 +")");
          
@@ -608,7 +612,7 @@ public class JHipsterTest extends FMLTest{
         Collections.shuffle(list);  
              
          
-    for (int i=0; i<40; i++) {
+    for (int i=0; i<1001; i++) {
         _log.info("Extracting features from the configuration...");
         Set<String> strConfs = extractFeatures(list.get(i));
  

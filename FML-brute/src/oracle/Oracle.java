@@ -97,6 +97,7 @@ public class Oracle {
 	 * @param system boolean type of the system (linux then true, else false)
 	 */
 	private static void compileApp(String jDirectory){
+		
 		startProcess("./compile.sh", JHIPSTERS_DIRECTORY+"/"+jDirectory);
 	}
 
@@ -262,8 +263,8 @@ public class Oracle {
 	 */
 	public static void main(String[] args) throws Exception{
 		//Folder i to j Oracle 
-		Integer jhipsterI = Integer.parseInt("5");
-		Integer jhipsterJ = Integer.parseInt("30");
+		Integer jhipsterI = Integer.parseInt("12");
+		Integer jhipsterJ = Integer.parseInt("1000");
 		
 		
 		//GET ID OF SPREADSHEETS
@@ -273,6 +274,9 @@ public class Oracle {
 		String idSpreadsheet_cucumber = property.getProperty("idSpreadsheetCucumber");
 		String idSpreadsheet_oracle = property.getProperty("idSpreadsheetOracle");
 		final String idSpreadsheet_cucumberDocker = property.getProperty("idSpreadsheetCucumberDocker");
+		
+		
+		CSVUtils.createCSVFileJHipster("jhipster.csv");
 
 		for (int i = jhipsterI;i<=jhipsterJ-1;i++){
 			_log.info("Starting treatment of JHipster n° "+i);
@@ -319,6 +323,10 @@ public class Oracle {
 			String useSass= DEFAULT_NOT_FOUND_VALUE;
 			String enableTranslation = DEFAULT_NOT_FOUND_VALUE;
 			String testFrameworks =DEFAULT_NOT_FOUND_VALUE;
+            String messageBroker=DEFAULT_NOT_FOUND_VALUE;
+            String serviceDiscoveryType=DEFAULT_NOT_FOUND_VALUE;
+            String enableSwaggerCodegen=DEFAULT_NOT_FOUND_VALUE;
+            String clientFramework=DEFAULT_NOT_FOUND_VALUE;
 			//Tests part
 			String resultsTest= DEFAULT_NOT_FOUND_VALUE;
 			String cucumber= DEFAULT_NOT_FOUND_VALUE;
@@ -349,7 +357,11 @@ public class Oracle {
 			if (object.get("enableSocialSignIn") != null) enableSocialSignIn = object.get("enableSocialSignIn").toString();
 			if (object.get("useSass") != null) useSass = object.get("useSass").toString();
 			if (object.get("enableTranslation") != null) enableTranslation = object.get("enableTranslation").toString();
-			if (object.get("testFrameworks") != null) testFrameworks = object.get("testFrameworks").toString();
+			if (object.get("testFrameworks") != null) testFrameworks = object.get("testFrameworks").toString();			
+			if (object.get("messageBroker") != null) messageBroker = object.get("messageBroker").toString();
+			if (object.get("serviceDiscoveryType") != null) serviceDiscoveryType = object.get("serviceDiscoveryType").toString();
+			if (object.get("enableSwaggerCodegen") != null) enableSwaggerCodegen = object.get("enableSwaggerCodegen").toString();
+			if (object.get("clientFramework") != null) clientFramework = object.get("clientFramework").toString();
 
 			_log.info("Check if this config isn't done yet...");
 
@@ -365,8 +377,11 @@ public class Oracle {
 				if(numberOfLine != -1)
 				{   
 					
+					
+					
+					
 					_log.info("Copying node_modules...");
-					startProcess("./init.sh", getjDirectory(jDirectory));
+				//	startProcess("./init.sh", getjDirectory(jDirectory));
 					_log.info("Generating the App..."); 
 					long millis = System.currentTimeMillis();
 					generateApp(jDirectory);
@@ -375,8 +390,8 @@ public class Oracle {
 	
 					_log.info("Checking the generation of the App...");
 	
-					
-					_log.info(resultChecker.checkGenerateApp("generate.log") );
+		//////////////			
+			
 
 					if(resultChecker.checkGenerateApp("generate.log")){
 						generation =SUCCEED;
@@ -385,15 +400,11 @@ public class Oracle {
 						Long generationTimeLong = millisAfterGenerate - millis;
 						Double generationTimeDouble = generationTimeLong/1000.0;
 						generationTime = generationTimeDouble.toString();
-						stacktracesGen = resultChecker.extractStacktraces("generate.log");
-						
-						//case of ORACLE copy jar 
-	/*					if(prodDatabaseType.equals("\"oracle\"")|devDatabaseType.equals("\"oracle\"")){
-							_log.info("Copy jar Oracle...");
-							oracleCopyJAR(jDirectory);
-						}
-	*/
+						//stacktracesGen = resultChecker.extractStacktraces("generate.log");
+			
 						_log.info("Generation complete ! Trying to compile the App...");
+		
+					
 						compileApp(jDirectory);
 	
 						if(resultChecker.checkCompileApp("compile.log")){
@@ -447,7 +458,7 @@ public class Oracle {
 	
 							if(build.toString().equals(FAIL)) stacktracesBuild = resultChecker.extractStacktraces("build.log");
 							else {
-								//protractor = resultChecker.extractProtractor("testProtractor.log");
+								protractor = resultChecker.extractProtractor("testProtractor.log");
 								
 								String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
 								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumber, cucumberResults, i);
@@ -459,10 +470,10 @@ public class Oracle {
 								String[] partsBuildWithoutDocker = buildTime.split(";");
 								buildTime = partsBuildWithoutDocker[0]; // only two parts with Docker
 							}
-							
+						
 							_log.info("Trying to build the App with Docker...");
 							
-							
+						
 							
 							
 							
@@ -522,7 +533,7 @@ public class Oracle {
 							
 							
 							
-							
+									
 							
 							
 						} else{
@@ -541,10 +552,10 @@ public class Oracle {
 	
 					publish(jDirectory);
 					_log.info("Writing into jhipster.csv");
-	
+
 					//WITH DOCKER
-					/*String docker = "true";
-	
+					String docker = "true";
+	/*
 					if (stacktracesCompile.length() > 48000) stacktracesCompile = stacktracesCompile.substring(0, 48000);
 					if (stacktracesBuildWithDocker.length() > 48000) stacktracesBuildWithDocker = stacktracesBuildWithDocker.substring(0, 48000);
 					if (stacktracesBuild.length() > 48000) stacktracesBuild = stacktracesBuild.substring(0, 48000);
@@ -561,22 +572,27 @@ public class Oracle {
 					//CSVUtils.writeNewLineCSV("jhipster.csv",line);
 					//write in the Spreadsheet
 					SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line, i*2-1);
-	
+	*/
+					
+					
 					//WITHOUT DOCKER
 					docker = "false";
 				
 					//New line for file csv without Docker
-					String[] line2 = {Id,jDirectory,docker,applicationType,authenticationType,hibernateCache,clusteredHttpSession,
-							websocket,databaseType,devDatabaseType,prodDatabaseType,buildTool,searchEngine,enableSocialSignIn,useSass,enableTranslation,testFrameworks,
+					String[] line2 = {Id,jDirectory,docker,applicationType,serviceDiscoveryType,authenticationType,hibernateCache,clusteredHttpSession,
+							websocket,messageBroker,databaseType,devDatabaseType,prodDatabaseType,buildTool,searchEngine,enableSocialSignIn,enableSwaggerCodegen,clientFramework,useSass,enableTranslation,testFrameworks,
 							generation,stacktracesGen,generationTime,compile,stacktracesCompile,compileTime,build.toString(),stacktracesBuild,"NOTDOCKER",
 							buildTime,"NOTDOCKER",resultsTest,cucumber,karmaJS,protractor,
 							coverageInstuctions,coverageBranches, coverageJSStatements, coverageJSBranches};
-	
+						
 					//write into CSV file
-					//CSVUtils.writeNewLineCSV("jhipster.csv",line2);
+					CSVUtils.writeNewLineCSV("jhipster.csv",line2);
 					//write in the Spreadsheet
-					SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line2, i*2);*/
+					//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line2, i*2);
+						
 				}
+				
+				
 				else {
 					_log.info("This configuration has been already tested");
 					try{

@@ -32,7 +32,7 @@ public class ScriptsBuilder {
 		generateKillScript(jDirectory);
 		generateOracleDatabaseScript(jconf, jDirectory);
 		generatePublishScript(jDirectory);
-
+		generatedKafkaStopScript(jconf,jDirectory);
 		if (jconf.testFrameworks.length>0) {
 			generateTestScript(jconf, jDirectory);
 			generateTestDockerScript(jconf, jDirectory);
@@ -53,7 +53,8 @@ public class ScriptsBuilder {
 				+ property.getProperty("cassandraStop")
 				+ property.getProperty("mongodbStop")
 				+ property.getProperty("postgreStop")
-		        + property.getProperty("mssql");
+		        + property.getProperty("mssql")
+		        + property.getProperty("zookeeperStop");
 
 		Files.writeStringIntoFile(jDirectory+"/stopDB.sh", script);
 	}
@@ -100,6 +101,8 @@ public class ScriptsBuilder {
 		case "mssql":	script += getMssqlScript();
 		break;
 		}
+		
+		if(jconf.BrokerStringValue!=null) script += getKafkaScript(); 
 		
 		
 		if(jconf.buildTool.equals("maven")) script+= "./mvnw compile";
@@ -297,10 +300,13 @@ public class ScriptsBuilder {
 	}
 	
 	
+	
+	
 	public void generatePublishScript(String jDirectory){
 		String script = "#!/bin/bash\n\n";
 		
-		script += "tar acf "+jDirectory+".tar.gz *.log\n";
+		script += "tar acf "+jDirectory+".tar.gz *.log .yo-rc.json\n";
+		script +="cp "+jDirectory+".tar.gz  ../../../../\n";
 		script += "gdrive upload "+jDirectory+".tar.gz";
 		
 		Files.writeStringIntoFile(getjDirectory(jDirectory)+"publish.sh", script);
@@ -343,6 +349,36 @@ public class ScriptsBuilder {
 	}
 
 
+	
+	
+
+
+	private void generatedKafkaStopScript(JhipsterConfiguration jconf, String jDirectory) {
+		String script = "#!/bin/bash\n\n";
+		Properties properties = getProperties(PROPERTIES_FILE);
+			
+		if(jconf.BrokerStringValue!=null){
+		script += properties.getProperty("kafkaStop")+"\n";
+		Files.writeStringIntoFile(getjDirectory(jDirectory)+"kafkaStop.sh", script);
+		}
+	
+	}
+	
+
+	/**
+	 * Retrieve kafka Server for apache kafka  related scripts in the System.properties file.
+	 * 
+	 * @return kafka start script
+	 */
+		
+	private String getKafkaScript() {
+		Properties properties = getProperties(PROPERTIES_FILE);
+		return properties.getProperty("kafkaService");
+
+	}
+	
+	
+	
 	/**
 	 * Retrieve MySQL related scripts in the System.properties file.
 	 * 

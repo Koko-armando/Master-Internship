@@ -46,11 +46,17 @@ public class CSVUtils {
 	 * @param List of lines)
 	 *  
 	 */
+	
+	 
+	
+	
+	
+	
 	public static void createCSVFileJHipster(String filename) throws IOException {
 		CSVWriter writer = new CSVWriter(new FileWriter(filename), ';');
-		String[] heads = {"Id","JHipsterRegister","Docker","applicationType","authenticationType","hibernateCache",
-				"clusteredHttpSession","websocket","databaseType","devDatabaseType","prodDatabaseType",
-				"buildTool","searchEngine","enableSocialSignIn","useSass","enableTranslation","testFrameworks","Generate",
+		String[] heads = {"Id","JHipsterRegister","Docker","applicationType","serviceDiscoveryType","authenticationType","hibernateCache",
+				"clusteredHttpSession","websocket","messageBroker","databaseType","devDatabaseType","prodDatabaseType",
+				"buildTool","searchEngine","enableSocialSignIn","enableSwaggerCodegen","clientFramework","useSass","enableTranslation","testFrameworks","Generate",
 				"Log-Gen","TimeToGenerate","Compile","Log-Compile","TimeToCompile","Build","Log-Build", "TimeToBuildDockerPackage", "TimeToBuild", 
 				"ImageDocker","TestsResult", "Cucumber","KarmaJS","Gatling","Protractor","CoverageInstructions","CoverageBranches","JSStatementsCoverage","JSBranchesCoverage"};
 		writer.writeNext(heads);
