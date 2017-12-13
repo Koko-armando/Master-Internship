@@ -32,7 +32,9 @@ public class ScriptsBuilder {
 		generateKillScript(jDirectory);
 		generateOracleDatabaseScript(jconf, jDirectory);
 		generatePublishScript(jDirectory);
-		generatedKafkaStopScript(jconf,jDirectory);
+		
+		//generatedZookeeperStopScript(jconf,jDirectory);
+		//generatedKafkaStopScript(jconf,jDirectory);
 		if (jconf.testFrameworks.length>0) {
 			generateTestScript(jconf, jDirectory);
 			generateTestDockerScript(jconf, jDirectory);
@@ -53,8 +55,7 @@ public class ScriptsBuilder {
 				+ property.getProperty("cassandraStop")
 				+ property.getProperty("mongodbStop")
 				+ property.getProperty("postgreStop")
-		        + property.getProperty("mssql")
-		        + property.getProperty("zookeeperStop");
+		        + property.getProperty("mssql");
 
 		Files.writeStringIntoFile(jDirectory+"/stopDB.sh", script);
 	}
@@ -101,8 +102,7 @@ public class ScriptsBuilder {
 		case "mssql":	script += getMssqlScript();
 		break;
 		}
-		
-		if(jconf.BrokerStringValue!=null) script += getKafkaScript(); 
+		// si le service Brocker avec Kafka est actif alors generer le script pour demarrer le server zookeeper et ensuite kafka dans cette ordre
 		
 		
 		if(jconf.buildTool.equals("maven")) script+= "./mvnw compile";
@@ -120,6 +120,27 @@ public class ScriptsBuilder {
 	 */
 	private void generateBuildScript(JhipsterConfiguration jconf, String jDirectory){
 		String script = "#!/bin/bash\n\n";			
+		
+		
+		if(jconf.serviceDiscoveryBooleanValue==null) {
+			
+			if (jconf.serviceDiscoveryStringValue.equals("consul"))script +=getConsulScript();
+			
+			
+		}
+		
+		
+		
+		if (jconf.applicationType.equals("\"gateway\"") || jconf.applicationType.equals("\"microservice\"") || jconf.applicationType.equals("\"uaa\"")||((jconf.serviceDiscoveryBooleanValue==null )&& (jconf.serviceDiscoveryStringValue.equals("eureka"))))
+		script+= getRegistryScript();
+		
+        if(jconf.BrokerStringValue!=null) script += getKafkaScript(); 
+		
+		if (jconf.SearchEngineBooleanValue==null)script += getElasticsearchScript();
+		
+		if (jconf.enableSwaggerCodegen.equals(true)) script+=getSwaggerScript();
+		
+		
 		// TODO See if we include dev profile for all variants
 		if(jconf.devDatabaseType.startsWith("h2")){
 			if(jconf.buildTool.equals("maven")) script += "./mvnw -Pdev ";
@@ -352,7 +373,7 @@ public class ScriptsBuilder {
 	
 	
 
-
+/*
 	private void generatedKafkaStopScript(JhipsterConfiguration jconf, String jDirectory) {
 		String script = "#!/bin/bash\n\n";
 		Properties properties = getProperties(PROPERTIES_FILE);
@@ -364,20 +385,77 @@ public class ScriptsBuilder {
 	
 	}
 	
+	
+	private void generatedZookeeperStopScript(JhipsterConfiguration jconf, String jDirectory) {
+		String script = "#!/bin/bash\n\n";
+		Properties properties = getProperties(PROPERTIES_FILE);
+			
+		if(jconf.BrokerStringValue!=null){
+		script += properties.getProperty("zookeeperStop")+"\n";
+		Files.writeStringIntoFile(getjDirectory(jDirectory)+"zookeeperStop.sh", script);
+		}
+	
+	}*/
+	
+	
+	
+	
 
 	/**
 	 * Retrieve kafka Server for apache kafka  related scripts in the System.properties file.
 	 * 
 	 * @return kafka start script
 	 */
-		
+	
 	private String getKafkaScript() {
 		Properties properties = getProperties(PROPERTIES_FILE);
-		return properties.getProperty("kafkaService");
+		return properties.getProperty("registryService");
 
 	}
 	
 	
+	private String getRegistryScript() {
+		
+		Properties properties = getProperties(PROPERTIES_FILE);
+		return properties.getProperty("kafkaService");
+
+		
+		
+		
+	}
+	
+	private String getElasticsearchScript() {
+		
+		Properties properties = getProperties(PROPERTIES_FILE);
+		return properties.getProperty("elasticService");
+		
+		
+	}
+	
+	private String getConsulScript() {
+		
+		Properties properties = getProperties(PROPERTIES_FILE);
+		return properties.getProperty("consulService");
+				
+	}
+	
+	private String getSwaggerScript() {
+		
+		Properties properties = getProperties(PROPERTIES_FILE);
+		return properties.getProperty("swaggerService");	
+	}
+	
+	
+	
+	
+	
+	/*
+	private String getZookeeperScript(){
+		Properties properties = getProperties(PROPERTIES_FILE);
+		return properties.getProperty("zookeeperService");
+		
+		
+	}*/
 	
 	/**
 	 * Retrieve MySQL related scripts in the System.properties file.

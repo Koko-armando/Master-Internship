@@ -151,10 +151,10 @@ public class Oracle {
 	private static void initialization(boolean docker, String applicationType, String authentication){
 		_log.info("Starting intialization scripts...");
 		if(!docker){
-			if (applicationType.equals("\"gateway\"") || applicationType.equals("\"microservice\"") || applicationType.equals("\"uaa\"")){
+		//	if (applicationType.equals("\"gateway\"") || applicationType.equals("\"microservice\"") || applicationType.equals("\"uaa\"")){
 				// Start Jhipster Registry
-				threadRegistry = new Thread(new ThreadRegistry(projectDirectory+"/JHipster-Registry/"));
-				threadRegistry.start();
+				//threadRegistry = new Thread(new ThreadRegistry(projectDirectory+"/JHipster-Registry/"));
+				//threadRegistry.start();
 
 				// Let Jhipster Registry initiate before attempting to launch UAA Server...
 				try{Thread.sleep(30000);}
@@ -168,7 +168,7 @@ public class Oracle {
 					try{Thread.sleep(5000);}
 					catch(Exception e){_log.error(e.getMessage());}
 				}
-			}
+		//	}
 		} else{
 			// STOP DB FOR DOCKER
 			startProcess("./stopDB.sh","");
@@ -263,9 +263,10 @@ public class Oracle {
 	 */
 	public static void main(String[] args) throws Exception{
 		//Folder i to j Oracle 
-		Integer jhipsterI = Integer.parseInt("12");
+		Integer jhipsterI = Integer.parseInt("0");
 		Integer jhipsterJ = Integer.parseInt("1000");
-		
+		Integer i = Integer.parseInt(args[0]);
+
 		
 		//GET ID OF SPREADSHEETS
 		Properties property = getProperties(PROPERTIES_FILE);
@@ -276,9 +277,9 @@ public class Oracle {
 		final String idSpreadsheet_cucumberDocker = property.getProperty("idSpreadsheetCucumberDocker");
 		
 		
-		CSVUtils.createCSVFileJHipster("jhipster.csv");
+		//CSVUtils.createCSVFileJHipster("jhipster.csv");
 
-		for (int i = jhipsterI;i<=jhipsterJ-1;i++){
+	//	for (int i = jhipsterI;i<=jhipsterJ-1;i++){
 			_log.info("Starting treatment of JHipster n° "+i);
 
 			String jDirectory = "jhipster"+i;
@@ -381,7 +382,7 @@ public class Oracle {
 					
 					
 					_log.info("Copying node_modules...");
-				//	startProcess("./init.sh", getjDirectory(jDirectory));
+					startProcess("./init.sh", getjDirectory(jDirectory));
 					_log.info("Generating the App..."); 
 					long millis = System.currentTimeMillis();
 					generateApp(jDirectory);
@@ -603,7 +604,7 @@ public class Oracle {
 					}
 				}
 			}
-		}
+		//}
 		_log.info("Termination...");
 		termination();
 	}

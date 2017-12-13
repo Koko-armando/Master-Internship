@@ -49,7 +49,6 @@ public class JhipsterConfiguration {
 
     String  websocketStringValue=null;
     Boolean websocketBooleanValue=null;
-    String clientPackageManager="npm";
     String  cluteredStringValue=null;
     Boolean cluteredBooleanValue=null;
     

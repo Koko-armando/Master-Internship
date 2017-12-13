@@ -1,25 +1,27 @@
-'use strict';
-var S3 = require('./s3.js'),
-    Rds = require('./rds.js'),
-    chalk = require('chalk'),
-    Eb = require('./eb.js');
+const S3 = require('./s3.js');
+const Rds = require('./rds.js');
+const shelljs = require('shelljs');
+const Eb = require('./eb.js');
 
-var Aws, generator;
+let Aws;
+let generator;
 
-var AwsFactory = module.exports = function AwsFactory(generatorRef) {
+const AwsFactory = module.exports = function AwsFactory(generatorRef, cb) {
+    generator = generatorRef;
     try {
-        Aws = require('aws-sdk');
-        generator = generatorRef;
+        Aws = require('aws-sdk'); // eslint-disable-line
+        cb();
     } catch (e) {
-        generator.env.error(chalk.red(
-            'You don\'t have the AWS SDK installed. Please install it in the JHipster generator directory.\n\n') +
-            chalk.yellow('WINDOWS\n') +
-            chalk.green('cd %USERPROFILE%\\AppData\\Roaming\\npm\\node_modules\\generator-jhipster\n' +
-            'npm install aws-sdk progress node-uuid\n\n') +
-            chalk.yellow('LINUX / MAC\n') +
-            chalk.green('cd /usr/local/lib/node_modules/generator-jhipster\n' +
-            'npm install aws-sdk progress node-uuid')
-        );
+        generator.log('Installing AWS dependencies into your JHipster folder');
+        let installCommand = 'yarn add aws-sdk progress uuid --modules-folder node_modules/generator-jhipster/node_modules';
+        if (generator.config.get('clientPackageManager') === 'npm') {
+            installCommand = 'npm install aws-sdk progress uuid --prefix node_modules/generator-jhipster';
+        }
+        shelljs.exec(installCommand, { silent: true }, (code, msg, err) => {
+            if (code !== 0) generator.error(`Something went wrong while installing:\n${err}`);
+            Aws = require('aws-sdk'); // eslint-disable-line
+            cb();
+        });
     }
 };
 

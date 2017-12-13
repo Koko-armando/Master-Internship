@@ -110,19 +110,20 @@ public class JHipsterTest extends FMLTest{
         //+++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
              // +"!SQL;"
               //+"!Client;"
-             +"!MongoDB;"
-              +"!Cassandra;"
-              +"!Eureka;"
-              +"!MessageBroker;"
+             //+"!Eureka;"
+              //+"!Consul;"
+             //+"!MessageBroker;"
+             //+"!MongoDB;"
+              //+"!Cassandra;"
               //+"!NoDB;"
               +"!Oracle;"
               +"!Oracle12c;"
-              +"!MariaDB;"
-              +"!MariaDBDev;"
-              +"!PostgreSQL;"
-              +"!PostgreSQLDev;"
-              +"!MsSQL;"
-              +"!MsSql;"
+              //+"!MariaDB;"
+              //+"!MariaDBDev;"
+              //+"!PostgreSQL;"
+              //+"!PostgreSQLDev;"
+              //+"!MsSQL;"
+              //+"!MsSql;"
               //+"!MySQL;"
               //+"!MySql;"
                 
@@ -642,16 +643,17 @@ public class JHipsterTest extends FMLTest{
             _log.info("JSON generated...");
              
             _log.info("Generating scripts...");
-            SCRIPT_BUILDER.generateScripts(jConf, jDirectory);
+           SCRIPT_BUILDER.generateScripts(jConf, jDirectory);
             _log.info("Scripts generated...");
-     
+
             _log.info("Configuration "+i+", "+jConf.applicationType+", is done"); 
             _log.info("Observation: "+ jConf.toString() );
 
-             
+
              
         }       
-         
+	CSVUtils.createCSVFileJHipster("jhipster.csv");
+   
          
          
          

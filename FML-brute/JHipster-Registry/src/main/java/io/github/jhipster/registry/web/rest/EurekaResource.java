@@ -10,19 +10,23 @@ import com.netflix.eureka.registry.PeerAwareInstanceRegistry;
 import com.netflix.eureka.registry.PeerAwareInstanceRegistryImpl;
 import com.netflix.eureka.resources.StatusResource;
 import com.netflix.eureka.util.StatusInfo;
-import io.github.jhipster.registry.web.rest.dto.EurekaDTO;
+import io.github.jhipster.registry.web.rest.vm.EurekaVM;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpStatus;
-import org.springframework.http.MediaType;
 import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RestController;
 
 import java.net.URI;
 import java.net.URISyntaxException;
-import java.util.*;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.LinkedHashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Controller for viewing Eureka data.
@@ -36,14 +40,12 @@ public class EurekaResource {
     /**
      * GET  /eureka/applications : get Eureka applications information
      */
-    @RequestMapping(value = "/eureka/applications",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/eureka/applications")
     @Timed
-    public ResponseEntity<EurekaDTO> eureka() {
-        EurekaDTO eurekaDTO = new EurekaDTO();
-        eurekaDTO.setApplications(getApplications());
-        return new ResponseEntity<>(eurekaDTO, HttpStatus.OK);
+    public ResponseEntity<EurekaVM> eureka() {
+        EurekaVM eurekaVM = new EurekaVM();
+        eurekaVM.setApplications(getApplications());
+        return new ResponseEntity<>(eurekaVM, HttpStatus.OK);
     }
 
     private List<Map<String, Object>> getApplications() {
@@ -53,14 +55,15 @@ public class EurekaResource {
             LinkedHashMap<String, Object> appData = new LinkedHashMap<>();
             apps.add(appData);
             appData.put("name", app.getName());
-            List<Map<String, String>> instances = new ArrayList<>();
+            List<Map<String, Object>> instances = new ArrayList<>();
             for (InstanceInfo info : app.getInstances()) {
-                Map<String, String> instance = new HashMap<>();
+                Map<String, Object> instance = new HashMap<>();
                 instance.put("instanceId", info.getInstanceId());
                 instance.put("homePageUrl", info.getHomePageUrl());
                 instance.put("healthCheckUrl", info.getHealthCheckUrl());
                 instance.put("statusPageUrl", info.getStatusPageUrl());
                 instance.put("status", info.getStatus().name());
+                instance.put("metadata", info.getMetadata());
                 instances.add(instance);
             }
             appData.put("instances", instances);
@@ -71,22 +74,20 @@ public class EurekaResource {
     /**
      * GET  /eureka/lastn : get Eureka registrations
      */
-    @RequestMapping(value = "/eureka/lastn",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/eureka/lastn")
     @Timed
     public ResponseEntity<Map<String, Map<Long, String>>> lastn() {
         Map<String, Map<Long, String>> lastn = new HashMap<>();
         PeerAwareInstanceRegistryImpl registry = (PeerAwareInstanceRegistryImpl) getRegistry();
         Map<Long, String> canceledMap = new HashMap<>();
-        registry.getLastNCanceledInstances().stream().forEach(
+        registry.getLastNCanceledInstances().forEach(
             canceledInstance -> {
                 canceledMap.put(canceledInstance.first(), canceledInstance.second());
             }
         );
         lastn.put("canceled", canceledMap);
         Map<Long, String> registeredMap = new HashMap<>();
-        registry.getLastNRegisteredInstances().stream().forEach(
+        registry.getLastNRegisteredInstances().forEach(
             registeredInstance -> {
                 registeredMap.put(registeredInstance.first(), registeredInstance.second());
             }
@@ -98,13 +99,11 @@ public class EurekaResource {
     /**
      * GET  /eureka/replicas : get Eureka replicas
      */
-    @RequestMapping(value = "/eureka/replicas",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/eureka/replicas")
     @Timed
     public ResponseEntity<List<String>> replicas() {
         List<String> replicas = new ArrayList<>();
-        getServerContext().getPeerEurekaNodes().getPeerNodesView().stream().forEach(
+        getServerContext().getPeerEurekaNodes().getPeerNodesView().forEach(
             node -> {
                 try {
                     // The URL is parsed in order to remove login/password information
@@ -122,15 +121,13 @@ public class EurekaResource {
     /**
      * GET  /eureka/status : get Eureka status
      */
-    @RequestMapping(value = "/eureka/status",
-        method = RequestMethod.GET,
-        produces = MediaType.APPLICATION_JSON_VALUE)
+    @GetMapping("/eureka/status")
     @Timed
-    public ResponseEntity<EurekaDTO> eurekaStatus() {
+    public ResponseEntity<EurekaVM> eurekaStatus() {
 
-        EurekaDTO eurekaDTO = new EurekaDTO();
-        eurekaDTO.setStatus(getEurekaStatus());
-        return new ResponseEntity<>(eurekaDTO, HttpStatus.OK);
+        EurekaVM eurekaVM = new EurekaVM();
+        eurekaVM.setStatus(getEurekaStatus());
+        return new ResponseEntity<>(eurekaVM, HttpStatus.OK);
     }
 
     private Map<String, Object> getEurekaStatus() {
@@ -158,15 +155,14 @@ public class EurekaResource {
         StatusInfo statusInfo;
         try {
             statusInfo = new StatusResource().getStatusInfo();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             log.error(e.getMessage());
             statusInfo = StatusInfo.Builder.newBuilder().isHealthy(false).build();
         }
-        if(statusInfo !=null && statusInfo.getGeneralStats() !=null) {
+        if (statusInfo != null && statusInfo.getGeneralStats() != null) {
             model.put("generalStats", statusInfo.getGeneralStats());
         }
-        if(statusInfo !=null && statusInfo.getInstanceInfo() !=null) {
+        if (statusInfo != null && statusInfo.getInstanceInfo() != null) {
             InstanceInfo instanceInfo = statusInfo.getInstanceInfo();
             Map<String, String> instanceMap = new HashMap<>();
             instanceMap.put("ipAddr", instanceInfo.getIPAddr());

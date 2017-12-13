@@ -1,10 +1,15 @@
 package io.github.jhipster.registry.web.rest;
 
-import java.util.Collections;
-import javax.inject.Inject;
-import javax.servlet.http.HttpServletResponse;
-import javax.validation.Valid;
+import com.codahale.metrics.annotation.Timed;
+import com.fasterxml.jackson.annotation.JsonProperty;
 
+import io.github.jhipster.registry.config.Constants;
+import io.github.jhipster.registry.security.jwt.JWTConfigurer;
+import io.github.jhipster.registry.security.jwt.TokenProvider;
+import io.github.jhipster.registry.web.rest.vm.LoginVM;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.springframework.context.annotation.Profile;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -12,40 +17,74 @@ import org.springframework.security.authentication.UsernamePasswordAuthenticatio
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.AuthenticationException;
 import org.springframework.security.core.context.SecurityContextHolder;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RestController;
 
-import com.codahale.metrics.annotation.Timed;
+import javax.servlet.http.HttpServletResponse;
+import javax.validation.Valid;
+import java.util.Collections;
 
-import io.github.jhipster.registry.security.jwt.JWTConfigurer;
-import io.github.jhipster.registry.security.jwt.TokenProvider;
-import io.github.jhipster.registry.web.rest.dto.LoginDTO;
-
+/**
+ * Controller to authenticate users.
+ */
 @RestController
 @RequestMapping("/api")
+@Profile("!" + Constants.PROFILE_OAUTH2)
 public class UserJWTController {
 
-    @Inject
-    private TokenProvider tokenProvider;
+    private final Logger log = LoggerFactory.getLogger(UserJWTController.class);
 
-    @Inject
-    private AuthenticationManager authenticationManager;
+    private final TokenProvider tokenProvider;
 
-    @RequestMapping(value = "/authenticate", method = RequestMethod.POST)
+    private final AuthenticationManager authenticationManager;
+
+    public UserJWTController(TokenProvider tokenProvider, AuthenticationManager authenticationManager) {
+        this.tokenProvider = tokenProvider;
+        this.authenticationManager = authenticationManager;
+    }
+
+    @PostMapping("/authenticate")
     @Timed
-    public ResponseEntity<?> authorize(@Valid @RequestBody LoginDTO loginDTO, HttpServletResponse response) {
+    public ResponseEntity authorize(@Valid @RequestBody LoginVM loginVM, HttpServletResponse response) {
 
         UsernamePasswordAuthenticationToken authenticationToken =
-            new UsernamePasswordAuthenticationToken(loginDTO.getUsername(), loginDTO.getPassword());
+            new UsernamePasswordAuthenticationToken(loginVM.getUsername(), loginVM.getPassword());
 
         try {
             Authentication authentication = this.authenticationManager.authenticate(authenticationToken);
             SecurityContextHolder.getContext().setAuthentication(authentication);
-            boolean rememberMe = (loginDTO.isRememberMe() == null) ? false : loginDTO.isRememberMe();
+            boolean rememberMe = (loginVM.isRememberMe() == null) ? false : loginVM.isRememberMe();
             String jwt = tokenProvider.createToken(authentication, rememberMe);
             response.addHeader(JWTConfigurer.AUTHORIZATION_HEADER, "Bearer " + jwt);
             return ResponseEntity.ok(new JWTToken(jwt));
-        } catch (AuthenticationException exception) {
-            return new ResponseEntity<>(Collections.singletonMap("AuthenticationException",exception.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
+        } catch (AuthenticationException ae) {
+            log.trace("Authentication exception trace: {}", ae);
+            return new ResponseEntity<>(Collections.singletonMap("AuthenticationException",
+                ae.getLocalizedMessage()), HttpStatus.UNAUTHORIZED);
         }
     }
+
+    /**
+     * Object to return as body in JWT Authentication.
+     */
+    static class JWTToken {
+
+        private String idToken;
+
+        JWTToken(String idToken) {
+            this.idToken = idToken;
+        }
+
+        @JsonProperty("id_token")
+        String getIdToken() {
+            return idToken;
+        }
+
+        void setIdToken(String idToken) {
+            this.idToken = idToken;
+        }
+    }
+
 }

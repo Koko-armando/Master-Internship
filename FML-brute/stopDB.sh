@@ -2,6 +2,6 @@
 
 sudo service mysql stop
 sudo service cassandra stop
-sudo service mongodb stop
+sudo service mongod stop
 service postgresql stop
-nullnull
+null

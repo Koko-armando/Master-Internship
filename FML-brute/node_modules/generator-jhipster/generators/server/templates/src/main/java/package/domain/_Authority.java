@@ -1,9 +1,27 @@
+<%#
+ Copyright 2013-2017 the original author or authors from the JHipster project.
+
+ This file is part of the JHipster project, see http://www.jhipster.tech/
+ for more information.
+
+ Licensed under the Apache License, Version 2.0 (the "License");
+ you may not use this file except in compliance with the License.
+ You may obtain a copy of the License at
+
+      http://www.apache.org/licenses/LICENSE-2.0
+
+ Unless required by applicable law or agreed to in writing, software
+ distributed under the License is distributed on an "AS IS" BASIS,
+ WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+ See the License for the specific language governing permissions and
+ limitations under the License.
+-%>
 package <%=packageName%>.domain;
 
-<% if (hibernateCache != 'no' && databaseType == 'sql') { %>import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;<% } %><% if (databaseType == 'mongodb') { %>
+<% if (hibernateCache !== 'no' && databaseType === 'sql') { %>import org.hibernate.annotations.Cache;
+import org.hibernate.annotations.CacheConcurrencyStrategy;<% } %><% if (databaseType === 'mongodb') { %>
 import org.springframework.data.annotation.Id;
-import org.springframework.data.mongodb.core.mapping.Document;<% } %><% if (databaseType == 'sql') { %>
+import org.springframework.data.mongodb.core.mapping.Document;<% } %><% if (databaseType === 'sql') { %>
 import javax.persistence.Entity;
 import javax.persistence.Id;
 import javax.persistence.Table;
@@ -14,10 +32,12 @@ import java.io.Serializable;
 
 /**
  * An authority (a security role) used by Spring Security.
- */<% if (databaseType == 'sql') { %>
+ */<% if (databaseType === 'sql') { %>
 @Entity
-@Table(name = "jhi_authority")<% if (hibernateCache != 'no') { %>
-@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)<% } %><% } %><% if (databaseType == 'mongodb') { %>
+@Table(name = "jhi_authority")
+<%_ if (hibernateCache !== 'no') { if (hibernateCache === 'infinispan') { _%>
+@Cache(usage = CacheConcurrencyStrategy.READ_WRITE) <%_ } else { _%>
+@Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)<%_ } } _%><% } %><% if (databaseType === 'mongodb') { %>
 @Document(collection = "jhi_authority")<% } %>
 public class Authority implements Serializable {
 
@@ -25,7 +45,7 @@ public class Authority implements Serializable {
 
     @NotNull
     @Size(min = 0, max = 50)
-    @Id<% if (databaseType == 'sql') { %>
+    @Id<% if (databaseType === 'sql') { %>
     @Column(length = 50)<% } %>
     private String name;
 
@@ -48,11 +68,7 @@ public class Authority implements Serializable {
 
         Authority authority = (Authority) o;
 
-        if (name != null ? !name.equals(authority.name) : authority.name != null) {
-            return false;
-        }
-
-        return true;
+        return !(name != null ? !name.equals(authority.name) : authority.name != null);
     }
 
     @Override

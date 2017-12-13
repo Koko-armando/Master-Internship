@@ -1,27 +1,27 @@
-FROM java:openjdk-8-jdk-alpine
-
-# Add OpenSSH
-RUN apk update && apk add openssh
-
-# add jhipster-registry source
-ADD pom.xml mvnw /code/
-ADD src /code/src
-ADD .mvn /code/.mvn
-RUN chmod +x /code/mvnw
-
-# package the application and delete all lib
-RUN cd /code/ && \
-    ./mvnw package && \
+FROM openjdk:8 as builder
+ADD . /code/
+RUN \
+    cd /code/ && \
+    rm -Rf target node_modules && \
+    chmod +x /code/mvnw && \
+    sleep 1 && \
+    ./mvnw package -Pprod -DskipTests && \
     mv /code/target/*.war /jhipster-registry.war && \
-    rm -Rf /root/.m2/wrapper/ && \
-    rm -Rf /root/.m2/repository/
+    rm -Rf /code/ /root/.m2 /root/.cache /tmp/*
 
-RUN sh -c 'touch /jhipster-registry.war'
+FROM openjdk:8-jre-alpine
+ENV SPRING_OUTPUT_ANSI_ENABLED=ALWAYS \
+    JAVA_OPTS="" \
+    SPRING_PROFILES_ACTIVE=prod,native \
+    GIT_URI=https://github.com/jhipster/jhipster-registry/ \
+    GIT_SEARCH_PATHS=central-config
 EXPOSE 8761
-VOLUME /tmp
+RUN mkdir /target && \
+    chmod g+rwx /target
+CMD java \
+        ${JAVA_OPTS} -Djava.security.egd=file:/dev/./urandom \
+        -jar /jhipster-registry.war \
+        --spring.cloud.config.server.git.uri=${GIT_URI} \
+        --spring.cloud.config.server.git.search-paths=${GIT_SEARCH_PATHS}
 
-ENV SPRING_PROFILES_ACTIVE=prod,native
-ENV GIT_URI=https://github.com/jhipster/jhipster-registry/
-ENV GIT_SEARCH_PATHS=central-config
-
-CMD ["java","-Djava.security.egd=file:/dev/./urandom","-jar","/jhipster-registry.war","--spring.cloud.config.server.git.uri=${GIT_URI}","--spring.cloud.config.server.git.search-paths=${GIT_SEARCH_PATHS}"]
+COPY --from=builder /jhipster-registry.war .
