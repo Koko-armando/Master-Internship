@@ -32,6 +32,8 @@ public class ThreadCheckBuild extends Thread {
 	private volatile boolean isDone = false;
 	private static final String TEST_FILE = "./test.sh";
 	private static final String DOCKER_TEST_FILE = "./testDocker.sh";
+	private static final String STOP_SERVICES = "./StopServices.sh";
+
 	private final String database;
 	
 	private final String GECKODRIVER_PATH = System.getProperty("user.dir") + "/geckodriver";
@@ -131,8 +133,13 @@ public class ThreadCheckBuild extends Thread {
 				buildResult.append("KO");
 				// Kill
 				killServer();
+				
 				isDone = true;
 			}
+			
+			startProcess(STOP_SERVICES);
+
+			
 		}
 	}
 

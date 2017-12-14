@@ -157,8 +157,8 @@ public class Oracle {
 				//threadRegistry.start();
 
 				// Let Jhipster Registry initiate before attempting to launch UAA Server...
-				try{Thread.sleep(30000);}
-				catch(Exception e){_log.error(e.getMessage());}
+				//try{Thread.sleep(30000);}
+				//catch(Exception e){_log.error(e.getMessage());}
 
 				if(authentication.equals("\"uaa\"")){
 					// Start UAA Server
@@ -168,12 +168,12 @@ public class Oracle {
 					try{Thread.sleep(5000);}
 					catch(Exception e){_log.error(e.getMessage());}
 				}
+				
 		//	}
-		} else{
+		//} else{
 			// STOP DB FOR DOCKER
-			startProcess("./stopDB.sh","");
-		}
-		_log.info("Oracle intialized !");
+					}
+		startProcess("./stopDB.sh","");
 	}
 
 	/**
@@ -475,10 +475,7 @@ public class Oracle {
 							_log.info("Trying to build the App with Docker...");
 							
 						
-							
-							
-							
-							/*
+					/* Code Docker		
 							
 							initialization(true, applicationType, authenticationType);
 							imageSize = new StringBuilder();
@@ -530,9 +527,9 @@ public class Oracle {
 							}
 							
 							_log.info("Cleaning up... Docker");
-							cleanUp(jDirectory,true);	*/	
+							cleanUp(jDirectory,true);		
 							
-							
+							*/
 							
 									
 							
@@ -562,17 +559,17 @@ public class Oracle {
 					if (stacktracesBuild.length() > 48000) stacktracesBuild = stacktracesBuild.substring(0, 48000);
 					
 					//New line for file csv With Docker
-					String[] line = {Id,jDirectory,docker,applicationType,authenticationType,hibernateCache,clusteredHttpSession,
-							websocket,databaseType,devDatabaseType,prodDatabaseType,buildTool,searchEngine,enableSocialSignIn,useSass,enableTranslation,testFrameworks,
+					String[] line = {Id,jDirectory,docker,applicationType,serviceDiscoveryType,authenticationType,hibernateCache,clusteredHttpSession,
+							websocket,messageBroker,databaseType,devDatabaseType,prodDatabaseType,buildTool,searchEngine,enableSocialSignIn,enableSwaggerCodegen,clientFramework,useSass,enableTranslation,testFrameworks,
 							generation,stacktracesGen,generationTime,compile,stacktracesCompile,compileTime,buildWithDocker.toString(),
 							stacktracesBuildWithDocker,buildTimeWithDockerPackage,buildTimeWithDocker,imageSize.toString(),
 							resultsTest,cucumber,karmaJS,protractorDocker,coverageInstuctions,coverageBranches,
 							coverageJSStatements, coverageJSBranches};
 	
 					//write into CSV file
-					//CSVUtils.writeNewLineCSV("jhipster.csv",line);
+					CSVUtils.writeNewLineCSV("jhipster.csv",line);
 					//write in the Spreadsheet
-					SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line, i*2-1);
+					//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line, i*2-1);
 	*/
 					
 					

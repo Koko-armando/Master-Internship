@@ -32,6 +32,7 @@ public class ScriptsBuilder {
 		generateKillScript(jDirectory);
 		generateOracleDatabaseScript(jconf, jDirectory);
 		generatePublishScript(jDirectory);
+		generateStopServicesScript(jDirectory);
 		
 		//generatedZookeeperStopScript(jconf,jDirectory);
 		//generatedKafkaStopScript(jconf,jDirectory);
@@ -42,6 +43,31 @@ public class ScriptsBuilder {
 		// TODO Alter if dev and prod profiles
 		generateEntitiesScript(jDirectory,jconf.prodDatabaseType);
 	}
+	
+	
+	
+	
+	
+	public void generateStopServicesScript(String jDirectory){
+		Properties property = getProperties(PROPERTIES_FILE);
+		String script = "#!/bin/bash\n\n"
+				+ property.getProperty("dockerServicesStop")+"\n"
+				+ property.getProperty("dockerRemoveAll")+"\n";
+				//+ property.getProperty("dockerRemoveImages");
+		
+		
+				/*+ property.getProperty("registryServiceStop")
+				+ property.getProperty("elasticSearchStop")
+				+ property.getProperty("mysqlServiceStop")
+				+ property.getProperty("mssqlServiceStop")
+				+ property.getProperty("cassandraServiceStop")
+				+ property.getProperty("mongoDBServiceStop")
+				+ property.getProperty("mariaDBServiceStop")
+		        + property.getProperty("postgresServiceStop");*/
+		
+		Files.writeStringIntoFile(getjDirectory(jDirectory)+"StopServices.sh", script);
+	}
+
 
 	/**
 	 * Generate the script to stop all databases services.
@@ -55,7 +81,8 @@ public class ScriptsBuilder {
 				+ property.getProperty("cassandraStop")
 				+ property.getProperty("mongodbStop")
 				+ property.getProperty("postgreStop")
-		        + property.getProperty("mssql");
+		        + property.getProperty("mssqlStop")
+		        +property.getProperty("kafkaStop");
 
 		Files.writeStringIntoFile(jDirectory+"/stopDB.sh", script);
 	}
@@ -125,20 +152,28 @@ public class ScriptsBuilder {
 		if(jconf.serviceDiscoveryBooleanValue==null) {
 			
 			if (jconf.serviceDiscoveryStringValue.equals("consul"))script +=getConsulScript();
-			
-			
-		}
+			if (jconf.serviceDiscoveryStringValue.equals("eureka")) script+= getRegistryScript();
+			}
 		
 		
-		
-		if (jconf.applicationType.equals("\"gateway\"") || jconf.applicationType.equals("\"microservice\"") || jconf.applicationType.equals("\"uaa\"")||((jconf.serviceDiscoveryBooleanValue==null )&& (jconf.serviceDiscoveryStringValue.equals("eureka"))))
-		script+= getRegistryScript();
+
 		
         if(jconf.BrokerStringValue!=null) script += getKafkaScript(); 
 		
 		if (jconf.SearchEngineBooleanValue==null)script += getElasticsearchScript();
 		
 		if (jconf.enableSwaggerCodegen.equals(true)) script+=getSwaggerScript();
+		
+		
+		
+		if(jconf.prodDatabaseType.equals("msssql"))script+=getMssqlDScript();
+		
+		if(jconf.prodDatabaseType.equals( "mariadb"))   script+=getMariaDBScript() ;
+		if(jconf.prodDatabaseType.equals("postgresql")) script+=getPostgresDScript();
+		if(jconf.prodDatabaseType.equals("cassandra"))  script+=getCassandraDScript();
+		if(jconf.prodDatabaseType.equals("mongodb"))    script+=getMongoDBScript();
+		if(jconf.prodDatabaseType.equals("mysql"))      script+=getMysqlDScript();
+		
 		
 		
 		// TODO See if we include dev profile for all variants
@@ -250,7 +285,7 @@ public class ScriptsBuilder {
 	private void generateDockerStartScript(String jDirectory, JhipsterConfiguration jconf){
 		Properties properties = getProperties(PROPERTIES_FILE);
 		String script = "#!/bin/bash\n\n";
-		if(jconf.databaseType.equals("cassandra")) script += properties.getProperty("cassandraMigration")+" >> cassandraMigration.log 2>&1";
+		//if(jconf.databaseType.equals("cassandra")) script += properties.getProperty("cassandraMigration")+" >> cassandraMigration.log 2>&1";
 		// Packaging
 		if(jconf.buildTool.equals("maven")) script += properties.getProperty("mavenDockerPackage");
 		else script += properties.getProperty("gradleDockerPackage");
@@ -286,16 +321,19 @@ public class ScriptsBuilder {
 				+ " >> dockerStop.log 2>&1\n";
 		// Stop database container
 		switch (jconf.prodDatabaseType){
-		case "mysql": 	script += properties.getProperty("dockerStopMysql");
+		case "mysql": 	script += properties.getProperty("mysqlServiceStop");
 		break;
-		case "mongodb": script += properties.getProperty("dockerStopMongo");
+		case "mongodb": script += properties.getProperty("mongoDBServiceStop");
 		break;
-		case "cassandra": 	script += properties.getProperty("dockerStopCassandra");
+		case "cassandra": 	script += properties.getProperty("cassandraServiceStop");
 		break;
-		case "postgresql": 	script += properties.getProperty("dockerStopPostgre");
+		case "postgresql": 	script += properties.getProperty("postgresServiceStop");
 		break;
-		case "mariadb":		script += properties.getProperty("dockerStopMaria");
+		case "mariadb":		script += properties.getProperty("mariaDBServiceStop");
 		break;
+		case "mssql":		script += properties.getProperty("mssqlServiceStop");
+		break;
+		
 		}
 		script += " >> dockerStop.log 2>&1\n";
 		// Remove all Docker images
@@ -373,30 +411,6 @@ public class ScriptsBuilder {
 	
 	
 
-/*
-	private void generatedKafkaStopScript(JhipsterConfiguration jconf, String jDirectory) {
-		String script = "#!/bin/bash\n\n";
-		Properties properties = getProperties(PROPERTIES_FILE);
-			
-		if(jconf.BrokerStringValue!=null){
-		script += properties.getProperty("kafkaStop")+"\n";
-		Files.writeStringIntoFile(getjDirectory(jDirectory)+"kafkaStop.sh", script);
-		}
-	
-	}
-	
-	
-	private void generatedZookeeperStopScript(JhipsterConfiguration jconf, String jDirectory) {
-		String script = "#!/bin/bash\n\n";
-		Properties properties = getProperties(PROPERTIES_FILE);
-			
-		if(jconf.BrokerStringValue!=null){
-		script += properties.getProperty("zookeeperStop")+"\n";
-		Files.writeStringIntoFile(getjDirectory(jDirectory)+"zookeeperStop.sh", script);
-		}
-	
-	}*/
-	
 	
 	
 	
@@ -445,17 +459,39 @@ public class ScriptsBuilder {
 		return properties.getProperty("swaggerService");	
 	}
 	
-	
-	
-	
-	
-	/*
-	private String getZookeeperScript(){
+private String getPostgresDScript() {
+		
 		Properties properties = getProperties(PROPERTIES_FILE);
-		return properties.getProperty("zookeeperService");
-		
-		
-	}*/
+		return properties.getProperty("postgresServiceStart");	
+	}
+private String getMongoDBScript() {
+	
+	Properties properties = getProperties(PROPERTIES_FILE);
+	return properties.getProperty("mongodbServiceStart");	
+}
+private String getCassandraDScript() {
+	
+	Properties properties = getProperties(PROPERTIES_FILE);
+	return properties.getProperty("cassandraServiceStart");	
+}	
+private String getMysqlDScript() {
+	
+	Properties properties = getProperties(PROPERTIES_FILE);
+	return properties.getProperty("mysqlServiceStart");	
+}
+private String getMariaDBScript() {
+	
+	Properties properties = getProperties(PROPERTIES_FILE);
+	return properties.getProperty("mariaDBServiceStart");
+}
+private String getMssqlDScript() {
+	
+	Properties properties = getProperties(PROPERTIES_FILE);
+	return properties.getProperty("mssqlServiceStart");	
+}
+
+
+
 	
 	/**
 	 * Retrieve MySQL related scripts in the System.properties file.
