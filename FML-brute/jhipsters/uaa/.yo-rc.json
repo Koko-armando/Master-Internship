@@ -1,21 +1,31 @@
 {
   "generator-jhipster": {
-    "jhipsterVersion": "3.6.1",
+    "promptValues": {
+      "packageName": "com.application.server"
+    },
+    "jhipsterVersion": "4.8.2",
     "baseName": "uaa",
-    "packageName": "io.variability.jhipster",
-    "packageFolder": "io/variability/jhipster",
+    "packageName": "com.application.server",
+    "packageFolder": "com/application/server",
     "serverPort": "9999",
     "authenticationType": "uaa",
     "hibernateCache": "no",
-    "databaseType": "mongodb",
-    "devDatabaseType": "mongodb",
-    "prodDatabaseType": "mongodb",
-    "searchEngine": "no",
+    "clusteredHttpSession": false,
+    "websocket": false,
+    "databaseType": "sql",
+    "devDatabaseType": "h2Disk",
+    "prodDatabaseType": "mysql",
+    "searchEngine": false,
+    "messageBroker": false,
+    "serviceDiscoveryType": false,
     "buildTool": "maven",
+    "enableSocialSignIn": false,
+    "enableSwaggerCodegen": false,
     "enableTranslation": false,
     "applicationType": "uaa",
     "testFrameworks": [],
     "jhiPrefix": "jhi",
-    "skipClient": true
+    "skipClient": true,
+    "clientPackageManager": "yarn"
   }
 }

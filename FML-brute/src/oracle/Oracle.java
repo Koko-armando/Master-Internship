@@ -44,13 +44,18 @@ public class Oracle {
 	private static final String SUCCEED ="OK";
 	private static final String FAIL="KO";
 	private static final String PROPERTIES_FILE = "System.properties";
+	private static final String START_SERVICES = "./startServices.sh";
+	private static final String STOP_DATABASE = "./stopDB.sh";
+	private static final String STOP_SERVICES = "./StopServices.sh";
+
+
 	
 	private static ResultChecker resultChecker = null;
 	private static CSVUtils csvUtils = null;
 
 	private static Thread threadRegistry;
 	private static Thread threadUAA;
-
+	private static Thread threadService;
 	private static void startProcess(String fileName, String desiredDirectory){
 		Process process = null;
 		try{
@@ -148,7 +153,7 @@ public class Oracle {
 	 * 		- Start Jhipster-Registry (in case of Microservices)
 	 *  
 	 */
-	private static void initialization(boolean docker, String applicationType, String authentication){
+	private static void initialization(boolean docker, String applicationType, String authentication,String jDirectory){
 		_log.info("Starting intialization scripts...");
 		if(!docker){
 		//	if (applicationType.equals("\"gateway\"") || applicationType.equals("\"microservice\"") || applicationType.equals("\"uaa\"")){
@@ -173,7 +178,18 @@ public class Oracle {
 		//} else{
 			// STOP DB FOR DOCKER
 					}
-		startProcess("./stopDB.sh","");
+		_log.info("Stop database services......");
+		startProcess(STOP_DATABASE,"");
+		_log.info("Data base services are stopped !  Trying to Start Docker services......");
+		
+		threadService = new Thread(new ThreadDockerServices(getjDirectory(jDirectory)));
+		threadService.start();
+		try{Thread.sleep(30000);}
+		catch(Exception e){_log.error(e.getMessage());}
+		threadService.stop();
+		_log.info("Docker Services Started succefully......");
+
+
 	}
 
 	/**
@@ -181,7 +197,8 @@ public class Oracle {
 	 */
 	private static void termination(){
 		try{
-			threadRegistry.interrupt();
+		//	threadRegistry.interrupt();
+			threadService.interrupt();
 			threadUAA.interrupt();
 		} catch (Exception e){
 			_log.error(e.getMessage());
@@ -447,7 +464,8 @@ public class Oracle {
 							_log.info("Compilation success ! Trying to build the App...");
 	
 							// Building without Docker
-							initialization(false, applicationType, authenticationType);
+							initialization(false, applicationType, authenticationType,jDirectory);
+							Thread.sleep(3000);
 							ThreadCheckBuild t2 = new ThreadCheckBuild(getjDirectory(jDirectory), false, "build.log",imageSize,build, prodDatabaseType);
 							t2.start();
 							_log.info("Trying to build the App without Docker...");
@@ -455,6 +473,7 @@ public class Oracle {
 							buildApp(jDirectory);
 							Thread.sleep(3000);
 							t2.done();
+						
                             cleanUp(jDirectory,false);
 	
 							if(build.toString().equals(FAIL)) stacktracesBuild = resultChecker.extractStacktraces("build.log");
@@ -471,7 +490,9 @@ public class Oracle {
 								String[] partsBuildWithoutDocker = buildTime.split(";");
 								buildTime = partsBuildWithoutDocker[0]; // only two parts with Docker
 							}
-						
+							_log.info("Try to stop Doker Services....");	
+							startProcess(STOP_SERVICES,getjDirectory(jDirectory));
+							_log.info("Doker Services are stopped !");	
 							_log.info("Trying to build the App with Docker...");
 							
 						

@@ -32,7 +32,6 @@ public class ThreadCheckBuild extends Thread {
 	private volatile boolean isDone = false;
 	private static final String TEST_FILE = "./test.sh";
 	private static final String DOCKER_TEST_FILE = "./testDocker.sh";
-	private static final String STOP_SERVICES = "./StopServices.sh";
 
 	private final String database;
 	
@@ -50,6 +49,7 @@ public class ThreadCheckBuild extends Thread {
 	
 	public void done(){
 		isDone = true;
+		_log.error("ThreadCheckBuild is done");
 	}
 	
 	
@@ -137,10 +137,10 @@ public class ThreadCheckBuild extends Thread {
 				isDone = true;
 			}
 			
-			startProcess(STOP_SERVICES);
-
 			
 		}
+		
+		
 	}
 
 	

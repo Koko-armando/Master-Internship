@@ -33,6 +33,7 @@ public class ScriptsBuilder {
 		generateOracleDatabaseScript(jconf, jDirectory);
 		generatePublishScript(jDirectory);
 		generateStopServicesScript(jDirectory);
+		generateStartServicesScript(jconf, jDirectory);
 		
 		//generatedZookeeperStopScript(jconf,jDirectory);
 		//generatedKafkaStopScript(jconf,jDirectory);
@@ -139,17 +140,13 @@ public class ScriptsBuilder {
 		Files.writeStringIntoFile(getjDirectory(jDirectory)+"compile.sh", script);
 	}
 
-	/**
-	 * Generate the script to build the application without the use of Docker.
-	 * 
-	 * @param jconf JHipster configuration to build.
-	 * @param jDirectory Directory where the script must be generated.
-	 */
-	private void generateBuildScript(JhipsterConfiguration jconf, String jDirectory){
-		String script = "#!/bin/bash\n\n";			
+	private void generateStartServicesScript(JhipsterConfiguration jconf, String jDirectory) {
+		
+		String script = "#!/bin/bash\n\n";
 		
 		
-		if(jconf.serviceDiscoveryBooleanValue==null) {
+		
+if(jconf.serviceDiscoveryBooleanValue==null) {
 			
 			if (jconf.serviceDiscoveryStringValue.equals("consul"))script +=getConsulScript();
 			if (jconf.serviceDiscoveryStringValue.equals("eureka")) script+= getRegistryScript();
@@ -158,25 +155,48 @@ public class ScriptsBuilder {
 		
 
 		
-        if(jconf.BrokerStringValue!=null) script += getKafkaScript(); 
+        if(jconf.BrokerBooleanValue==null) script += getKafkaScript(); 
 		
 		if (jconf.SearchEngineBooleanValue==null)script += getElasticsearchScript();
 		
 		if (jconf.enableSwaggerCodegen.equals(true)) script+=getSwaggerScript();
 		
-		
+		if(jconf.authenticationType.equals("uaa")) script+=getUaalaucherScript();
 		
 		if(jconf.prodDatabaseType.equals("msssql"))script+=getMssqlDScript();
 		
 		if(jconf.prodDatabaseType.equals( "mariadb"))   script+=getMariaDBScript() ;
+		
 		if(jconf.prodDatabaseType.equals("postgresql")) script+=getPostgresDScript();
+		
 		if(jconf.prodDatabaseType.equals("cassandra"))  script+=getCassandraDScript();
+		
 		if(jconf.prodDatabaseType.equals("mongodb"))    script+=getMongoDBScript();
+		
 		if(jconf.prodDatabaseType.equals("mysql"))      script+=getMysqlDScript();
 		
+		Files.writeStringIntoFile(getjDirectory(jDirectory)+"startServices.sh", script);
 		
-		
-		// TODO See if we include dev profile for all variants
+				
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/**
+	 * Generate the script to build the application without the use of Docker.
+	 * 
+	 * @param jconf JHipster configuration to build.
+	 * @param jDirectory Directory where the script must be generated.
+	 */
+	private void generateBuildScript(JhipsterConfiguration jconf, String jDirectory){
+		String script = "#!/bin/bash\n\n";			
+			// TODO See if we include dev profile for all variants
 		if(jconf.devDatabaseType.startsWith("h2")){
 			if(jconf.buildTool.equals("maven")) script += "./mvnw -Pdev ";
 			else script += "./gradlew -Pdev ";
@@ -423,7 +443,8 @@ public class ScriptsBuilder {
 	
 	private String getKafkaScript() {
 		Properties properties = getProperties(PROPERTIES_FILE);
-		return properties.getProperty("registryService");
+		return properties.getProperty("kafkaService");
+
 
 	}
 	
@@ -431,7 +452,7 @@ public class ScriptsBuilder {
 	private String getRegistryScript() {
 		
 		Properties properties = getProperties(PROPERTIES_FILE);
-		return properties.getProperty("kafkaService");
+		return properties.getProperty("registryService");
 
 		
 		
@@ -445,6 +466,19 @@ public class ScriptsBuilder {
 		
 		
 	}
+	
+	String getUaalaucherScript() {
+		String script="docker-compose -f ../uaa/src/main/docker/app.yml up & >>build.log\n";
+		
+	return script;	
+		
+	}
+	
+	
+	
+	
+	
+	
 	
 	private String getConsulScript() {
 		
