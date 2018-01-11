@@ -179,7 +179,7 @@ public class ThreadCheckBuild extends Thread {
 		// TODO Docker => kill server in Oracle.java
 		/*if (USE_DOCKER) startProcess("./dockerStop.sh");
 		else startProcess("./killScript.sh");*/
-		if(!USE_DOCKER) {} //startProcess("./killScript.sh");
+		if(!USE_DOCKER) startProcess("./killScript.sh");
 		else runCommand("docker-compose -f src/main/docker/app.yml stop",null,new File(PATH));
 		// TODO docker -> docker-compose -f src/main/docker/app.yml stop
 	}

@@ -368,7 +368,7 @@ if(jconf.serviceDiscoveryBooleanValue==null) {
 	 * 
 	 * @param jDirectory Directory where to write the script.
 	 */
-	/*private void generateKillScript(String jDirectory){
+	private void generateKillScript(String jDirectory){
 		String script = "#!/bin/bash\n\n";
 		Properties properties = getProperties(PROPERTIES_FILE);
 
@@ -376,7 +376,7 @@ if(jconf.serviceDiscoveryBooleanValue==null) {
 		script += properties.getProperty("killRegistry")+"\n";
 		script += properties.getProperty("killUAA")+"\n";
 		Files.writeStringIntoFile(getjDirectory(jDirectory)+"killScript.sh", script);
-	}*/
+	}
 	
 	
 	
