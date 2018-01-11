@@ -612,9 +612,8 @@ public class JHipsterTest extends FMLTest{
         // Transform to list for shuffling
         List<Variable> list = new ArrayList<Variable>(confs);
         Collections.shuffle(list);  
-             
-         
-    for (int i=0; i<1001; i++) {
+        //int i = 0;
+    for (int i=1;i<1001; i++) {
         _log.info("Extracting features from the configuration...");
         Set<String> strConfs = extractFeatures(list.get(i));
  
@@ -624,7 +623,7 @@ public class JHipsterTest extends FMLTest{
         // TODO: Nevermind Oracle, H2, ClientApp & ServerApp for now.
     //  if((jConf.applicationType.endsWith("App"))|(jConf.devDatabaseType.equals("oracle"))|(jConf.prodDatabaseType.equals("oracle"))){}
     //  else{
-          
+            //i++;
             String jDirectory = "jhipster" + i;
             mkdirJhipster(jDirectory);
              
@@ -654,9 +653,10 @@ public class JHipsterTest extends FMLTest{
              
         }       
 	CSVUtils.createCSVFileJHipster("jhipster.csv");
-   
-         
-         
+	CSVUtils.createCSVFileCoverage("ResultJacoco.csv");
+	CSVUtils.createCSVCucumber("cucumber.csv");     
+	CSVUtils.createCSVCucumber("cucumberDocker.csv");     
+  
          
     }
 }

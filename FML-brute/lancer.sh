@@ -1,18 +1,23 @@
 #!/bin/bash
  
 ./droit.sh jhipsters
-./stopDB.sh
-j=0;
 
-for i in `ls jhipsters`
+
+
+for i in `seq $1 $2`; 
 do
-timeout 20m    java -jar launchTest.jar  $j
  echo "**************************************************************************"
- echo "*                 Configutations N° $j testée avec succes                *"
+ echo "*                 Test de la Configutation N° $i                         *"
  echo "**************************************************************************"
-  j=$(($j + 1))
+
+timeout 60m    java -jar launchTest.jar  $i
+ 
+#sudo rm -r jhipsters/jhipster$j 
+ 
+j=$(($j + 1))
+
 done
-docker rmi uaa
+#docker rmi uaa
 cd ~
 
 

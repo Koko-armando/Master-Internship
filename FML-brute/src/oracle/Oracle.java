@@ -210,8 +210,9 @@ public class Oracle {
 	}
 
 	private static void cleanUp(String jDirectory, boolean docker){
+		_log.error("revoir cette methode (CleanUp) en lui demandant de supprimer les encombrant");
 		if (docker) startProcess("./dockerStop.sh", getjDirectory(jDirectory));
-		else startProcess("./killScript.sh", getjDirectory(jDirectory));
+		//else startProcess("./killScript.sh", getjDirectory(jDirectory));
 	}
 
 	private static void dockerCompose(String jDirectory){
@@ -276,25 +277,26 @@ public class Oracle {
 	
 	
 	/**
-	 * Generate & Build & Tests all variants of JHipster 3.6.1. 
+	 * Generate & Build & Tests all variants of JHipster 4.8.2. 
 	 */
 	public static void main(String[] args) throws Exception{
 		//Folder i to j Oracle 
-		Integer jhipsterI = Integer.parseInt("0");
-		Integer jhipsterJ = Integer.parseInt("1000");
+		//Integer jhipsterI = Integer.parseInt("1");
+		//Integer jhipsterJ = Integer.parseInt("20");
 		Integer i = Integer.parseInt(args[0]);
 
 		
+		
+		
+		
+		
 		//GET ID OF SPREADSHEETS
 		Properties property = getProperties(PROPERTIES_FILE);
-		String idSpreadsheet_jhipster = property.getProperty("idSpreadsheetJhipster");
-		String idSpreadsheet_coverage = property.getProperty("idSpreadsheetCoverage");
-		String idSpreadsheet_cucumber = property.getProperty("idSpreadsheetCucumber");
-		String idSpreadsheet_oracle = property.getProperty("idSpreadsheetOracle");
-		final String idSpreadsheet_cucumberDocker = property.getProperty("idSpreadsheetCucumberDocker");
-		
-		
-		//CSVUtils.createCSVFileJHipster("jhipster.csv");
+		//String idSpreadsheet_jhipster = property.getProperty("idSpreadsheetJhipster");
+		//String idSpreadsheet_coverage = property.getProperty("idSpreadsheetCoverage");
+		//String idSpreadsheet_cucumber = property.getProperty("idSpreadsheetCucumber");
+		//String idSpreadsheet_oracle = property.getProperty("idSpreadsheetOracle");
+		//final String idSpreadsheet_cucumberDocker = property.getProperty("idSpreadsheetCucumberDocker");
 
 	//	for (int i = jhipsterI;i<=jhipsterJ-1;i++){
 			_log.info("Starting treatment of JHipster n° "+i);
@@ -388,11 +390,11 @@ public class Oracle {
 			
 			if(!devDatabaseType.equals("\"oracle\"") && !prodDatabaseType.equals("\"oracle\""))
 			{
-				//check if the variant is present or not in the SpreadSheet and return the number of lines
-				Integer numberOfLine = SpreadsheetUtils.CheckNotExistLineSpreadSheet(idSpreadsheet_jhipster,yorc);
+				//check if the variant is present or not in the csv and return the number of lines
+				boolean existconfgs = CSVUtils.CheckNotExistLineCSV("jhipster.csv", yorc);
 	
-				// -1 : the yorc is already present
-				if(numberOfLine != -1)
+				// false : the yorc is already present
+				if(existconfgs != false)
 				{   
 					
 					
@@ -418,7 +420,7 @@ public class Oracle {
 						Long generationTimeLong = millisAfterGenerate - millis;
 						Double generationTimeDouble = generationTimeLong/1000.0;
 						generationTime = generationTimeDouble.toString();
-						//stacktracesGen = resultChecker.extractStacktraces("generate.log");
+						stacktracesGen = resultChecker.extractStacktraces("generate.log");
 			
 						_log.info("Generation complete ! Trying to compile the App...");
 		
@@ -441,8 +443,9 @@ public class Oracle {
 							karmaJS = resultChecker.extractKarmaJS("testKarmaJS.log");
 							cucumber= resultChecker.extractCucumber("test.log");
 	
-							SpreadsheetUtils spreadsheetUtils = new SpreadsheetUtils(getjDirectory(jDirectory));
-							
+							//SpreadsheetUtils spreadsheetUtils = new SpreadsheetUtils(getjDirectory(jDirectory));
+							CSVUtils csvutils = new CSVUtils(getjDirectory(jDirectory));
+
 							// JACOCO Coverage results are only available with Maven
 							if(buildTool.equals("\"maven\"")){
 								_log.info("maven Coverage");
@@ -459,7 +462,8 @@ public class Oracle {
 							}
 	
 							
-							spreadsheetUtils.writeLinesCoverageCSV("jacoco.csv", idSpreadsheet_coverage, jDirectory, Id, i);
+							//spreadsheetUtils.writeLinesCoverageCSV("jacoco.csv", idSpreadsheet_coverage, jDirectory, Id, i);
+							csvutils.writeLinesCoverageCSV("jacoco.csv", "ResultJacoco.csv", jDirectory, Id);
 	
 							_log.info("Compilation success ! Trying to build the App...");
 	
@@ -482,8 +486,9 @@ public class Oracle {
 								
 								String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
 								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumber, cucumberResults, i);
-								
-								String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"false"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
+								CSVUtils.writeNewLineCSV("cucumber.csv",cucumberResults);
+								// à banir cas oracle
+								//String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"false"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
 								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_oracle, oracleResults, i*2);
 								
 								buildTime = resultChecker.extractTime("build.log");	
@@ -540,9 +545,10 @@ public class Oracle {
 								buildTimeWithDockerPackage = partsBuildWithDocker[0]; 
 								if(partsBuildWithDocker.length>1) buildTimeWithDocker = partsBuildWithDocker[1]; 
 								protractorDocker = resultChecker.extractProtractor("testDockerProtractor.log");
-								//CSVUtils.writeNewLineCSV("cucumber.csv", new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
 								String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
-								SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumberDocker, cucumberResults, i);
+								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumberDocker, cucumberResults, i);
+								CSVUtils.writeNewLineCSV("cucumber.csv", new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
+								// à banir cas oracle
 								String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"true"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
 								SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_oracle, oracleResults, i*2-1);
 							}
@@ -589,8 +595,7 @@ public class Oracle {
 	
 					//write into CSV file
 					CSVUtils.writeNewLineCSV("jhipster.csv",line);
-					//write in the Spreadsheet
-					//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line, i*2-1);
+					
 	*/
 					
 					
@@ -606,8 +611,7 @@ public class Oracle {
 						
 					//write into CSV file
 					CSVUtils.writeNewLineCSV("jhipster.csv",line2);
-					//write in the Spreadsheet
-					//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_jhipster, line2, i*2);
+					
 						
 				}
 				

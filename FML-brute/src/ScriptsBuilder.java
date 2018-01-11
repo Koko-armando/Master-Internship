@@ -29,7 +29,7 @@ public class ScriptsBuilder {
 		generateUnitTestScript(jconf, jDirectory);
 		generateDockerScripts(jconf, jDirectory);			
 		generateBuildScript(jconf, jDirectory);
-		generateKillScript(jDirectory);
+		//generateKillScript(jDirectory);
 		generateOracleDatabaseScript(jconf, jDirectory);
 		generatePublishScript(jDirectory);
 		generateStopServicesScript(jDirectory);
@@ -368,7 +368,7 @@ if(jconf.serviceDiscoveryBooleanValue==null) {
 	 * 
 	 * @param jDirectory Directory where to write the script.
 	 */
-	private void generateKillScript(String jDirectory){
+	/*private void generateKillScript(String jDirectory){
 		String script = "#!/bin/bash\n\n";
 		Properties properties = getProperties(PROPERTIES_FILE);
 
@@ -376,7 +376,7 @@ if(jconf.serviceDiscoveryBooleanValue==null) {
 		script += properties.getProperty("killRegistry")+"\n";
 		script += properties.getProperty("killUAA")+"\n";
 		Files.writeStringIntoFile(getjDirectory(jDirectory)+"killScript.sh", script);
-	}
+	}*/
 	
 	
 	
@@ -386,7 +386,7 @@ if(jconf.serviceDiscoveryBooleanValue==null) {
 		
 		script += "tar acf "+jDirectory+".tar.gz *.log .yo-rc.json\n";
 		script +="cp "+jDirectory+".tar.gz  ../../../../\n";
-		script += "gdrive upload "+jDirectory+".tar.gz";
+		//script += "gdrive upload "+jDirectory+".tar.gz";
 		
 		Files.writeStringIntoFile(getjDirectory(jDirectory)+"publish.sh", script);
 	}
