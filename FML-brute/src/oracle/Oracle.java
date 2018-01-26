@@ -136,7 +136,7 @@ public class Oracle {
 			_log.error("Exception: "+e.getMessage());
 		}
 	}
-
+	
 	/**
 	 * Return the path to folder jDirectory (which is in the relative path JHIPSTERS_DIRECTORY/)
 	 * 
@@ -156,50 +156,54 @@ public class Oracle {
 	private static void initialization(boolean docker, String applicationType, String authentication,String jDirectory){
 		_log.info("Starting intialization scripts...");
 		if(!docker){
-		//	if (applicationType.equals("\"gateway\"") || applicationType.equals("\"microservice\"") || applicationType.equals("\"uaa\"")){
+			
+			
+			
+			if (applicationType.equals("\"gateway\"") || applicationType.equals("\"microservice\"") || applicationType.equals("\"uaa\"")){
+				
 				// Start Jhipster Registry
-				//threadRegistry = new Thread(new ThreadRegistry(projectDirectory+"/JHipster-Registry/"));
-				//threadRegistry.start();
-
-				// Let Jhipster Registry initiate before attempting to launch UAA Server...
-				//try{Thread.sleep(30000);}
-				//catch(Exception e){_log.error(e.getMessage());}
-
+				threadRegistry = new Thread(new ThreadRegistry(projectDirectory+"/JHipster-Registry/"));
+				threadRegistry.start();
+				_log.info("Starting JHipster-Registry.....");
+				try{
+					Thread.sleep(50000);}
+				catch(Exception e){_log.error(e.getMessage());}
 				if(authentication.equals("\"uaa\"")){
+					
 					// Start UAA Server
 					threadUAA = new Thread(new ThreadUAA(projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/uaa/"));
 					threadUAA.start();
-
+					 _log.info("Starting Uaa Server .... ");
 					try{Thread.sleep(5000);}
 					catch(Exception e){_log.error(e.getMessage());}
 				}
 				
-		//	}
-		//} else{
+			}
+		/*} else{
 			// STOP DB FOR DOCKER
+			startProcess("./stopDB.sh","");
+		}*/
 					}
-		_log.info("Stop database services......");
-		startProcess(STOP_DATABASE,"");
-		_log.info("Data base services are stopped !  Trying to Start Docker services......");
+		_log.info("Start services used by application......");
 		
 		threadService = new Thread(new ThreadDockerServices(getjDirectory(jDirectory)));
 		threadService.start();
-		try{Thread.sleep(30000);}
-		catch(Exception e){_log.error(e.getMessage());}
-		threadService.stop();
-		_log.info("Docker Services Started succefully......");
+		_log.info("services Started succefully !");
 
 
 	}
-
+	
+		
 	/**
 	 * Terminate the Oracle by ending JHipster Registry and UAA servers.
 	 */
-	private static void termination(){
+	private static void termination(String authentication){
 		try{
 		//	threadRegistry.interrupt();
 			threadService.interrupt();
+			if(authentication.equals("\"uaa\"")){
 			threadUAA.interrupt();
+			}
 		} catch (Exception e){
 			_log.error(e.getMessage());
 		}
@@ -210,9 +214,8 @@ public class Oracle {
 	}
 
 	private static void cleanUp(String jDirectory, boolean docker){
-		_log.error("revoir cette methode (CleanUp) en lui demandant de supprimer les encombrant");
 		if (docker) startProcess("./dockerStop.sh", getjDirectory(jDirectory));
-		//else startProcess("./killScript.sh", getjDirectory(jDirectory));
+		else startProcess("./killScript.sh", getjDirectory(jDirectory));
 	}
 
 	private static void dockerCompose(String jDirectory){
@@ -280,23 +283,15 @@ public class Oracle {
 	 * Generate & Build & Tests all variants of JHipster 4.8.2. 
 	 */
 	public static void main(String[] args) throws Exception{
-		//Folder i to j Oracle 
-		//Integer jhipsterI = Integer.parseInt("1");
-		//Integer jhipsterJ = Integer.parseInt("20");
+		
 		Integer i = Integer.parseInt(args[0]);
 
-		
-		
-		
-		
-		
+		//Integer i=100;
+	    //103 , 10051 jwt
+		 //100 uaa
 		//GET ID OF SPREADSHEETS
 		Properties property = getProperties(PROPERTIES_FILE);
-		//String idSpreadsheet_jhipster = property.getProperty("idSpreadsheetJhipster");
-		//String idSpreadsheet_coverage = property.getProperty("idSpreadsheetCoverage");
-		//String idSpreadsheet_cucumber = property.getProperty("idSpreadsheetCucumber");
-		//String idSpreadsheet_oracle = property.getProperty("idSpreadsheetOracle");
-		//final String idSpreadsheet_cucumberDocker = property.getProperty("idSpreadsheetCucumberDocker");
+		
 
 	//	for (int i = jhipsterI;i<=jhipsterJ-1;i++){
 			_log.info("Starting treatment of JHipster n° "+i);
@@ -399,7 +394,6 @@ public class Oracle {
 					
 					
 					
-					
 					_log.info("Copying node_modules...");
 					startProcess("./init.sh", getjDirectory(jDirectory));
 					_log.info("Generating the App..."); 
@@ -408,42 +402,36 @@ public class Oracle {
 					long millisAfterGenerate = System.currentTimeMillis();
 					_log.info("Generation done!");
 	
-					_log.info("Checking the generation of the App...");
-	
-		//////////////			
-			
-
-					if(resultChecker.checkGenerateApp("generate.log")){
+				
+         				if(resultChecker.checkGenerateApp("generate.log")){
 						generation =SUCCEED;
+						_log.info("After Checking : Generation is  "+generation);
 
 						// Time to Generate
 						Long generationTimeLong = millisAfterGenerate - millis;
 						Double generationTimeDouble = generationTimeLong/1000.0;
 						generationTime = generationTimeDouble.toString();
-						stacktracesGen = resultChecker.extractStacktraces("generate.log");
-			
+						//stacktracesGen = resultChecker.extractStacktraces("generate.log");
 						_log.info("Generation complete ! Trying to compile the App...");
-		
-					
+						
 						compileApp(jDirectory);
 	
 						if(resultChecker.checkCompileApp("compile.log")){
 							compile =SUCCEED;
-							compileTime = resultChecker.extractTime("compile.log");
+							compileTime = resultChecker.extractTime("compile.log","compile");
 							String[] partsCompile = compileTime.split(";");
 							compileTime = partsCompile[0]; // delete the ";" used for Docker
-							stacktracesCompile = resultChecker.extractStacktraces("compile.log");
-	
-							generateEntities(jDirectory);
 											
+			               //stacktracesCompile = resultChecker.extractStacktraces("compile.log");
+	
+						//	generateEntities(jDirectory);
 							_log.info("Compilation success ! Launch Unit Tests...");
-							unitTestsApp(jDirectory);
+					//unitTestsApp(jDirectory);
 	
-							resultsTest = resultChecker.extractResultsTest("test.log");
-							karmaJS = resultChecker.extractKarmaJS("testKarmaJS.log");
-							cucumber= resultChecker.extractCucumber("test.log");
+					//resultsTest = resultChecker.extractResultsTest("test.log");
+					//karmaJS = resultChecker.extractKarmaJS("testKarmaJS.log");
+				    //cucumber= resultChecker.extractCucumber("test.log");
 	
-							//SpreadsheetUtils spreadsheetUtils = new SpreadsheetUtils(getjDirectory(jDirectory));
 							CSVUtils csvutils = new CSVUtils(getjDirectory(jDirectory));
 
 							// JACOCO Coverage results are only available with Maven
@@ -451,25 +439,22 @@ public class Oracle {
 								_log.info("maven Coverage");
 								
 
-								coverageInstuctions= resultChecker.extractCoverageIntstructions("index.html");
-								coverageBranches = resultChecker.extractCoverageBranches("index.html");
-								coverageJSBranches = resultChecker.extractJSCoverageBranches(JS_COVERAGE_PATH);
-								coverageJSStatements = resultChecker.extractJSCoverageStatements(JS_COVERAGE_PATH);
+				//coverageInstuctions= resultChecker.extractCoverageIntstructions("index.html");
+				//coverageBranches = resultChecker.extractCoverageBranches("index.html");
+				//coverageJSBranches = resultChecker.extractJSCoverageBranches(JS_COVERAGE_PATH);
+				//coverageJSStatements = resultChecker.extractJSCoverageStatements(JS_COVERAGE_PATH);
 							} else{
 								_log.info("gradle Coverage");
-								coverageJSBranches = resultChecker.extractJSCoverageBranches(JS_COVERAGE_PATH_GRADLE);
-								coverageJSStatements = resultChecker.extractJSCoverageStatements(JS_COVERAGE_PATH_GRADLE);
+					//coverageJSBranches = resultChecker.extractJSCoverageBranches(JS_COVERAGE_PATH_GRADLE);
+					//coverageJSStatements = resultChecker.extractJSCoverageStatements(JS_COVERAGE_PATH_GRADLE);
 							}
 	
-							
-							//spreadsheetUtils.writeLinesCoverageCSV("jacoco.csv", idSpreadsheet_coverage, jDirectory, Id, i);
-							csvutils.writeLinesCoverageCSV("jacoco.csv", "ResultJacoco.csv", jDirectory, Id);
+					//csvutils.writeLinesCoverageCSV("jacoco.csv", "coverage.csv", jDirectory, Id);
 	
 							_log.info("Compilation success ! Trying to build the App...");
 	
 							// Building without Docker
 							initialization(false, applicationType, authenticationType,jDirectory);
-							Thread.sleep(3000);
 							ThreadCheckBuild t2 = new ThreadCheckBuild(getjDirectory(jDirectory), false, "build.log",imageSize,build, prodDatabaseType);
 							t2.start();
 							_log.info("Trying to build the App without Docker...");
@@ -480,27 +465,32 @@ public class Oracle {
 						
                             cleanUp(jDirectory,false);
 	
-							if(build.toString().equals(FAIL)) stacktracesBuild = resultChecker.extractStacktraces("build.log");
+							if(build.toString().equals(FAIL))  stacktracesBuild = resultChecker.extractStacktraces("build.log");
 							else {
-								protractor = resultChecker.extractProtractor("testProtractor.log");
 								
-								String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
-								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumber, cucumberResults, i);
-								CSVUtils.writeNewLineCSV("cucumber.csv",cucumberResults);
-								// à banir cas oracle
+								
+					          // protractor = resultChecker.extractProtractor("testProtractor.log");
+
+						//		String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
+						//		CSVUtils.writeNewLineCSV("cucumber.csv",cucumberResults);
+								
 								//String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"false"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
-								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_oracle, oracleResults, i*2);
-								
-								buildTime = resultChecker.extractTime("build.log");	
+								//CSVUtils.writeNewLineCSV("gatling.csv", oracleResults);
+								buildTime = resultChecker.extractTime("build.log","build");	
 								String[] partsBuildWithoutDocker = buildTime.split(";");
 								buildTime = partsBuildWithoutDocker[0]; // only two parts with Docker
 							}
 							_log.info("Try to stop Doker Services....");	
 							startProcess(STOP_SERVICES,getjDirectory(jDirectory));
 							_log.info("Doker Services are stopped !");	
-							_log.info("Trying to build the App with Docker...");
 							
-						
+							
+							
+							
+							
+							
+						//	_log.info("Trying to build the App with Docker...");
+										
 					/* Code Docker		
 							
 							initialization(true, applicationType, authenticationType);
@@ -620,7 +610,7 @@ public class Oracle {
 					_log.info("This configuration has been already tested");
 					try{
 						_log.info("Sleeping 10 secs...");
-						Thread.sleep(10*1000);
+						//Thread.sleep(10*1000);
 					} catch (Exception e){
 						_log.error("Exception: "+e.getMessage());
 					}
@@ -628,7 +618,7 @@ public class Oracle {
 			}
 		//}
 		_log.info("Termination...");
-		termination();
+		termination(authenticationType);
 	}
 
 	/**

@@ -1,3 +1,5 @@
 #!/bin/bash
 
-./mvnw >> build.log 2>&1
+docker-compose -f src/main/docker/mysql.yml up -d &
+
+./mvnw&

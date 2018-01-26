@@ -49,7 +49,7 @@ public class ThreadCheckBuild extends Thread {
 	
 	public void done(){
 		isDone = true;
-		_log.error("ThreadCheckBuild is done");
+		_log.info("ThreadCheckBuild is done");
 	}
 	
 	
@@ -100,7 +100,8 @@ public class ThreadCheckBuild extends Thread {
 			if(buildSuccess){
 				_log.info("Build successful ! Trying to run tests...");
 				
-
+				_log.info("Test sélenium annulé !");
+           /*
 				if(database.equals("\"mysql\"") || database.equals("\"postgresql\"") 
 				|| database.equals("\"mongodb\"") || database.equals("\"cassandra\"")){
 					_log.info("Starting to populate the database");
@@ -108,20 +109,19 @@ public class ThreadCheckBuild extends Thread {
 					selenium.populateDB(database);
 					_log.info("Done");
 				}
-				_log.info("Running some tests...");
-				// a enlever....
-				killServer();
+				*/
+				
+				_log.info("Test gatling, protractor,cucumber  annulé !");
 
+				//_log.info("Running some tests...");
+				//if (!USE_DOCKER) startProcess(TEST_FILE);
+				//else startProcess(DOCKER_TEST_FILE);
+				//Extract docker images size
+				//if (USE_DOCKER) imageSize.append(extractDockerImageSize("jhipster"));
 				buildResult.delete(0,5);
 				buildResult.append("OK");
-				// if success: run Tests
-				
-				
-				if (!USE_DOCKER) startProcess(TEST_FILE);
-				else startProcess(DOCKER_TEST_FILE);
-				//Extract docker images size
-				if (USE_DOCKER) imageSize.append(extractDockerImageSize("jhipster"));
 				_log.info("All done ! Killing the server...");
+				
 				// Then kill server
 				killServer();
 				isDone = true;
@@ -131,9 +131,7 @@ public class ThreadCheckBuild extends Thread {
 				_log.info("Build failed... Killing the server now...");
 				buildResult.delete(0, 5);
 				buildResult.append("KO");
-				// Kill
 				killServer();
-				
 				isDone = true;
 			}
 			
@@ -145,20 +143,20 @@ public class ThreadCheckBuild extends Thread {
 
 	
 	private boolean checkBuildSuccess(String logs){
-		Matcher m = Pattern.compile("((.*?)Application 'jhipster' is running!)").matcher(logs);
+		Matcher m = Pattern.compile("Application 'jhipster' is running").matcher(logs);
 		while (m.find()) return true;
 		return false;
 	}
 		
 	
 	private boolean checkBuildFailure(String logs){
-		Matcher m = Pattern.compile("((.*?)APPLICATION FAILED TO START)").matcher(logs);
-		Matcher m2 = Pattern.compile("((.*?)BUILD FAILED)").matcher(logs);
-		Matcher m3 = Pattern.compile("((.*?)BUILD FAILURE)").matcher(logs);
-		Matcher m4 = Pattern.compile("((.*?)exited with code)").matcher(logs);
-		Matcher m5 = Pattern.compile("((.*?)bind: address already in use)").matcher(logs);
-		Matcher m6 = Pattern.compile("((.*?)startup failed)").matcher(logs);
-		Matcher m7 = Pattern.compile("((.*?)Error parsing reference:)").matcher(logs);
+		Matcher m = Pattern.compile("(APPLICATION FAILED TO START)").matcher(logs);
+		Matcher m2 = Pattern.compile("BUILD FAILED").matcher(logs);
+		Matcher m3 = Pattern.compile("BUILD FAILURE").matcher(logs);
+		Matcher m4 = Pattern.compile("exited with code").matcher(logs);
+		Matcher m5 = Pattern.compile("bind: address already in use").matcher(logs);
+		Matcher m6 = Pattern.compile("startup failed").matcher(logs);
+		Matcher m7 = Pattern.compile("Error parsing reference:").matcher(logs);
 		
 		while(m7.find() | m6.find() | m4.find() | m5.find() | m.find() | m2.find() | m3.find()) return true;
 		return false;

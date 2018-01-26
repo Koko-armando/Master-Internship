@@ -39,7 +39,7 @@ public class CucumberResultExtractor {
 	private String path;
 	private String buildTool;
 	private final String CUCUMBER_PATH_MAVEN = "target/surefire-reports/";
-	private final String CUCUMBER_PATH_GRADLE = "build/test-results/";
+	private final String CUCUMBER_PATH_GRADLE = "build/test-results/test";
 	private static final int NUMBER_ENTITIES = 8;
 	private String[] result = new String[29+(6*NUMBER_ENTITIES)+1];
 	

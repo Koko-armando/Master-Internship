@@ -10,9 +10,6 @@ public class ThreadDockerServices implements Runnable{
 	private Process process;
 	private String PATH;
 	private static final String START_SERVICES = "./startServices.sh";
-	private static final String STOP_DATABASE = "./stopDB.sh";
-	private static final String STOP_SERVICES = "./StopServices.sh";
-	
 	public ThreadDockerServices(String path){
 		this.PATH = path;
 	}

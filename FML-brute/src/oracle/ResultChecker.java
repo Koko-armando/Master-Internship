@@ -44,9 +44,9 @@ public class ResultChecker {
 		//CHECK IF Server app generated successfully.
 		//OR Client app generated successfully.
 
-		Matcher m = Pattern.compile("((.*?)Server application generated successfully.)").matcher(text);
+		Matcher m = Pattern.compile("Server application generated successfully").matcher(text);
 
-		Matcher m2 = Pattern.compile("((.*?)Client application generated successfully.)").matcher(text);
+		Matcher m2 = Pattern.compile("Client application generated successfully").matcher(text);
 
 
 		while(m.find() | m2.find()) return true; 
@@ -69,8 +69,8 @@ public class ResultChecker {
 		String text = Files.readFileIntoString(path + fileName);
 
 		//CHECK IF BUILD FAILED THEN false
-		Matcher m1 = Pattern.compile("((.*?)BUILD FAILED)").matcher(text);
-		Matcher m2 = Pattern.compile("((.*?)BUILD FAILURE)").matcher(text);
+		Matcher m1 = Pattern.compile("BUILD FAILED").matcher(text);
+		Matcher m2 = Pattern.compile("BUILD FAILURE").matcher(text);
 
 		while(m1.find() | m2.find()) return false;
 		return true;
@@ -89,9 +89,9 @@ public class ResultChecker {
 			String text = Files.readFileIntoString(path+fileName);
 
 			//CHECK IF BUILD FAILED THEN false
-			Matcher m = Pattern.compile("((.*?)APPLICATION FAILED TO START)").matcher(text);
-			Matcher m2 = Pattern.compile("((.*?)BUILD FAILED)").matcher(text);
-			Matcher m3 = Pattern.compile("((.*?)BUILD FAILURE)").matcher(text);
+			Matcher m = Pattern.compile("APPLICATION FAILED TO START").matcher(text);
+			Matcher m2 = Pattern.compile("BUILD FAILED").matcher(text);
+			Matcher m3 = Pattern.compile("BUILD FAILURE").matcher(text);
 
 			while(m.find() | m2.find() | m3.find()) return false;
 			return true;
@@ -109,7 +109,7 @@ public class ResultChecker {
 	public boolean checkDockerBuild(String fileName){
 		try{
 			String text = Files.readFileIntoString(fileName);
-			Matcher m = Pattern.compile("((.*?) Application 'jhipster' is running!)").matcher(text);
+			Matcher m = Pattern.compile("Application 'jhipster' is running").matcher(text);
 			while (m.find()) return true;
 			return false;
 		} catch (Exception e){
@@ -124,18 +124,22 @@ public class ResultChecker {
 	 * @return String of time of building
 	 * 
 	 */
-	public String extractTime(String fileName){
+	public String extractTime(String fileName,String phase){
 		String timebuild = "";
 		try{
 			String text = Files.readFileIntoString(path+fileName);
-
 			Matcher m1 = Pattern.compile("Started JhipsterApp in (.*?) seconds").matcher(text);
 			Matcher m2 = Pattern.compile("Total time: (.*?) secs").matcher(text);
 			Matcher m3 = Pattern.compile("Total time: (.*?)s").matcher(text);
 			Matcher m4 = Pattern.compile("Total time: (.*?) mins (.*?) secs").matcher(text);
 			Matcher m5 = Pattern.compile("Total time: (.*?) hrs (.*?) mins (.*?) secs").matcher(text);
 			Matcher m6 = Pattern.compile("Total time: (.*?):(.*?) min").matcher(text);
+            Matcher m7 =  Pattern.compile("BUILD SUCCESSFUL in (.*?)s").matcher(text);
 
+            if (phase.equals("compile")) {
+            //check compile time
+   			while(m7.find()) timebuild = m7.group(1).toString()+";";
+            }else {
 			//check if secs
 			while(m2.find()) timebuild = m2.group(1).toString()+";";
 			//check if s
@@ -147,8 +151,9 @@ public class ResultChecker {
 			//check if hrs 
 			while(m5.find()) timebuild = Float.toString(((Float.valueOf(m5.group(1).toString()) *3600)+ (Float.valueOf(m5.group(2).toString())*60) + Float.valueOf(m5.group(3).toString())))+";";
 			//check if seconds -> build with Docker (not Package)
-			while(m1.find()) timebuild = timebuild +m1.group(1).toString();
+            while(m1.find()) timebuild = timebuild +m1.group(1).toString();
 			
+            }
 		} catch (Exception e){
 			_log.error("Exception: "+e.getMessage());
 		}
@@ -168,14 +173,13 @@ public class ResultChecker {
 		String memoryBuild = DEFAULT_NOT_FOUND_VALUE;
 		try{
 			String text = Files.readFileIntoString(path+fileName);
-			Matcher m1 = Pattern.compile("(.*?)Final Memory").matcher(text);
+			Matcher m1 = Pattern.compile("Final Memory :").matcher(text);
 			while(m1.find()) return memoryBuild = m1.toString();
 		} catch (Exception e){
 			_log.error("Exception: "+e.getMessage());
 		}
 		return memoryBuild;
 	}
-
 
 	/**
 	 * Return results from tests ./mvnw clean test | ./gradlew clean test  
@@ -402,19 +406,19 @@ public class ResultChecker {
 		try{		
 			String text = Files.readFileIntoString(path+fileName);
 	
-			Matcher m1 = Pattern.compile("(Exception(.*?)\\n)").matcher(text);
+			Matcher m1 = Pattern.compile("(Exception (.*?)\\n)").matcher(text);
 			Matcher m2 = Pattern.compile("(Caused by(.*?)\\n)").matcher(text);
 			Matcher m3 = Pattern.compile("((.*?)\\[ERROR\\](.*))").matcher(text);
-			Matcher m4 = Pattern.compile("(ERROR:(.*?)\\n)").matcher(text);
-			Matcher m5 = Pattern.compile("(error:(.*?)^)").matcher(text);
-			Matcher m6 = Pattern.compile("(Error parsing reference:(.*?) is not a valid repository/tag)").matcher(text);
+			//Matcher m4 = Pattern.compile("(ERROR:(.*?)\\n)").matcher(text);
+			//Matcher m5 = Pattern.compile("(error:(.*?)^)").matcher(text);
+			//Matcher m6 = Pattern.compile("(Error parsing reference:(.*?) is not a valid repository/tag)").matcher(text);
 	
 			while(m1.find()) stacktraces = stacktraces + m1.group().toString() + "\n";
 			while(m2.find()) stacktraces = stacktraces + m2.group().toString() + "\n";
 			while(m3.find()) stacktraces = stacktraces + m3.group().toString() + "\n";
-			while(m4.find()) stacktraces = stacktraces + m4.group().toString() + "\n";
-			while(m5.find()) stacktraces = stacktraces + m5.group().toString() + "\n";
-			while(m6.find()) stacktraces = stacktraces + m6.group(1).toString() + "\n";
+			//while(m4.find()) stacktraces = stacktraces + m4.group().toString() + "\n";
+			//while(m5.find()) stacktraces = stacktraces + m5.group().toString() + "\n";
+			//while(m6.find()) stacktraces = stacktraces + m6.group(1).toString() + "\n";
 		} catch (Exception e){
 			_log.error("Exception: "+e.getMessage());
 		}

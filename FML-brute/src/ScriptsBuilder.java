@@ -29,7 +29,7 @@ public class ScriptsBuilder {
 		generateUnitTestScript(jconf, jDirectory);
 		generateDockerScripts(jconf, jDirectory);			
 		generateBuildScript(jconf, jDirectory);
-		//generateKillScript(jDirectory);
+		generateKillScript(jDirectory);
 		generateOracleDatabaseScript(jconf, jDirectory);
 		generatePublishScript(jDirectory);
 		generateStopServicesScript(jDirectory);
@@ -54,17 +54,7 @@ public class ScriptsBuilder {
 		String script = "#!/bin/bash\n\n"
 				+ property.getProperty("dockerServicesStop")+"\n"
 				+ property.getProperty("dockerRemoveAll")+"\n";
-				//+ property.getProperty("dockerRemoveImages");
-		
-		
-				/*+ property.getProperty("registryServiceStop")
-				+ property.getProperty("elasticSearchStop")
-				+ property.getProperty("mysqlServiceStop")
-				+ property.getProperty("mssqlServiceStop")
-				+ property.getProperty("cassandraServiceStop")
-				+ property.getProperty("mongoDBServiceStop")
-				+ property.getProperty("mariaDBServiceStop")
-		        + property.getProperty("postgresServiceStop");*/
+				
 		
 		Files.writeStringIntoFile(getjDirectory(jDirectory)+"StopServices.sh", script);
 	}
@@ -75,7 +65,7 @@ public class ScriptsBuilder {
 	 * 
 	 * @param jDirectory Directory where the script must be generated.
 	 */
-	public void generateStopDatabaseScript(String jDirectory){
+	/*public void generateStopDatabaseScript(String jDirectory){
 		Properties property = getProperties(PROPERTIES_FILE);
 		String script = "#!/bin/bash\n\n"
 				+ property.getProperty("mysqlStop")
@@ -86,7 +76,7 @@ public class ScriptsBuilder {
 		        +property.getProperty("kafkaStop");
 
 		Files.writeStringIntoFile(jDirectory+"/stopDB.sh", script);
-	}
+	}*/
 
 	/**
 	 * Generates the script to generate the JHipster application.\n
@@ -98,9 +88,7 @@ public class ScriptsBuilder {
 	private void generateYoJhipsterScript(JhipsterConfiguration jconf, String jDirectory){
 		String script = "#!/bin/bash\n\n";
 
-		//if(jconf.applicationType.equals("clientApp")) script += "yo jhipster:client --auth session ";
-		//else if (jconf.applicationType.equals("serverApp")) script += "yo jhipster:server ";
-		//else script += "yo jhipster ";
+		
 		script += "jhipster";
 		script += ">> generate.log 2>&1\n";
 		
@@ -221,7 +209,7 @@ if(jconf.serviceDiscoveryBooleanValue==null) {
 		
 		for(String testFramework : jconf.testFrameworks){
 			switch(testFramework){
-			case "gatling": 	script += properties.getProperty("removeGatlingSimulations");
+			case "gatling": 	//script += properties.getProperty("removeGatlingSimulations");
 								if(jconf.buildTool.equals("maven"))
 									script += "./mvnw gatling:execute";
 								else
@@ -385,7 +373,7 @@ if(jconf.serviceDiscoveryBooleanValue==null) {
 		String script = "#!/bin/bash\n\n";
 		
 		script += "tar acf "+jDirectory+".tar.gz *.log .yo-rc.json\n";
-		script +="cp "+jDirectory+".tar.gz  ../../../../\n";
+		script +="cp "+jDirectory+".tar.gz  ../../\n";
 		//script += "gdrive upload "+jDirectory+".tar.gz";
 		
 		Files.writeStringIntoFile(getjDirectory(jDirectory)+"publish.sh", script);

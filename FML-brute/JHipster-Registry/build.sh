@@ -1,4 +1,4 @@
 
 #!/bin/bash
 
-./mvnw >> build.log 2>&1
+./mvnw &>> build.log 2>&1

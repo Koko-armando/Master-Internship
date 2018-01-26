@@ -122,8 +122,8 @@ public class JHipsterTest extends FMLTest{
               //+"!MariaDBDev;"
               //+"!PostgreSQL;"
               //+"!PostgreSQLDev;"
-              +"!MsSQL;"
-              +"!MsSql;"
+              //+"!MsSQL;"
+              //+"!MsSql;"
               //+"!Uaa;"
               //+"!MySQL;"
               //+"!MySql;"
@@ -168,9 +168,8 @@ public class JHipsterTest extends FMLTest{
             jhipsterConf.packageName = PACKAGENAME;
             jhipsterConf.packageFolder = PACKAGENAME.replace(".", "/");
             if(!jhipsterConf.applicationType.equals("monolith")) jhipsterConf.serverPort = SERVERPORT;
-            //jhipsterConf.serviceDiscoveryType=null;= new serviceDiscovery(true);
             
-                  		  
+                 		  
             jhipsterConf.getServiceDiscoveryType(get("ServiceDiscoveryType", strConfs, fmvJhipster)  ); 
             jhipsterConf.authenticationType = get("AuthenticationType", strConfs, fmvJhipster);
      
@@ -500,7 +499,6 @@ public class JHipsterTest extends FMLTest{
             case "Eureka":                  return "eureka";
             case "Consul":                  return "consul";
              
-            //case "ServerApp":             return "serverApp";
             default:    return feature;
         }
     }
@@ -607,13 +605,14 @@ public class JHipsterTest extends FMLTest{
         _log.info("Generating DIMACS...");
         generateDimacs(getFMJHipster());
          
-        SCRIPT_BUILDER.generateStopDatabaseScript(PROJECTDIRECTORY);
+        //SCRIPT_BUILDER.generateStopDatabaseScript(PROJECTDIRECTORY);
           
-        // Transform to list for shuffling
+    /*    // Transform to list for shuffling
         List<Variable> list = new ArrayList<Variable>(confs);
         Collections.shuffle(list);  
-        //int i = 0;
-    for (int i=1;i<1001; i++) {
+             
+         
+    for (int i=0; i<1001; i++) {
         _log.info("Extracting features from the configuration...");
         Set<String> strConfs = extractFeatures(list.get(i));
  
@@ -623,7 +622,7 @@ public class JHipsterTest extends FMLTest{
         // TODO: Nevermind Oracle, H2, ClientApp & ServerApp for now.
     //  if((jConf.applicationType.endsWith("App"))|(jConf.devDatabaseType.equals("oracle"))|(jConf.prodDatabaseType.equals("oracle"))){}
     //  else{
-            //i++;
+          
             String jDirectory = "jhipster" + i;
             mkdirJhipster(jDirectory);
              
@@ -651,12 +650,51 @@ public class JHipsterTest extends FMLTest{
 
 
              
-        }       
+        }    */  
+    
+    
+     // Transform to list for shuffling
+     		List<Variable> list = new ArrayList<Variable>(confs);
+     		Collections.shuffle(list);	
+     		
+     		int i = 0;
+     		for (Variable configuration : list){
+
+     			_log.info("Extracting features from the configuration...");
+     			Set<String> strConfs = extractFeatures(configuration);
+     			
+     			JhipsterConfiguration jConf = toJhipsterConfiguration(strConfs, getFMJHipster());
+     					
+     			// TODO: Nevermind Oracle, H2, ClientApp & ServerApp for now.
+     			if((jConf.applicationType.endsWith("App"))|(jConf.devDatabaseType.equals("oracle"))|(jConf.prodDatabaseType.equals("oracle"))){}
+     			else{
+     				i++;
+     				String jDirectory = "jhipster" + i;
+     				mkdirJhipster(jDirectory);
+     			 	
+     				_log.info("Parsing JSON...");
+     	
+     				GeneratorJhipsterConfiguration jhipGen = new GeneratorJhipsterConfiguration();
+     				jhipGen.generatorJhipster = jConf;
+     				String yorc = toJSON2(jhipGen);
+     				Files.writeStringIntoFile(getjDirectory(jDirectory) + ".yo-rc.json", yorc);
+     				_log.info("JSON generated...");
+     				
+     				_log.info("Generating scripts...");
+     				SCRIPT_BUILDER.generateScripts(jConf, jDirectory);
+     				_log.info("Scripts generated...");
+     		
+     				_log.info("Configuration "+i+", "+jConf.applicationType+", is done");
+     			}
+     }
+    
+    
 	CSVUtils.createCSVFileJHipster("jhipster.csv");
-	CSVUtils.createCSVFileCoverage("ResultJacoco.csv");
+	CSVUtils.createCSVFileCoverage("coverage.csv");
 	CSVUtils.createCSVCucumber("cucumber.csv");     
-	CSVUtils.createCSVCucumber("cucumberDocker.csv");     
-  
+	CSVUtils.createCSVCucumber("cucumberDocker.csv");
+	
+
          
     }
 }

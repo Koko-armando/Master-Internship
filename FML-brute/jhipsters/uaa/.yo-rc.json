@@ -1,12 +1,12 @@
 {
   "generator-jhipster": {
     "promptValues": {
-      "packageName": "com.application.server"
+      "packageName": "com.mycompany.myapp"
     },
     "jhipsterVersion": "4.8.2",
     "baseName": "uaa",
-    "packageName": "com.application.server",
-    "packageFolder": "com/application/server",
+    "packageName": "com.mycompany.myapp",
+    "packageFolder": "com/mycompany/myapp",
     "serverPort": "9999",
     "authenticationType": "uaa",
     "hibernateCache": "no",
