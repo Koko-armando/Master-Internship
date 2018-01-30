@@ -19,6 +19,7 @@ import com.google.gson.JsonParser;
 
 import csv.CSVUtils;
 import csv.SpreadsheetUtils;
+import fr.familiar.variable.FeatureModelVariable;
 
 /**
  * Extension of previous work from Mathieu ACHER, Inria Rennes-Bretagne Atlantique.
@@ -35,9 +36,9 @@ import csv.SpreadsheetUtils;
 public class Oracle {
 
 	private static final Logger _log = Logger.getLogger("Oracle");
-	private static final String JHIPSTERS_DIRECTORY = "jhipsters";
-	private static final Integer weightFolder = new File(JHIPSTERS_DIRECTORY+"/").list().length;
-	private static final String projectDirectory = System.getProperty("user.dir");
+	private static  final String JHIPSTERS_DIRECTORY = "jhipsters";
+	private static  String projectDirectory = "";
+	private static Integer weightFolder ;
 	private static final String JS_COVERAGE_PATH = "target/test-results/coverage/report-lcov/lcov-report/index.html";
 	private static final String JS_COVERAGE_PATH_GRADLE = "build/test-results/coverage/report-lcov/lcov-report/index.html";
 	private static final String DEFAULT_NOT_FOUND_VALUE ="ND";
@@ -60,7 +61,7 @@ public class Oracle {
 		Process process = null;
 		try{
 			ProcessBuilder processBuilder = new ProcessBuilder(fileName);
-			processBuilder.directory(new File(projectDirectory +"/"+ desiredDirectory));
+			processBuilder.directory(new File(desiredDirectory));
 			process = processBuilder.start();
 			process.waitFor();
 		} catch(IOException e){
@@ -92,7 +93,7 @@ public class Oracle {
 	 * @throws IOException 
 	 */
 	private static void generateApp(String jDirectory) throws InterruptedException, IOException{
-		startProcess("./generate.sh",JHIPSTERS_DIRECTORY+"/"+jDirectory+"/");
+		startProcess("./generate.sh",projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory+"/");
 	}
 
 	/**
@@ -103,7 +104,7 @@ public class Oracle {
 	 */
 	private static void compileApp(String jDirectory){
 		
-		startProcess("./compile.sh", JHIPSTERS_DIRECTORY+"/"+jDirectory);
+		startProcess("./compile.sh", projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
 	}
 
 	/**
@@ -124,13 +125,13 @@ public class Oracle {
 	 * @throws InterruptedException 
 	 */
 	private static void unitTestsApp(String jDirectory) throws InterruptedException{
-		startProcess("./unitTest.sh", JHIPSTERS_DIRECTORY+"/"+jDirectory);
+		startProcess("./unitTest.sh", projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
 	}
 	
 	private static void generateEntities(String jDirectory){
 		_log.info("Starting entity JDL import");
 		try{
-			startProcess("./generateJDL.sh", JHIPSTERS_DIRECTORY+"/"+jDirectory);
+			startProcess("./generateJDL.sh", projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
 			_log.info("Entities created !");
 		} catch (Exception e){
 			_log.error("Exception: "+e.getMessage());
@@ -144,7 +145,7 @@ public class Oracle {
 	 * @return The relative path to folder with name jDirectory.
 	 */
 	private static String getjDirectory(String jDirectory) {
-		return JHIPSTERS_DIRECTORY + "/" + jDirectory + "/";
+		return projectDirectory+"/"+JHIPSTERS_DIRECTORY+ "/" + jDirectory + "/";
 	}
 
 	/**
@@ -284,17 +285,31 @@ public class Oracle {
 	 */
 	public static void main(String[] args) throws Exception{
 		
-		Integer i = Integer.parseInt(args[0]);
-        String CSV_adress=args[1];
 		
 		
 		
-		//GET ID OF SPREADSHEETS
-		Properties property = getProperties(PROPERTIES_FILE);
 		
-			_log.info("Starting treatment of JHipster n° "+i);
+		
+		
+		projectDirectory = args[0];
+		Integer Nb_of_Config_to_Execute=Integer.parseInt(args[1]);
 
-			String jDirectory = "jhipster"+i;
+	
+		
+		
+		
+		int j=1;
+	    int i =1;
+		weightFolder = new File(projectDirectory+"/jhipsters/").list().length;
+		
+		_log.info(""+weightFolder);
+
+        //GET ID OF SPREADSHEETS
+		Properties property = getProperties(PROPERTIES_FILE);
+		while(j<=weightFolder && i<=Nb_of_Config_to_Execute){
+			_log.info("Starting treatment of JHipster n° "+j);
+
+			String jDirectory = "jhipster"+j;
 			resultChecker = new ResultChecker(getjDirectory(jDirectory));
 
 			//ID used for jhipster,coverage,cucumber .csv
@@ -383,7 +398,7 @@ public class Oracle {
 			if(!devDatabaseType.equals("\"oracle\"") && !prodDatabaseType.equals("\"oracle\""))
 			{
 				//check if the variant is present or not in the csv and return the number of lines
-				boolean existconfgs = CSVUtils.CheckNotExistLineCSV(CSV_adress+"/jhipster.csv", yorc);
+				boolean existconfgs = CSVUtils.CheckNotExistLineCSV(projectDirectory+"/jhipster.csv", yorc);
 				// false : the yorc is already present
 				if(existconfgs != false)
 				{   
@@ -445,7 +460,7 @@ public class Oracle {
 					//coverageJSStatements = resultChecker.extractJSCoverageStatements(JS_COVERAGE_PATH_GRADLE);
 							}
 	
-					//csvutils.writeLinesCoverageCSV("jacoco.csv", CSV_adress+"/coverage.csv", jDirectory, Id);
+					//csvutils.writeLinesCoverageCSV("jacoco.csv", projectDirectory+"/coverage.csv", jDirectory, Id);
 	
 							_log.info("Compilation success ! Trying to build the App...");
 	
@@ -468,10 +483,10 @@ public class Oracle {
 					          // protractor = resultChecker.extractProtractor("testProtractor.log");
 
 						//		String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
-						//		CSVUtils.writeNewLineCSV(CSV_adress+"/cucumber.csv",cucumberResults);
+						//		CSVUtils.writeNewLineCSV(projectDirectory+"/cucumber.csv",cucumberResults);
 								
 								//String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"false"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
-								//CSVUtils.writeNewLineCSV(CSV_adress+"/gatling.csv", oracleResults);
+								//CSVUtils.writeNewLineCSV(projectDirectory+"/gatling.csv", oracleResults);
 								buildTime = resultChecker.extractTime("build.log","build");	
 								String[] partsBuildWithoutDocker = buildTime.split(";");
 								buildTime = partsBuildWithoutDocker[0]; // only two parts with Docker
@@ -533,7 +548,7 @@ public class Oracle {
 								protractorDocker = resultChecker.extractProtractor("testDockerProtractor.log");
 								String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
 								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumberDocker, cucumberResults, i);
-								CSVUtils.writeNewLineCSV(CSV_adress+"/cucumber.csv", new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
+								CSVUtils.writeNewLineCSV(projectDirectory+"/cucumber.csv", new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
 								// à banir cas oracle
 								String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"true"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
 								SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_oracle, oracleResults, i*2-1);
@@ -584,7 +599,7 @@ public class Oracle {
 							coverageJSStatements, coverageJSBranches};
 	
 					//write into CSV file
-					CSVUtils.writeNewLineCSV(CSV_adress+"/jhipster.csv",line);
+					CSVUtils.writeNewLineCSV(projectDirectory+"/jhipster.csv",line);
 					
 	*/
 					
@@ -600,14 +615,19 @@ public class Oracle {
 							coverageInstuctions,coverageBranches, coverageJSStatements, coverageJSBranches};
 						
 					//write into CSV file
-					CSVUtils.writeNewLineCSV(CSV_adress+"/jhipster.csv",line2);
-					
+					boolean exist = CSVUtils.CheckNotExistLineCSV(projectDirectory+"/jhipster.csv", yorc);
+					if(exist !=false) {
+					CSVUtils.writeNewLineCSV(projectDirectory+"/jhipster.csv",line2);
+					i=i+1;
+					j=j+1;
+					}else {j=j+1;}
 						
 				}
 				
 				
 				else {
 					_log.info("This configuration has been already tested");
+					j=j+1;
 					try{
 						
 					} catch (Exception e){
@@ -619,7 +639,11 @@ public class Oracle {
 		_log.info("Termination...");
 		termination(authenticationType);
 	}
-
+		
+		if (j>weightFolder) _log.info("All configurations are already tested");
+		
+		
+	}
 	/**
 	 * Create CSV BUGS 
 	 */

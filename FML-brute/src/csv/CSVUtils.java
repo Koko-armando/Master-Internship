@@ -169,6 +169,8 @@ public class CSVUtils {
 	 * @param new line)
 	 *  
 	 */
+	
+
 	public static boolean CheckNotExistLineCSV(String filename, String[] line) throws IOException {  
 
 		boolean check = true;
@@ -209,6 +211,10 @@ public class CSVUtils {
 		lines.close();
 		return check;
 	}
+
+	
+	
+	
 
 	/**
 	 * Extract bugs from CSV jhipster into a new shorter CSV
