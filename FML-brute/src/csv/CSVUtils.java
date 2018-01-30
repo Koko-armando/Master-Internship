@@ -183,12 +183,25 @@ public class CSVUtils {
 
 			// Change if we test more variants...
 
-			if (row[3].toString().equals(line[0].toString())&&row[4].toString().equals(line[1].toString())&&row[5].toString().equals(line[2].toString())
-					&&row[6].toString().equals(line[3].toString())&&row[7].toString().equals(line[4].toString())&&
-					row[8].toString().equals(line[5].toString())&&row[9].toString().equals(line[6].toString())
-					&&row[10].toString().equals(line[7].toString())&&row[11].toString().equals(line[8].toString())
-					&&row[12].toString().equals(line[9].toString())&&row[13].toString().equals(line[10].toString())
-					&&row[14].toString().equals(line[11].toString())&&row[15].toString().equals(line[12].toString())&&row[16].toString().equals(line[13].toString()))
+			if (     row[3].toString().equals(line[0].toString())
+					&&row[4].toString().equals(line[1].toString())
+					&&row[5].toString().equals(line[2].toString())
+					&&row[6].toString().equals(line[3].toString())
+					&&row[7].toString().equals(line[4].toString())
+					&&row[8].toString().equals(line[5].toString())
+					&&row[9].toString().equals(line[6].toString())
+					&&row[10].toString().equals(line[7].toString())
+					&&row[11].toString().equals(line[8].toString())
+					&&row[12].toString().equals(line[9].toString())
+					&&row[13].toString().equals(line[10].toString())
+					&&row[14].toString().equals(line[11].toString())
+					&&row[15].toString().equals(line[12].toString())
+					&&row[16].toString().equals(line[13].toString())
+					&&row[17].toString().equals(line[14].toString())
+					&&row[18].toString().equals(line[15].toString())
+					&&row[19].toString().equals(line[16].toString())
+					&&row[20].toString().equals(line[17].toString())
+					)
 			{
 				check = false;
 			};

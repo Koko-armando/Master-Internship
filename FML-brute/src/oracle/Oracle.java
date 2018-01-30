@@ -285,15 +285,13 @@ public class Oracle {
 	public static void main(String[] args) throws Exception{
 		
 		Integer i = Integer.parseInt(args[0]);
-
-		//Integer i=100;
-	    //103 , 10051 jwt
-		 //100 uaa
+        String CSV_adress=args[1];
+		
+		
+		
 		//GET ID OF SPREADSHEETS
 		Properties property = getProperties(PROPERTIES_FILE);
 		
-
-	//	for (int i = jhipsterI;i<=jhipsterJ-1;i++){
 			_log.info("Starting treatment of JHipster n° "+i);
 
 			String jDirectory = "jhipster"+i;
@@ -358,36 +356,34 @@ public class Oracle {
 			JsonParser jsonParser = new JsonParser();
 			JsonObject objectGen = jsonParser.parse(Files.readFileIntoString(getjDirectory(jDirectory)+".yo-rc.json")).getAsJsonObject();
 			JsonObject object = (JsonObject) objectGen.get("generator-jhipster");
-
 			if (object.get("applicationType") != null) applicationType = object.get("applicationType").toString();
+			if (object.get("serviceDiscoveryType") != null) serviceDiscoveryType = object.get("serviceDiscoveryType").toString();
 			if (object.get("authenticationType") != null) authenticationType = object.get("authenticationType").toString();
 			if (object.get("hibernateCache") != null) hibernateCache = object.get("hibernateCache").toString();
 			if (object.get("clusteredHttpSession") != null) clusteredHttpSession = object.get("clusteredHttpSession").toString();
 			if (object.get("websocket") != null) websocket = object.get("websocket").toString();
+			if (object.get("messageBroker") != null) messageBroker = object.get("messageBroker").toString();
 			if (object.get("databaseType") != null) databaseType = object.get("databaseType").toString();
 			if (object.get("devDatabaseType") != null) devDatabaseType = object.get("devDatabaseType").toString();
 			if (object.get("prodDatabaseType") != null) prodDatabaseType = object.get("prodDatabaseType").toString();
 			if (object.get("buildTool") != null) buildTool = object.get("buildTool").toString();
 			if (object.get("searchEngine") != null) searchEngine = object.get("searchEngine").toString();
 			if (object.get("enableSocialSignIn") != null) enableSocialSignIn = object.get("enableSocialSignIn").toString();
+			if (object.get("enableSwaggerCodegen") != null) enableSwaggerCodegen = object.get("enableSwaggerCodegen").toString();
+			if (object.get("clientFramework") != null) clientFramework = object.get("clientFramework").toString();
 			if (object.get("useSass") != null) useSass = object.get("useSass").toString();
 			if (object.get("enableTranslation") != null) enableTranslation = object.get("enableTranslation").toString();
 			if (object.get("testFrameworks") != null) testFrameworks = object.get("testFrameworks").toString();			
-			if (object.get("messageBroker") != null) messageBroker = object.get("messageBroker").toString();
-			if (object.get("serviceDiscoveryType") != null) serviceDiscoveryType = object.get("serviceDiscoveryType").toString();
-			if (object.get("enableSwaggerCodegen") != null) enableSwaggerCodegen = object.get("enableSwaggerCodegen").toString();
-			if (object.get("clientFramework") != null) clientFramework = object.get("clientFramework").toString();
 
 			_log.info("Check if this config isn't done yet...");
 
-			String[] yorc = {applicationType,authenticationType,hibernateCache,clusteredHttpSession,
-					websocket,databaseType,devDatabaseType,prodDatabaseType,buildTool, searchEngine,enableSocialSignIn,useSass,enableTranslation,testFrameworks};
+			String[] yorc = {applicationType,serviceDiscoveryType,authenticationType,hibernateCache,clusteredHttpSession,
+					websocket,messageBroker,databaseType,devDatabaseType,prodDatabaseType,buildTool, searchEngine,enableSocialSignIn,enableSwaggerCodegen,clientFramework,useSass,enableTranslation,testFrameworks};
 			
 			if(!devDatabaseType.equals("\"oracle\"") && !prodDatabaseType.equals("\"oracle\""))
 			{
 				//check if the variant is present or not in the csv and return the number of lines
-				boolean existconfgs = CSVUtils.CheckNotExistLineCSV("jhipster.csv", yorc);
-	
+				boolean existconfgs = CSVUtils.CheckNotExistLineCSV(CSV_adress+"/jhipster.csv", yorc);
 				// false : the yorc is already present
 				if(existconfgs != false)
 				{   
@@ -424,7 +420,7 @@ public class Oracle {
 											
 			               //stacktracesCompile = resultChecker.extractStacktraces("compile.log");
 	
-						//	generateEntities(jDirectory);
+						 	generateEntities(jDirectory);
 							_log.info("Compilation success ! Launch Unit Tests...");
 					//unitTestsApp(jDirectory);
 	
@@ -449,7 +445,7 @@ public class Oracle {
 					//coverageJSStatements = resultChecker.extractJSCoverageStatements(JS_COVERAGE_PATH_GRADLE);
 							}
 	
-					//csvutils.writeLinesCoverageCSV("jacoco.csv", "coverage.csv", jDirectory, Id);
+					//csvutils.writeLinesCoverageCSV("jacoco.csv", CSV_adress+"/coverage.csv", jDirectory, Id);
 	
 							_log.info("Compilation success ! Trying to build the App...");
 	
@@ -472,10 +468,10 @@ public class Oracle {
 					          // protractor = resultChecker.extractProtractor("testProtractor.log");
 
 						//		String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
-						//		CSVUtils.writeNewLineCSV("cucumber.csv",cucumberResults);
+						//		CSVUtils.writeNewLineCSV(CSV_adress+"/cucumber.csv",cucumberResults);
 								
 								//String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"false"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
-								//CSVUtils.writeNewLineCSV("gatling.csv", oracleResults);
+								//CSVUtils.writeNewLineCSV(CSV_adress+"/gatling.csv", oracleResults);
 								buildTime = resultChecker.extractTime("build.log","build");	
 								String[] partsBuildWithoutDocker = buildTime.split(";");
 								buildTime = partsBuildWithoutDocker[0]; // only two parts with Docker
@@ -537,7 +533,7 @@ public class Oracle {
 								protractorDocker = resultChecker.extractProtractor("testDockerProtractor.log");
 								String[] cucumberResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory}, new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
 								//SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_cucumberDocker, cucumberResults, i);
-								CSVUtils.writeNewLineCSV("cucumber.csv", new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
+								CSVUtils.writeNewLineCSV(CSV_adress+"/cucumber.csv", new CucumberResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractEntityCucumberTest());
 								// à banir cas oracle
 								String[] oracleResults = (String[])ArrayUtils.addAll(new String[]{Id,jDirectory,"true"}, new GatlingResultExtractor(getjDirectory(jDirectory),buildTool.replace("\"","")).extractResultsGatlingTest());
 								SpreadsheetUtils.AddLineSpreadSheet(idSpreadsheet_oracle, oracleResults, i*2-1);
@@ -557,12 +553,16 @@ public class Oracle {
 							compileTime = FAIL;
 							stacktracesBuild = "COMPILATION ERROR";
 							stacktracesCompile = resultChecker.extractStacktraces("compile.log");
+							_log.info(""+stacktracesCompile);
+
+							
 						}
 					} else{
 						_log.error("App Generation Failed...");
 						generation =FAIL;
 						stacktracesBuild = "GENERATION ERROR";
 						stacktracesGen = resultChecker.extractStacktraces("generate.log");
+						
 					}
 	
 					publish(jDirectory);
@@ -584,7 +584,7 @@ public class Oracle {
 							coverageJSStatements, coverageJSBranches};
 	
 					//write into CSV file
-					CSVUtils.writeNewLineCSV("jhipster.csv",line);
+					CSVUtils.writeNewLineCSV(CSV_adress+"/jhipster.csv",line);
 					
 	*/
 					
@@ -600,7 +600,7 @@ public class Oracle {
 							coverageInstuctions,coverageBranches, coverageJSStatements, coverageJSBranches};
 						
 					//write into CSV file
-					CSVUtils.writeNewLineCSV("jhipster.csv",line2);
+					CSVUtils.writeNewLineCSV(CSV_adress+"/jhipster.csv",line2);
 					
 						
 				}
@@ -609,8 +609,7 @@ public class Oracle {
 				else {
 					_log.info("This configuration has been already tested");
 					try{
-						_log.info("Sleeping 10 secs...");
-						//Thread.sleep(10*1000);
+						
 					} catch (Exception e){
 						_log.error("Exception: "+e.getMessage());
 					}

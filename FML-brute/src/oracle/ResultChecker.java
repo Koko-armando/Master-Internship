@@ -69,9 +69,8 @@ public class ResultChecker {
 		String text = Files.readFileIntoString(path + fileName);
 
 		//CHECK IF BUILD FAILED THEN false
-		Matcher m1 = Pattern.compile("BUILD FAILED").matcher(text);
-		Matcher m2 = Pattern.compile("BUILD FAILURE").matcher(text);
-
+		Matcher m1 = Pattern.compile("((.*?)BUILD FAILED)").matcher(text);
+		Matcher m2 = Pattern.compile("((.*?)BUILD FAILURE)").matcher(text);
 		while(m1.find() | m2.find()) return false;
 		return true;
 		} catch (Exception e){
@@ -89,10 +88,9 @@ public class ResultChecker {
 			String text = Files.readFileIntoString(path+fileName);
 
 			//CHECK IF BUILD FAILED THEN false
-			Matcher m = Pattern.compile("APPLICATION FAILED TO START").matcher(text);
-			Matcher m2 = Pattern.compile("BUILD FAILED").matcher(text);
-			Matcher m3 = Pattern.compile("BUILD FAILURE").matcher(text);
-
+			Matcher m = Pattern.compile("((.*?)APPLICATION FAILED TO START)").matcher(text);
+			Matcher m2 = Pattern.compile("((.*?)BUILD FAILED)").matcher(text);
+            Matcher m3 = Pattern.compile("((.*?)BUILD FAILURE)").matcher(text);
 			while(m.find() | m2.find() | m3.find()) return false;
 			return true;
 		} catch (Exception e){
@@ -109,7 +107,7 @@ public class ResultChecker {
 	public boolean checkDockerBuild(String fileName){
 		try{
 			String text = Files.readFileIntoString(fileName);
-			Matcher m = Pattern.compile("Application 'jhipster' is running").matcher(text);
+			Matcher m = Pattern.compile("((.*?) Application 'jhipster' is running!)").matcher(text);
 			while (m.find()) return true;
 			return false;
 		} catch (Exception e){
@@ -126,6 +124,7 @@ public class ResultChecker {
 	 */
 	public String extractTime(String fileName,String phase){
 		String timebuild = "";
+		String time="ND";
 		try{
 			String text = Files.readFileIntoString(path+fileName);
 			Matcher m1 = Pattern.compile("Started JhipsterApp in (.*?) seconds").matcher(text);
@@ -151,8 +150,9 @@ public class ResultChecker {
 			//check if hrs 
 			while(m5.find()) timebuild = Float.toString(((Float.valueOf(m5.group(1).toString()) *3600)+ (Float.valueOf(m5.group(2).toString())*60) + Float.valueOf(m5.group(3).toString())))+";";
 			//check if seconds -> build with Docker (not Package)
-            while(m1.find()) timebuild = timebuild +m1.group(1).toString();
-			
+            while(m1.find()) time = time +";"+m1.group(1).toString();
+            String [] times = time.split(";") ;
+            timebuild=timebuild+times[times.length-1];
             }
 		} catch (Exception e){
 			_log.error("Exception: "+e.getMessage());
@@ -404,21 +404,23 @@ public class ResultChecker {
 	public String extractStacktraces(String fileName){
 		String stacktraces = "";
 		try{		
-			String text = Files.readFileIntoString(path+fileName);
-	
-			Matcher m1 = Pattern.compile("(Exception (.*?)\\n)").matcher(text);
+            String text = Files.readFileIntoString(path+fileName);
+			
+			Matcher m1 = Pattern.compile("(Exception(.*?)\\n)").matcher(text);
 			Matcher m2 = Pattern.compile("(Caused by(.*?)\\n)").matcher(text);
 			Matcher m3 = Pattern.compile("((.*?)\\[ERROR\\](.*))").matcher(text);
-			//Matcher m4 = Pattern.compile("(ERROR:(.*?)\\n)").matcher(text);
-			//Matcher m5 = Pattern.compile("(error:(.*?)^)").matcher(text);
-			//Matcher m6 = Pattern.compile("(Error parsing reference:(.*?) is not a valid repository/tag)").matcher(text);
+			Matcher m4 = Pattern.compile("(ERROR:(.*?)\\n)").matcher(text);
+			Matcher m7 = Pattern.compile("(Error:(.*?)\\n)").matcher(text);
+			Matcher m5 = Pattern.compile("(error:(.*?)^)").matcher(text);
+			Matcher m6 = Pattern.compile("(Error parsing reference:(.*?) is not a valid repository/tag)").matcher(text);
 	
 			while(m1.find()) stacktraces = stacktraces + m1.group().toString() + "\n";
 			while(m2.find()) stacktraces = stacktraces + m2.group().toString() + "\n";
 			while(m3.find()) stacktraces = stacktraces + m3.group().toString() + "\n";
-			//while(m4.find()) stacktraces = stacktraces + m4.group().toString() + "\n";
-			//while(m5.find()) stacktraces = stacktraces + m5.group().toString() + "\n";
-			//while(m6.find()) stacktraces = stacktraces + m6.group(1).toString() + "\n";
+			while(m4.find()) stacktraces = stacktraces + m4.group().toString() + "\n";
+			while(m5.find()) stacktraces = stacktraces + m5.group().toString() + "\n";
+            while(m6.find()) stacktraces = stacktraces + m6.group(1).toString() + "\n";
+            while(m7.find()) stacktraces = stacktraces + m7.group().toString() + "\n";
 		} catch (Exception e){
 			_log.error("Exception: "+e.getMessage());
 		}
