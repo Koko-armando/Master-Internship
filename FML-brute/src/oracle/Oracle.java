@@ -302,10 +302,10 @@ public class Oracle {
 	 * Generate & Build & Tests all variants of JHipster 4.8.2. 
 	 */
 	public static void main(String[] args) throws Exception{
-		//projectDirectory = args[0];
-		/*Integer Nb_of_Config_to_Execute=Integer.parseInt(args[1]);*/
-		projectDirectory="/home/koko/git/Master-Internship/FML-brute";
-		Integer Nb_of_Config_to_Execute=2;	
+		projectDirectory = args[0];
+		Integer Nb_of_Config_to_Execute=Integer.parseInt(args[1]);
+		//projectDirectory="/home/koko/git/Master-Internship/FML-brute";
+		//Integer Nb_of_Config_to_Execute=2;	
 		int Variant_Visit_Number=1;
 	    int Number_of_Exec_Variant =1;
 		weightFolder = new File(projectDirectory+"/jhipsters/").list().length;
