@@ -6,6 +6,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.sql.Timestamp;
 import java.util.Properties;
+import java.util.Vector;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -83,6 +84,30 @@ public class Oracle {
 			_log.error("An error occured");
 			_log.error(e.getMessage());}
 	}
+	
+	
+	
+	
+	
+	public static void WriteToken(String Directory) throws IOException {
+		//runCommand("touch token",null,new File(getjDirectory(Directory)));
+		File fichier = new File(Directory,"token");
+		fichier.createNewFile();
+		}
+	
+	
+	public static void DeleteToken(String Directory) {
+		File fichier = new File(Directory,"token");
+		fichier.delete();
+		
+	}
+	public static boolean CheckToken(String Directory) {
+		File fichier = new File(Directory,"token");
+		return fichier.exists();
+		
+	}
+
+		
 	
 	/**
 	 * Generate the App from the yo-rc.json.
@@ -180,10 +205,7 @@ public class Oracle {
 				}
 				
 			}
-		/*} else{
-			// STOP DB FOR DOCKER
-			startProcess("./stopDB.sh","");
-		}*/
+		
 					}
 		_log.info("Start services used by application......");
 		
@@ -224,11 +246,7 @@ public class Oracle {
 		startProcess("./dockerStart.sh",getjDirectory(jDirectory));
 	}
 	
-/*	private static void oracleCopyJAR(String jDirectory){
-		// Copy files for oracle database
-		startProcess("./oracleCopyJAR.sh",getjDirectory(jDirectory));
-	}
-	*/
+
 	/**
 	 * Check If the file exist
 	 *  
@@ -284,32 +302,22 @@ public class Oracle {
 	 * Generate & Build & Tests all variants of JHipster 4.8.2. 
 	 */
 	public static void main(String[] args) throws Exception{
-		
-		
-		
-		
-		
-		
-		
-		projectDirectory = args[0];
-		Integer Nb_of_Config_to_Execute=Integer.parseInt(args[1]);
-
-	
-		
-		
-		
-		int j=1;
-	    int i =1;
+		//projectDirectory = args[0];
+		/*Integer Nb_of_Config_to_Execute=Integer.parseInt(args[1]);*/
+		projectDirectory="/home/koko/git/Master-Internship/FML-brute";
+		Integer Nb_of_Config_to_Execute=2;	
+		int Variant_Visit_Number=1;
+	    int Number_of_Exec_Variant =1;
 		weightFolder = new File(projectDirectory+"/jhipsters/").list().length;
 		
 		_log.info(""+weightFolder);
 
         //GET ID OF SPREADSHEETS
 		Properties property = getProperties(PROPERTIES_FILE);
-		while(j<=weightFolder && i<=Nb_of_Config_to_Execute){
-			_log.info("Starting treatment of JHipster n° "+j);
+		while(Variant_Visit_Number<=weightFolder && Number_of_Exec_Variant<=Nb_of_Config_to_Execute){
+			_log.info("Starting treatment of JHipster n° "+Variant_Visit_Number);
 
-			String jDirectory = "jhipster"+j;
+			String jDirectory = "jhipster"+Variant_Visit_Number;
 			resultChecker = new ResultChecker(getjDirectory(jDirectory));
 
 			//ID used for jhipster,coverage,cucumber .csv
@@ -397,6 +405,18 @@ public class Oracle {
 			
 			if(!devDatabaseType.equals("\"oracle\"") && !prodDatabaseType.equals("\"oracle\""))
 			{
+				
+
+				//check if variant is on execution queue
+				if(CheckToken(getjDirectory(jDirectory))) {
+					
+					Variant_Visit_Number=Variant_Visit_Number+1;
+					
+				}else {
+					
+					//write token to assume that the variant is now on execution queue
+					WriteToken(getjDirectory(jDirectory));
+								
 				//check if the variant is present or not in the csv and return the number of lines
 				boolean existconfgs = CSVUtils.CheckNotExistLineCSV(projectDirectory+"/jhipster.csv", yorc);
 				// false : the yorc is already present
@@ -618,29 +638,32 @@ public class Oracle {
 					boolean exist = CSVUtils.CheckNotExistLineCSV(projectDirectory+"/jhipster.csv", yorc);
 					if(exist !=false) {
 					CSVUtils.writeNewLineCSV(projectDirectory+"/jhipster.csv",line2);
-					i=i+1;
-					j=j+1;
-					}else {j=j+1;}
+					DeleteToken(getjDirectory(jDirectory));
+					Number_of_Exec_Variant=Number_of_Exec_Variant+1;
+					Variant_Visit_Number=Variant_Visit_Number+1;
+					}else {Variant_Visit_Number=Variant_Visit_Number+1;}
 						
 				}
 				
 				
 				else {
 					_log.info("This configuration has been already tested");
-					j=j+1;
+					DeleteToken(getjDirectory(jDirectory));
+					Variant_Visit_Number=Variant_Visit_Number+1;
 					try{
 						
 					} catch (Exception e){
 						_log.error("Exception: "+e.getMessage());
 					}
 				}
+			  }
 			}
 		//}
 		_log.info("Termination...");
 		termination(authenticationType);
 	}
 		
-		if (j>weightFolder) _log.info("All configurations are already tested");
+		if (Variant_Visit_Number>weightFolder) _log.info("All configurations are already tested");
 		
 		
 	}
