@@ -39,6 +39,8 @@ public class Oracle {
 	private static final Logger _log = Logger.getLogger("Oracle");
 	private static  final String JHIPSTERS_DIRECTORY = "jhipsters";
 	private static  String projectDirectory = "";
+	private static  String configDirectory = "";
+
 	private static Integer weightFolder ;
 	private static final String JS_COVERAGE_PATH = "target/test-results/coverage/report-lcov/lcov-report/index.html";
 	private static final String JS_COVERAGE_PATH_GRADLE = "build/test-results/coverage/report-lcov/lcov-report/index.html";
@@ -90,7 +92,6 @@ public class Oracle {
 	
 	
 	public static void WriteToken(String Directory) throws IOException {
-		//runCommand("touch token",null,new File(getjDirectory(Directory)));
 		File fichier = new File(Directory,"token");
 		fichier.createNewFile();
 		}
@@ -118,7 +119,7 @@ public class Oracle {
 	 * @throws IOException 
 	 */
 	private static void generateApp(String jDirectory) throws InterruptedException, IOException{
-		startProcess("./generate.sh",projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory+"/");
+		startProcess("./generate.sh",configDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory+"/");
 	}
 
 	/**
@@ -129,7 +130,7 @@ public class Oracle {
 	 */
 	private static void compileApp(String jDirectory){
 		
-		startProcess("./compile.sh", projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
+		startProcess("./compile.sh", configDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
 	}
 
 	/**
@@ -150,13 +151,13 @@ public class Oracle {
 	 * @throws InterruptedException 
 	 */
 	private static void unitTestsApp(String jDirectory) throws InterruptedException{
-		startProcess("./unitTest.sh", projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
+		startProcess("./unitTest.sh", configDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
 	}
 	
 	private static void generateEntities(String jDirectory){
 		_log.info("Starting entity JDL import");
 		try{
-			startProcess("./generateJDL.sh", projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
+			startProcess("./generateJDL.sh", configDirectory+"/"+JHIPSTERS_DIRECTORY+"/"+jDirectory);
 			_log.info("Entities created !");
 		} catch (Exception e){
 			_log.error("Exception: "+e.getMessage());
@@ -170,9 +171,15 @@ public class Oracle {
 	 * @return The relative path to folder with name jDirectory.
 	 */
 	private static String getjDirectory(String jDirectory) {
-		return projectDirectory+"/"+JHIPSTERS_DIRECTORY+ "/" + jDirectory + "/";
+		return configDirectory+"/"+JHIPSTERS_DIRECTORY+ "/" + jDirectory + "/";
 	}
 
+	private static String getprojectDirectory(String cfDirectory) {
+		
+		
+		return projectDirectory+"/"+JHIPSTERS_DIRECTORY+ "/" + cfDirectory + "/";
+	}
+	
 	/**
 	 * Launch initialization scripts:\n
 	 * 		- Start Uaa Server (in case of Uaa authentication)
@@ -188,7 +195,7 @@ public class Oracle {
 			if (applicationType.equals("\"gateway\"") || applicationType.equals("\"microservice\"") || applicationType.equals("\"uaa\"")){
 				
 				// Start Jhipster Registry
-				threadRegistry = new Thread(new ThreadRegistry(projectDirectory+"/JHipster-Registry/"));
+				threadRegistry = new Thread(new ThreadRegistry(configDirectory+"/JHipster-Registry/"));
 				threadRegistry.start();
 				_log.info("Starting JHipster-Registry.....");
 				try{
@@ -197,7 +204,7 @@ public class Oracle {
 				if(authentication.equals("\"uaa\"")){
 					
 					// Start UAA Server
-					threadUAA = new Thread(new ThreadUAA(projectDirectory+"/"+JHIPSTERS_DIRECTORY+"/uaa/"));
+					threadUAA = new Thread(new ThreadUAA(configDirectory+"/"+JHIPSTERS_DIRECTORY+"/uaa/"));
 					threadUAA.start();
 					 _log.info("Starting Uaa Server .... ");
 					try{Thread.sleep(5000);}
@@ -271,8 +278,6 @@ public class Oracle {
 		Properties prop = new Properties();
 
 		try {
-			// non static method
-			// inputStream = getClass().getClassLoader().getResourceAsStream(propFileName);
 			
 			// static method 
 			inputStream = Oracle.class.getClassLoader().getResourceAsStream(propFileName);
@@ -302,10 +307,14 @@ public class Oracle {
 	 * Generate & Build & Tests all variants of JHipster 4.8.2. 
 	 */
 	public static void main(String[] args) throws Exception{
-		projectDirectory = args[0];
-		Integer Nb_of_Config_to_Execute=Integer.parseInt(args[1]);
-		//projectDirectory="/home/koko/git/Master-Internship/FML-brute";
-		//Integer Nb_of_Config_to_Execute=2;	
+		
+		//directory of configurations to execute
+		configDirectory = args[0];
+		//directory of generated configurations
+		projectDirectory = args[1];
+		//number of configuration to execute
+		Integer Nb_of_Config_to_Execute=Integer.parseInt(args[2]);
+		
 		int Variant_Visit_Number=1;
 	    int Number_of_Exec_Variant =1;
 		weightFolder = new File(projectDirectory+"/jhipsters/").list().length;
@@ -316,8 +325,12 @@ public class Oracle {
 		Properties property = getProperties(PROPERTIES_FILE);
 		while(Variant_Visit_Number<=weightFolder && Number_of_Exec_Variant<=Nb_of_Config_to_Execute){
 			_log.info("Starting treatment of JHipster n° "+Variant_Visit_Number);
-
+            
+			// copy of configuration to execute from project directory to configuration directory
 			String jDirectory = "jhipster"+Variant_Visit_Number;
+			String command= "cp -r "+getprojectDirectory(jDirectory)+" "+configDirectory+"/jhipsters/";
+			runCommand(command,null,new File(configDirectory));
+			
 			resultChecker = new ResultChecker(getjDirectory(jDirectory));
 
 			//ID used for jhipster,coverage,cucumber .csv
@@ -408,14 +421,14 @@ public class Oracle {
 				
 
 				//check if variant is on execution queue
-				if(CheckToken(getjDirectory(jDirectory))) {
+				if(CheckToken(getprojectDirectory(jDirectory))) {
 					
 					Variant_Visit_Number=Variant_Visit_Number+1;
 					
 				}else {
 					
 					//write token to assume that the variant is now on execution queue
-					WriteToken(getjDirectory(jDirectory));
+					WriteToken(getprojectDirectory(jDirectory));
 								
 				//check if the variant is present or not in the csv and return the number of lines
 				boolean existconfgs = CSVUtils.CheckNotExistLineCSV(projectDirectory+"/jhipster.csv", yorc);
@@ -425,8 +438,8 @@ public class Oracle {
 					
 					
 					
-					_log.info("Copying node_modules...");
-					startProcess("./init.sh", getjDirectory(jDirectory));
+					//_log.info("Copying node_modules...");
+					//startProcess("./init.sh", getjDirectory(jDirectory));
 					_log.info("Generating the App..."); 
 					long millis = System.currentTimeMillis();
 					generateApp(jDirectory);
@@ -463,7 +476,7 @@ public class Oracle {
 					//karmaJS = resultChecker.extractKarmaJS("testKarmaJS.log");
 				    //cucumber= resultChecker.extractCucumber("test.log");
 	
-							CSVUtils csvutils = new CSVUtils(getjDirectory(jDirectory));
+							CSVUtils csvutils = new CSVUtils(getprojectDirectory(jDirectory));
 
 							// JACOCO Coverage results are only available with Maven
 							if(buildTool.equals("\"maven\"")){
@@ -619,7 +632,7 @@ public class Oracle {
 							coverageJSStatements, coverageJSBranches};
 	
 					//write into CSV file
-					CSVUtils.writeNewLineCSV(projectDirectory+"/jhipster.csv",line);
+					CSVUtils.writeNewLineCSV(projectDirectory+/"jhipster.csv",line);
 					
 	*/
 					
@@ -638,7 +651,9 @@ public class Oracle {
 					boolean exist = CSVUtils.CheckNotExistLineCSV(projectDirectory+"/jhipster.csv", yorc);
 					if(exist !=false) {
 					CSVUtils.writeNewLineCSV(projectDirectory+"/jhipster.csv",line2);
-					DeleteToken(getjDirectory(jDirectory));
+					DeleteToken(getprojectDirectory(jDirectory));
+					String comand= "cp "+" "+configDirectory+jDirectory+".tar.gz"+" "+projectDirectory;
+					runCommand(comand,null,new File(configDirectory));
 					Number_of_Exec_Variant=Number_of_Exec_Variant+1;
 					Variant_Visit_Number=Variant_Visit_Number+1;
 					}else {Variant_Visit_Number=Variant_Visit_Number+1;}
