@@ -314,25 +314,74 @@ public class Oracle {
 		projectDirectory = args[1];
 		//number of configuration to execute
 		Integer Nb_of_Config_to_Execute=Integer.parseInt(args[2]);
-		
-		int Variant_Visit_Number=1;
+		int Variant_Visit_Number=0;
+		//number i-of configuration who is already executed at the moment
 	    int Number_of_Exec_Variant =1;
-		weightFolder = new File(projectDirectory+"/jhipsters/").list().length;
+	
 		
-		_log.info(""+weightFolder);
+		String[] Allconfig =new File(projectDirectory+"/jhipsters/").list();
+
+	    
+		_log.info("Copy of all Configuration to execute");
+	    while (Variant_Visit_Number<=Allconfig.length-1 && Number_of_Exec_Variant<=Nb_of_Config_to_Execute) {
+	    	
+	     String jDirectory=Allconfig[Variant_Visit_Number];
+	    	
+	    	//check if variant is on execution queue
+			if(CheckToken(getprojectDirectory(jDirectory))) {
+				
+				Variant_Visit_Number=Variant_Visit_Number+1;
+				_log.info("Configuration "+" "+jDirectory+" "+"is on execution");
+			}else {
+				
+				//write token to assume that the variant is now on execution queue
+				WriteToken(getprojectDirectory(jDirectory));
+		  
+			String command= "cp -r "+getprojectDirectory(jDirectory)+" "+configDirectory+"/jhipsters/";
+			String command1= "rm -rf "+getprojectDirectory(jDirectory);
+
+			runCommand(command,null,new File(configDirectory));
+			runCommand(command1,null,new File(configDirectory));
+			DeleteToken(getjDirectory(jDirectory));
+			Variant_Visit_Number=Variant_Visit_Number+1;
+			Number_of_Exec_Variant=Number_of_Exec_Variant+1;
+			}	  	
+	    	
+	    	
+	    }
+	    
+	    
+	    if (new File(configDirectory+"/jhipsters/").list().length==1) { _log.info("there are no more Configuration to execute"); 
+	    
+	    
+	    }else {
+	    
+			String[] Executionlist =new File(configDirectory+"/jhipsters/").list();
+		//id number of the configuration visited at the moment
+				Variant_Visit_Number=0;
+				//number i-of configuration who is already executed at the moment
+			    Number_of_Exec_Variant =1;	
+			    int weigth=	Executionlist.length-1;
+		_log.info("*******execution of  "+weigth+"  variant of configuration**********");
 
         //GET ID OF SPREADSHEETS
 		Properties property = getProperties(PROPERTIES_FILE);
-		while(Variant_Visit_Number<=weightFolder && Number_of_Exec_Variant<=Nb_of_Config_to_Execute){
-			_log.info("Starting treatment of JHipster n° "+Variant_Visit_Number);
-            
-			// copy of configuration to execute from project directory to configuration directory
-			String jDirectory = "jhipster"+Variant_Visit_Number;
-			String command= "cp -r "+getprojectDirectory(jDirectory)+" "+configDirectory+"/jhipsters/";
-			runCommand(command,null,new File(configDirectory));
+		
+		
+		while(Variant_Visit_Number<=Executionlist.length-1 && Number_of_Exec_Variant<=Nb_of_Config_to_Execute){
 			
-			resultChecker = new ResultChecker(getjDirectory(jDirectory));
+			String jDirectory = Executionlist[Variant_Visit_Number];
 
+			_log.info("Starting treatment of configuration "+jDirectory);
+            
+			
+			
+			
+			
+			
+			
+		//************************************************************************************
+			
 			//ID used for jhipster,coverage,cucumber .csv
 			String Id = DEFAULT_NOT_FOUND_VALUE;
 			// generate a new ID -> depend of the timestamp
@@ -418,25 +467,26 @@ public class Oracle {
 			
 			if(!devDatabaseType.equals("\"oracle\"") && !prodDatabaseType.equals("\"oracle\""))
 			{
-				
 
 				//check if variant is on execution queue
-				if(CheckToken(getprojectDirectory(jDirectory))) {
+				if(CheckToken(getjDirectory(jDirectory))) {
 					
 					Variant_Visit_Number=Variant_Visit_Number+1;
-					
+					_log.info("Configuration "+" "+jDirectory+" "+"is on execution");
 				}else {
-					
 					//write token to assume that the variant is now on execution queue
-					WriteToken(getprojectDirectory(jDirectory));
+					WriteToken(getjDirectory(jDirectory));
 								
 				//check if the variant is present or not in the csv and return the number of lines
-				boolean existconfgs = CSVUtils.CheckNotExistLineCSV(projectDirectory+"/jhipster.csv", yorc);
+				boolean existconfgs = CSVUtils.CheckNotExistLineCSV(configDirectory+"/jhipster.csv", yorc);
 				// false : the yorc is already present
 				if(existconfgs != false)
 				{   
+				//String command= "cp -r "+getprojectDirectory(jDirectory)+" "+configDirectory+"/jhipsters/";
+				//runCommand(command,null,new File(configDirectory));
 					
-					
+				resultChecker = new ResultChecker(getjDirectory(jDirectory));
+	
 					
 					//_log.info("Copying node_modules...");
 					//startProcess("./init.sh", getjDirectory(jDirectory));
@@ -476,7 +526,7 @@ public class Oracle {
 					//karmaJS = resultChecker.extractKarmaJS("testKarmaJS.log");
 				    //cucumber= resultChecker.extractCucumber("test.log");
 	
-							CSVUtils csvutils = new CSVUtils(getprojectDirectory(jDirectory));
+							CSVUtils csvutils = new CSVUtils(getjDirectory(jDirectory));
 
 							// JACOCO Coverage results are only available with Maven
 							if(buildTool.equals("\"maven\"")){
@@ -648,15 +698,13 @@ public class Oracle {
 							coverageInstuctions,coverageBranches, coverageJSStatements, coverageJSBranches};
 						
 					//write into CSV file
-					boolean exist = CSVUtils.CheckNotExistLineCSV(projectDirectory+"/jhipster.csv", yorc);
-					if(exist !=false) {
-					CSVUtils.writeNewLineCSV(projectDirectory+"/jhipster.csv",line2);
-					DeleteToken(getprojectDirectory(jDirectory));
+					
+					CSVUtils.writeNewLineCSV(configDirectory+"/jhipster.csv",line2);
 					String comand= "cp "+" "+configDirectory+jDirectory+".tar.gz"+" "+projectDirectory;
 					runCommand(comand,null,new File(configDirectory));
 					Number_of_Exec_Variant=Number_of_Exec_Variant+1;
 					Variant_Visit_Number=Variant_Visit_Number+1;
-					}else {Variant_Visit_Number=Variant_Visit_Number+1;}
+					
 						
 				}
 				
@@ -677,9 +725,11 @@ public class Oracle {
 		_log.info("Termination...");
 		termination(authenticationType);
 	}
+		String comand= "cp "+" "+configDirectory+"/jhipster.csv"+" "+projectDirectory+"/jhipster"+Variant_Visit_Number+".csv";
+		runCommand(comand,null,new File(configDirectory));
 		
 		if (Variant_Visit_Number>weightFolder) _log.info("All configurations are already tested");
-		
+	}	
 		
 	}
 	/**
